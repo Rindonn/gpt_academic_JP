@@ -77,7 +77,7 @@ def ConnectBingSearchAnswerQuestion(txt, llm_kwargs, plugin_kwargs, chatbot, his
     history = []
     if len(urls) == 0:
         chatbot.append((f"结论：{txt}",
-                        "[Local Message] 受到bing限制，なし法从bing获取信息！"))
+                        "[Local Message] bingから制限されて，情報を取ることが出来ません！"))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
         return
     # ------------- < ステップ2：ウェブページに順次アクセスする > -------------

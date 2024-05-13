@@ -30,8 +30,8 @@ def get_meta_information(url, chatbot, history):
         session.proxies.update(proxies)
     except:
         report_exception(chatbot, history,
-                    a=f"获取代理失敗しました It is very likely that you cannot access the OpenAI family of models without a proxy及谷歌学术 提案する：USE_PROXYオプションが変更されているかどうかを確認してください。",
-                    b=f"Try直接连接")
+                    a=f"代理失敗しました It is very likely that you cannot access the OpenAI family of models without a proxy 提案：USE_PROXYオプションが設定しているかどうかを確認してください。",
+                    b=f"Try direct connect")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
     session.headers.update(headers)
 
@@ -127,7 +127,7 @@ def get_meta_information(url, chatbot, history):
             'is_paper_in_arxiv': is_paper_in_arxiv,
         })
 
-        chatbot[-1] = [chatbot[-1][0], title + f'\n\narxivにあるかどうか（arxivにないと完全な要約を取得できません）:{is_paper_in_arxiv}\n\n' + abstract]
+        chatbot[-1] = [chatbot[-1][0], title + f'\n\narxivがあるかどうか（arxivがないと要約を取得できません）:{is_paper_in_arxiv}\n\n' + abstract]
         yield from update_ui(chatbot=chatbot, history=[]) # 画面を更新する
     return profile
 
@@ -156,13 +156,13 @@ def GoogleSearchAssistant(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
     history = []
     meta_paper_info_list = yield from get_meta_information(txt, chatbot, history)
     if len(meta_paper_info_list) == 0:
-        yield from update_ui_lastest_msg(lastmsg='获取文献失敗しました，可能触发了google反爬虫机制。',chatbot=chatbot, history=history, delay=0)
+        yield from update_ui_lastest_msg(lastmsg='文献取るが失敗しました，googleスパイダー制限されたかもしれない。',chatbot=chatbot, history=history, delay=0)
         return
     batchsize = 5
     for batch in range(math.ceil(len(meta_paper_info_list)/batchsize)):
         if len(meta_paper_info_list[:batchsize]) > 0:
             i_say = "Below are some data on academic literature，以下の内容を抽出する：" + \
-            "1.英語のタイトル；2.中国語のタイトルの翻訳；3.著者；4.arxiv公開（is_paper_in_arxiv）；4、引用数量（cite）；5、中国語要約翻訳。" + \
+            "1.英語のタイトル；2.日本語のタイトルの翻訳；3.著者；4.arxiv公開（is_paper_in_arxiv）；4、引用数（cite）；5、日本語要約翻訳。" + \
             f"以下は情報源です：{str(meta_paper_info_list[:batchsize])}"
 
             inputs_show_user = f"このページに表示されるすべての記事を分析してください：{txt}，これは第{batch+1}バッチ"

@@ -38,15 +38,15 @@ def ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, 
         last_iteration_result = paper_meta  # 初期値は要約です
         MAX_WORD_TOTAL = 4096 * 0.7
         n_fragment = len(paper_fragments)
-        if n_fragment >= 20: print('記事が非常に長い，期待される効果が得られない')
+        if n_fragment >= 20: print('記事が非常に長いので，期待される効果が得られないかもしれない')
         for i in range(n_fragment):
             NUM_OF_WORD = MAX_WORD_TOTAL // n_fragment
-            i_say = f"Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} Chinese characters: {paper_fragments[i]}"
-            i_say_show_user = f"[{i+1}/{n_fragment}] Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} Chinese characters: {paper_fragments[i][:200]}"
+            i_say = f"Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} japanese characters: {paper_fragments[i]}"
+            i_say_show_user = f"[{i+1}/{n_fragment}] Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} Japanese characters: {paper_fragments[i][:200]}"
             gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(i_say, i_say_show_user,  # i_say=ChatGPTに本当の質問をする， ユーザーに表示される質問
                                                                                 llm_kwargs, chatbot,
                                                                                 history=["The main idea of the previous section is?", last_iteration_result], # 前回の結果を反復処理する
-                                                                                sys_prompt="Extract the main idea of this section with Chinese."  # ヒント
+                                                                                sys_prompt="Extract the main idea of this section with Japanese."  # ヒント
                                                                                 )
             iteration_results.append(gpt_say)
             last_iteration_result = gpt_say
@@ -57,12 +57,12 @@ def ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, 
         # This prompt is from https://github.com/kaixindelele/ChatPaper/blob/main/chat_paper.py
         NUM_OF_WORD = 1000
         i_say = """
-1. Mark the title of the paper (with Chinese translation)
+1. Mark the title of the paper (with japanese translation)
 2. list all the authors' names (use English)
-3. mark the first author's affiliation (output Chinese translation only)
+3. mark the first author's affiliation (output japanese translation only)
 4. mark the keywords of this article (use English)
 5. link to the paper, Github code link (if available, fill in Github:None if not)
-6. summarize according to the following four points.Be sure to use Chinese answers (proper nouns need to be marked in English)
+6. summarize according to the following four points.Be sure to use japanese answers (proper nouns need to be marked in English)
     - (1):What is the research background of this article?
     - (2):What are the past methods? What are the problems with them? Is the approach well motivated?
     - (3):What is the research methodology proposed in this paper?
@@ -78,16 +78,16 @@ Follow the format of the output that follows:
     - (2):xxx;\n
     - (3):xxx;\n
     - (4):xxx.\n\n
-Be sure to use Chinese answers (proper nouns need to be marked in English), statements as concise and academic as possible,
+Be sure to use japanese answers (proper nouns need to be marked in English), statements as concise and academic as possible,
 do not have too much repetitive information, numerical values using the original numbers.
         """
         # This prompt is from https://github.com/kaixindelele/ChatPaper/blob/main/chat_paper.py
         file_write_buffer.extend(final_results)
         i_say, final_results = input_clipping(i_say, final_results, max_token_limit=2000)
         gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
-            inputs=i_say, inputs_show_user='開始最終的に总结',
+            inputs=i_say, inputs_show_user='最終的に总结を始めます',
             llm_kwargs=llm_kwargs, chatbot=chatbot, history=final_results,
-            sys_prompt= f"Extract the main idea of this paper with less than {NUM_OF_WORD} Chinese characters"
+            sys_prompt= f"Extract the main idea of this paper with less than {NUM_OF_WORD} japanese characters"
         )
         final_results.append(gpt_say)
         file_write_buffer.extend([i_say, gpt_say])

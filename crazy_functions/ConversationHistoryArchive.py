@@ -81,7 +81,7 @@ def ConversationHistoryArchive(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     """
 
     chatbot.append(("現在の対話を保存する",
-        f"[Local Message] {write_chat_to_file(chatbot, history)}，您可以调用下拉菜单中的“LoadConversationHistoryArchive”还原当下的对话。"))
+        f"[Local Message] {write_chat_to_file(chatbot, history)}，メニューの“LoadConversationHistoryArchive”を使って対話履歴を読み込むことが出来ます。"))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
 def hide_cwd(str):

@@ -40,7 +40,7 @@ def HighOrderFunctionTemplateFunctions(txt, llm_kwargs, plugin_kwargs, chatbot, 
     """
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
     chatbot.append((
-        "您正在调用プラグイン：Today in history",
+        "プラグインを利用しています：Today in history",
         "[Local Message] 注意してください，あなたは呼び出しています[関数プラグイン]のテンプレート，この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions（その関数には20行以上のコードしかありません）。また、大量のファイルを同期的に処理するためのマルチスレッドデモも提供しています。If you want to share new functional modules，PRを遠慮なく提出してください！" + HighOrderFunctionTemplateDiagram))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
     for i in range(5):
@@ -60,7 +60,7 @@ def HighOrderFunctionTemplateFunctions(txt, llm_kwargs, plugin_kwargs, chatbot, 
 
 
 PROMPT = """
-请你给出围绕“{subject}”的逻辑关系图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”に関するロジック関係を示して下さい，mermaid言語を利用してください，mermaid言語の例を挙げる：
 ```mermaid
 graph TD
     P(编程) --> L1(Python)
@@ -82,12 +82,12 @@ def 测试图表渲染(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_
     user_request    当前用户的请求信息（IPAddress等）
     """
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
-    chatbot.append(("What is this function?？", "一pieces测试mermaid绘制图表的功能，您可以在入力框中入力一些关键词，然后使用するmermaid+llm绘制图表。"))
+    chatbot.append(("What is this function?？", "mermaidでグラフを書く機能をテストする，まずキーワードを入力して，mermaid+llmを利用してグラフを書いて下さい。"))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
-    if txt == "": txt = "空白的入力栏" # 调皮一下
+    if txt == "": txt = "何も書いてない" # 调皮一下
 
-    i_say_show_user = f'请绘制有关“{txt}”的逻辑关系图。'
+    i_say_show_user = f'“{txt}”に関するロジックグラフを書いて下さい。'
     i_say = PROMPT.format(subject=txt)
     gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
         inputs=i_say,

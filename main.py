@@ -1,22 +1,23 @@
 import os; os.environ['no_proxy'] = '*' # プロキシネットワークによる予期しない汚染を回避する
 
 help_menu_description = \
-"""Github源コードのオープンソース化と更新[アドレス🚀](https://github.com/binary-husky/gpt_academic),
-熱心な感謝[開発者たち❤️](https://github.com/binary-husky/gpt_academic/graphs/contributors).
-</br></br>常见問題请查阅[项目Wiki](https://github.com/binary-husky/gpt_academic/wiki),
-如遇到Bug请前往[Bug反馈](https://github.com/binary-husky/gpt_academic/issues).
-</br></br>普通对话使用する言う明: 1. 入力問題; 2. 点击提出
-</br></br>基本機能エリア使用する言う明: 1. 入力文本; 2. 点击任意基本機能エリア按钮
-</br></br>関数プラグインエリア使用する言う明: 1. 入力路径/問題, または上传文件; 2. 点击任意関数プラグインエリア按钮
-</br></br>VoidTerminal使用する言う明: 点击VoidTerminal, 然后根据ヒント入力指令, 再次点击VoidTerminal
-</br></br>如何保存对话: 点击現在の対話を保存する按钮
-</br></br>如何语音对话: 请阅读Wiki
-</br></br>如何临時更换API_KEY: 在入力エリア入力临時API_KEY后提出（网页刷新后失效）"""
+"""GitHubでソースコードが公開されました→(https://github.com/binary-husky/gpt_academic),
+開発者たちに心より感謝しています(https://github.com/binary-husky/gpt_academic/graphs/contributors).
+</br></br>よく聞いた問題をチェック[プロジェクトのWiki](https://github.com/binary-husky/gpt_academic/wiki),
+もしバグが見つかった場合[Bugリクエスト]へお願いいたします。(https://github.com/binary-husky/gpt_academic/issues).
+</br></br>対話モードの説明: 1. 問題を入力; 2. 提出をクリック
+</br></br>基本機能エリアの説明: 1. テキストを入力; 2. 基本機能エリアでのボタンをクリック
+</br></br>関数プラグインエリアの説明: 1. パス／問題を入力, またファイルをアプロード; 2. 関数プラグインエリアでのボタンをクリック
+</br></br>VoidTerminalの説明: VoidTerminalをクリック, ヒントによってコマンドを入力した後もう一回VoidTerminalをクリック
+</br></br>対話内容を保存したい場合: 保存するボタンをクリック
+</br></br>対話内容を音声に変換したい場合: Wikiへアクセスしてください
+</br></br>一度API_KEYを変更したい場合: 入力エリアでAPI_KEYを入力し、提出します（リフレッシュした後削除）
+"""
 
 def main():
     import gradio as gr
     if gr.__version__ not in ['3.32.9']:
-        raise ModuleNotFoundError("使用する项目内置Gradio获取最优体验! 请运行 `pip install -r requirements.txt` 指令テキストの翻訳内置Gradio及其他依赖, テキストの翻訳.")
+        raise ModuleNotFoundError("Gradioをインストールして一番よい体験をゲット!  `pip install -r requirements.txt` を実行してGradioなどライブラリーをインストールして下さい.")
     from request_llms.bridge_all import predict
     from toolbox import format_io, find_free_port, on_file_uploaded, on_report_generated, get_conf, ArgsGeneralWrapper, load_chat_cookies, DummyWith
     # config_private.pyをコピーして、自分の秘密を入れてください, Such as API and proxy URLs
@@ -32,7 +33,7 @@ def main():
     from themes.theme import adjust_theme, advanced_css, theme_declaration, js_code_clear, js_code_reset, js_code_show_or_hide, js_code_show_or_hide_group2
     from themes.theme import js_code_for_css_changing, js_code_for_toggle_darkmode, js_code_for_persistent_cookie_init
     from themes.theme import load_dynamic_theme, to_cookie_str, from_cookie_str, init_cookie
-    title_html = f"<h1 align=\"center\">テキストの翻訳 {get_current_version()}</h1>{theme_declaration}"
+    title_html = f"<h1 align=\"center\">学術的GPT {get_current_version()}</h1>{theme_declaration}"
 
     # 对话记录, Pythonバージョン3.9+を推奨します（新しいほど良い）
     import logging, uuid
@@ -42,7 +43,7 @@ def main():
     except:logging.basicConfig(filename=chat_secrets_log, level=logging.INFO,  format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
     # Disable logging output from the 'httpx' logger
     logging.getLogger("httpx").setLevel(logging.WARNING)
-    print(f"所有对话记录置き換える自动保存在本地目录 {chat_secrets_log}, プライバシー保護に注意してください！")
+    print(f"全ての記録をローカルで保存している {chat_secrets_log}, プライバシー保護にご注意してください！")
 
     # いくつかの一般的な機能モジュール
     from core_functional import get_core_functions
@@ -75,7 +76,7 @@ def main():
     cancel_handles = []
     customize_btns = {}
     predefined_btns = {}
-    with gr.Blocks(title="テキストの翻訳", theme=set_theme, analytics_enabled=False, css=advanced_css) as demo:
+    with gr.Blocks(title="学術的GPT", theme=set_theme, analytics_enabled=False, css=advanced_css) as demo:
         gr.HTML(title_html)
         secret_css, py_pickle_cookie = gr.Textbox(visible=False), gr.Textbox(visible=False)
         cookies = gr.State(load_chat_cookies())
@@ -98,23 +99,23 @@ def main():
                         with gr.Row():
                             audio_mic = gr.Audio(source="microphone", type="numpy", elem_id="elem_audio", streaming=True, show_label=False).style(container=False)
                     with gr.Row():
-                        status = gr.Markdown(f"Tip: Enterを押して提出する, Shift + Enterで改行。Current model: {LLM_MODEL} \n {proxy_info}", elem_id="state-panel")
+                        status = gr.Markdown(f"Tip: Enterを押して提出, Shift + Enterで改行。Current model: {LLM_MODEL} \n {proxy_info}", elem_id="state-panel")
 
-                with gr.Accordion("基本機能エリア", open=True, elem_id="basic-panel") as area_basic_fn:
+                with gr.Accordion("基本的の機能エリア", open=True, elem_id="basic-panel") as area_basic_fn:
                     with gr.Row():
                         for k in range(NUM_CUSTOM_BASIC_BTN):
-                            customize_btn = gr.Button("自定义按钮" + str(k+1), visible=False, variant="secondary", info_str=f'基本機能エリア: 自定义按钮')
+                            customize_btn = gr.Button("自定义按钮" + str(k+1), visible=False, variant="secondary", info_str=f'基本的の機能エリア: 自定义按钮')
                             customize_btn.style(size="sm")
                             customize_btns.update({"自定义按钮" + str(k+1): customize_btn})
                         for k in functional:
                             if ("Visible" in functional[k]) and (not functional[k]["Visible"]): continue
                             variant = functional[k]["Color"] if "Color" in functional[k] else "secondary"
-                            functional[k]["Button"] = gr.Button(k, variant=variant, info_str=f'基本機能エリア: {k}')
+                            functional[k]["Button"] = gr.Button(k, variant=variant, info_str=f'基本的の機能エリア: {k}')
                             functional[k]["Button"].style(size="sm")
                             predefined_btns.update({k: functional[k]["Button"]})
                 with gr.Accordion("関数プラグインエリア", open=True, elem_id="plugin-panel") as area_crazy_fn:
                     with gr.Row():
-                        gr.Markdown("プラグイン可读取“入力エリア”文本/路径作为パラメータ（テキストの翻訳）")
+                        gr.Markdown("プラグインから“入力エリア”のテキストとパスをパラメータとして利用出来ます")
                     with gr.Row(elem_id="input-plugin-group"):
                         plugin_group_sel = gr.Dropdown(choices=all_plugin_groups, label='', show_label=False, value=DEFAULT_FN_GROUPS,
                                                       multiselect=True, interactive=True, elem_classes='normal_mut_select').style(container=False)
@@ -136,21 +137,21 @@ def main():
                             with gr.Row():
                                 dropdown = gr.Dropdown(dropdown_fn_list, value=r"プラグインリストを開く", label="", show_label=False).style(container=False)
                             with gr.Row():
-                                plugin_advanced_arg = gr.Textbox(show_label=True, label="高度なパラメータ入力エリア", visible=False,
+                                plugin_advanced_arg = gr.Textbox(show_label=True, label="パラメータ入力エリア", visible=False,
                                                                  placeholder="ここは特殊関数プラグインの高度なパラメータ入力エリアです").style(container=False)
                             with gr.Row():
                                 switchy_bt = gr.Button(r"まず、プラグインリストから選択してください", variant="secondary").style(size="sm")
                     with gr.Row():
-                        with gr.Accordion("点击展开“文件下载区”。", open=False) as area_file_up:
-                            file_upload = gr.Files(label="任意のファイル, 推荐上传压缩文件(zip, tar)", file_count="multiple", elem_id="elem_upload")
+                        with gr.Accordion("Click：“ファイルダウンロード”。", open=False) as area_file_up:
+                            file_upload = gr.Files(label="任意のファイル, ジップファイルがおすすめ(zip, tar)", file_count="multiple", elem_id="elem_upload")
 
         with gr.Floating(init_x="0%", init_y="0%", visible=True, width=None, drag="forbidden", elem_id="tooltip"):
             with gr.Row():
-                with gr.Tab("上传文件", elem_id="interact-panel"):
-                    gr.Markdown("请上传本地文件/テキストの翻訳供“関数プラグインエリア”功能调用。注意してください: 上传文件后会自动把入力エリア修改为相应路径。")
-                    file_upload_2 = gr.Files(label="任意のファイル, 推荐上传压缩文件(zip, tar)", file_count="multiple", elem_id="elem_upload_float")
+                with gr.Tab("ファイルアップロード", elem_id="interact-panel"):
+                    gr.Markdown("関数プラグインエリアのためローカルファイルをアップロード。注意してください: アプロードした後入力エリアが自動変更。")
+                    file_upload_2 = gr.Files(label="任意のファイル, ジップファイルがおすすめ(zip, tar)", file_count="multiple", elem_id="elem_upload_float")
 
-                with gr.Tab("更换模型", elem_id="interact-panel"):
+                with gr.Tab("モデル変更", elem_id="interact-panel"):
                     md_dropdown = gr.Dropdown(AVAIL_LLM_MODELS, value=LLM_MODEL, label="LLMモデル/リクエストソースの変更").style(container=False)
                     top_p = gr.Slider(minimum=-0, maximum=1.0, value=1.0, step=0.01,interactive=True, label="Top-p (nucleus sampling)",)
                     temperature = gr.Slider(minimum=-0, maximum=2.0, value=1.0, step=0.01, interactive=True, label="Temperature", elem_id="elem_temperature")
@@ -161,7 +162,7 @@ def main():
                     system_prompt.change(None, inputs=[system_prompt], outputs=None,
                         _js="""(system_prompt)=>gpt_academic_gradio_saveload("save", "elem_prompt", "js_system_prompt_cookie", system_prompt)""")
 
-                with gr.Tab("界面外观", elem_id="interact-panel"):
+                with gr.Tab("主題変更", elem_id="interact-panel"):
                     theme_dropdown = gr.Dropdown(AVAIL_THEMES, value=THEME, label="更换UI主题").style(container=False)
                     checkboxes = gr.CheckboxGroup(["基本機能エリア", "関数プラグインエリア", "浮动入力エリア", "入力クリアキー", "プラグインパラメータエリア"], value=["基本機能エリア", "関数プラグインエリア"], label="Show/hide the function area", elem_id='cbs').style(container=False)
                     opt = ["自定义菜单"]
@@ -170,7 +171,7 @@ def main():
                     checkboxes_2 = gr.CheckboxGroup(opt, value=value, label="显示/隐藏自定义菜单", elem_id='cbsc').style(container=False)
                     dark_mode_btn = gr.Button("切换界面明暗 ☀", variant="secondary").style(size="sm")
                     dark_mode_btn.click(None, None, None, _js=js_code_for_toggle_darkmode)
-                with gr.Tab("帮助", elem_id="interact-panel"):
+                with gr.Tab("ヘルプ", elem_id="interact-panel"):
                     gr.Markdown(help_menu_description)
 
         with gr.Floating(init_x="20%", init_y="50%", visible=False, width="40%", drag="top") as area_input_secondary:
@@ -197,8 +198,8 @@ def main():
                         basic_fn_prefix = gr.Textbox(show_label=False, placeholder="入力新ヒントテキストの翻訳", lines=4).style(container=False)
                         basic_fn_suffix = gr.Textbox(show_label=False, placeholder="入力新ヒント后缀", lines=4).style(container=False)
                     with gr.Column(scale=1, min_width=70):
-                        basic_fn_confirm = gr.Button("确认并保存", variant="primary"); basic_fn_confirm.style(size="sm")
-                        basic_fn_clean   = gr.Button("恢复#", variant="primary"); basic_fn_clean.style(size="sm")
+                        basic_fn_confirm = gr.Button("確認と保存", variant="primary"); basic_fn_confirm.style(size="sm")
+                        basic_fn_clean   = gr.Button("リセット", variant="primary"); basic_fn_clean.style(size="sm")
                         def assign_btn(persistent_cookie_, cookies_, basic_btn_dropdown_, basic_fn_title, basic_fn_prefix, basic_fn_suffix, clean_up=False):
                             ret = {}
                             # 读取之前的自定义按钮
@@ -386,8 +387,8 @@ def main():
     def run_delayed_tasks():
         import threading, webbrowser, time
         print(f"ブラウザが自動的に開かない場合，以下のURLをコピーして移動してください：")
-        if DARK_MODE:   print(f"\t「ダークテーマ已启用（支持动态切换主题）」: http://localhost:{PORT}")
-        else:           print(f"\t「明るいテーマ已启用（支持动态切换主题）」: http://localhost:{PORT}")
+        if DARK_MODE:   print(f"\t「ダークテーマオン」: http://localhost:{PORT}")
+        else:           print(f"\t「明るいテーマオン」: http://localhost:{PORT}")
 
         def auto_updates(): time.sleep(0); auto_update()
         def open_browser(): time.sleep(2); webbrowser.open_new_tab(f"http://localhost:{PORT}")

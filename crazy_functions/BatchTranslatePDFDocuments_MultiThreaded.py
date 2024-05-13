@@ -50,7 +50,7 @@ def BatchTranslatePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     if grobid_url is not None:
         yield from ParsePDF_BasedOnGROBID(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, grobid_url)
     else:
-        yield from update_ui_lastest_msg("GROBID服务不可用，请检查config中的GROBID_URL。作为替代，今置き換える执行效果稍差的旧版代码。", chatbot, history, delay=3)
+        yield from update_ui_lastest_msg("GROBID利用出来ない，configのGROBID_URLをチェックして下さい。代わりに，ちょっと効が悪いコードを実行します。", chatbot, history, delay=3)
         yield from ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt)
 
 

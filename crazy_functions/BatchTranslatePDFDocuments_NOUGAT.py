@@ -85,7 +85,7 @@ def BatchTranslatePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     # ファイルが見つからなかった場合
     if len(file_manifest) == 0:
         report_exception(chatbot, history,
-                         a=f"プロジェクトを解析する: {txt}", b=f"見つかりません任何.pdf拓展名のファイル: {txt}")
+                         a=f"プロジェクトを解析する: {txt}", b=f".pdfのファイルが見つかりません: {txt}")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
@@ -107,11 +107,11 @@ def ParsePDF_NOUGAT(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     nougat_handle = nougat_interface()
     for index, fp in enumerate(file_manifest):
         if fp.endswith('pdf'):
-            chatbot.append(["当前进度：", f"正在解析論文，お待ちください。（最初の実行時，需要花费较长時间下载NOUGATパラメータ）"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
+            chatbot.append(["当前进度：", f"論文を解析しています，お待ちください。（最初に実行する際，NOUGATパラメータをダウンロードするが必要ので、時間がかかる場合があります。）"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
             fpp = yield from nougat_handle.NOUGAT_parse_pdf(fp, chatbot, history)
             promote_file_to_downloadzone(fpp, rename_file=os.path.basename(fpp)+'.nougat.mmd', chatbot=chatbot)
         else:
-            chatbot.append(["当前論文なし需解析：", fp]); yield from update_ui(      chatbot=chatbot, history=history)
+            chatbot.append(["今解析している論文はない：", fp]); yield from update_ui(      chatbot=chatbot, history=history)
             fpp = fp
         with open(fpp, 'r', encoding='utf8') as f:
             article_content = f.readlines()

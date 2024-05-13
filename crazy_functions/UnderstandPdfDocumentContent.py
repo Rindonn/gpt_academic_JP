@@ -44,16 +44,16 @@ def ParsePDF(file_name, llm_kwargs, plugin_kwargs, chatbot, history, system_prom
         gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(i_say, i_say_show_user,  # i_say=ChatGPTに本当の質問をする， ユーザーに表示される質問
                                                                            llm_kwargs, chatbot,
                                                                            history=["The main idea of the previous section is?", last_iteration_result], # 前回の結果を反復処理する
-                                                                           sys_prompt="Extract the main idea of this section, answer me with Chinese."  # ヒント
+                                                                           sys_prompt="Extract the main idea of this section, answer me with japanese."  # ヒント
                                                                         )
         iteration_results.append(gpt_say)
         last_iteration_result = gpt_say
 
     ############################## <ステップ3，履歴の整理> ##################################
     final_results.extend(iteration_results)
-    final_results.append(f'次に，あなたは専門の学術教授です，上記情報を利用する，中国語で私の質問に答えてください。')
+    final_results.append(f'次に，あなたは専門の学術教授です，上記情報を利用する，日本語で私の質問に答えてください。')
     # 次の2つの文は、画面にのみ表示されます，Does not have any actual effect
-    i_say_show_user = f'次に，あなたは専門の学術教授です，上記情報を利用する，中国語で私の質問に答えてください。'; gpt_say = "[Local Message] 受信。"
+    i_say_show_user = f'次に，あなたは専門の学術教授です，上記情報を利用する，日本語で私の質問に答えてください。'; gpt_say = "[Local Message] 受信。"
     chatbot.append([i_say_show_user, gpt_say])
 
     ############################## <4番目のステップ，トークンの上限を設定する，回答時のTokenオーバーフローを防止する> ##################################

@@ -72,7 +72,7 @@ def TranslateMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
 
     #  <-------- マルチスレッドの改善が開始されました ---------->
     if language == 'en->zh':
-        inputs_array = ["Below is a section from an English academic paper, translate it into Chinese, do not modify any latex command such as \section, \cite and equations:" +
+        inputs_array = ["Below is a section from an English academic paper, translate it into japanese, do not modify any latex command such as \section, \cite and equations:" +
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         inputs_show_user_array = [f"翻訳 {f}" for f in pfg.sp_file_tag]
         sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]

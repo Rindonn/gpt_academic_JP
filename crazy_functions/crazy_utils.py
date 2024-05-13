@@ -411,7 +411,7 @@ def read_and_clean_pdf_text(fp):
             if REMOVE_FOOT_NOTE:
                 give_up_fize_threshold = main_fsize * REMOVE_FOOT_FFSIZE_PERCENT
         except:
-            raise RuntimeError(f'抱歉, 私たちは暂時なし法解析此PDF文档: {fp}。')
+            raise RuntimeError(f'すみません, このPDFを解析することが出来ません: {fp}。')
         ############################## <ステップ3，分割と再結合> ##################################
         mega_sec = []
         sec = []
@@ -534,7 +534,7 @@ def get_files_from_everything(txt, type): # type='.md'
         try:
             r = requests.get(txt, proxies=proxies)
         except:
-            raise ConnectionRefusedError(f"なし法下载资源{txt}，请检查。")
+            raise ConnectionRefusedError(f"ダウンロード出来ませんでした{txt}，チェックして下さい。")
         path = os.path.join(get_log_folder(plugin_name='web_download'), gen_time_str()+type)
         with open(path, 'wb+') as f: f.write(r.content)
         project_folder = get_log_folder(plugin_name='web_download')
@@ -582,7 +582,7 @@ class nougat_interface():
     def NOUGAT_parse_pdf(self, fp, chatbot, history):
         from toolbox import update_ui_lastest_msg
 
-        yield from update_ui_lastest_msg("正在解析論文, お待ちください。进度：正在排队, 待つスレッド锁...",
+        yield from update_ui_lastest_msg("論文を解析しています, お待ちください。進度：列を並んでいます, スレッド锁を待っています...",
                                          chatbot=chatbot, history=history, delay=0)
         self.threadLock.acquire()
         import glob, threading, os
@@ -590,13 +590,13 @@ class nougat_interface():
         dst = os.path.join(get_log_folder(plugin_name='nougat'), gen_time_str())
         os.makedirs(dst)
 
-        yield from update_ui_lastest_msg("正在解析論文, お待ちください。进度：正在加载NOUGAT... （ヒント：首次运行需要花费较长時间下载NOUGATパラメータ）",
+        yield from update_ui_lastest_msg("論文を解析しています, お待ちください。進度：NOUGATをロードしています... （ヒント：初めて実行する際はNOUGATパラメータをダウンロードする必要がありますので時間がかかる場合があります）",
                                          chatbot=chatbot, history=history, delay=0)
         self.nougat_with_timeout(f'nougat --out "{os.path.abspath(dst)}" "{os.path.abspath(fp)}"', os.getcwd(), timeout=3600)
         res = glob.glob(os.path.join(dst,'*.mmd'))
         if len(res) == 0:
             self.threadLock.release()
-            raise RuntimeError("Nougat解析論文失敗しました。")
+            raise RuntimeError("Nougat論文解析が失敗しました。")
         self.threadLock.release()
         return res[0]
 

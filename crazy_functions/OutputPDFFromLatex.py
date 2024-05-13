@@ -14,7 +14,7 @@ def switch_prompt(pfg, mode, more_requirement):
     Generate prompts and system prompts based on the mode for proofreading or translating.
     Args:
     - pfg: Proofreader or Translator instance.
-    - mode: A string specifying the mode, either 'proofread' or 'translate_zh'.
+    - mode: A string specifying the mode, either 'proofread' or 'translate_jp'.
 
     Returns:
     - inputs_array: A list of strings containing prompts for users to respond to.
@@ -91,7 +91,7 @@ def arxiv_download(chatbot, history, txt, allow_cache=True):
         translation_dir = pj(ARXIV_CACHE_DIR, arxiv_id, 'translation')
         if not os.path.exists(translation_dir):
             os.makedirs(translation_dir)
-        target_file = pj(translation_dir, 'translate_zh.pdf')
+        target_file = pj(translation_dir, 'translate_jp.pdf')
         if os.path.exists(target_file):
             promote_file_to_downloadzone(target_file, rename_file=None, chatbot=chatbot)
             target_file_compare = pj(translation_dir, 'comparison.pdf')
@@ -122,7 +122,7 @@ def arxiv_download(chatbot, history, txt, allow_cache=True):
 
     url_ = txt  # https://arxiv.org/abs/1707.06690
     if not txt.startswith('https://arxiv.org/abs/'):
-        msg = f"arxivのURLの解析に失敗しました, 期待される形式の例: https://arxiv.org/abs/1707.06690。实际得到フォーマット: {url_}。"
+        msg = f"arxivのURLの解析に失敗しました, 形式の例: https://arxiv.org/abs/1707.06690。实际得到フォーマット: {url_}。"
         yield from update_ui_lastest_msg(msg, chatbot=chatbot, history=history)  # 画面を更新する
         return msg, None
     # <-------------- set format ------------->
@@ -139,9 +139,9 @@ def arxiv_download(chatbot, history, txt, allow_cache=True):
     # <-------------- download arxiv source file ------------->
     dst = pj(translation_dir, arxiv_id + '.tar')
     if os.path.exists(dst):
-        yield from update_ui_lastest_msg("キャッシュを呼び出す", chatbot=chatbot, history=history)  # 画面を更新する
+        yield from update_ui_lastest_msg("キャッシュを利用している", chatbot=chatbot, history=history)  # 画面を更新する
     else:
-        yield from update_ui_lastest_msg("開始ダウンロード", chatbot=chatbot, history=history)  # 画面を更新する
+        yield from update_ui_lastest_msg("ダウンロード開始", chatbot=chatbot, history=history)  # 画面を更新する
         proxies = get_conf('proxies')
         r = requests.get(url_tar, proxies=proxies)
         with open(dst, 'wb+') as f:
@@ -276,7 +276,7 @@ def CorrectEnglishInLatexWithPDFComparison(txt, llm_kwargs, plugin_kwargs, chatb
     # <-------------- zip PDF ------------->
     zip_res = zip_result(project_folder)
     if success:
-        chatbot.append((f"成功啦", '結果を確認してください（テキストの翻訳）...'))
+        chatbot.append((f"成功しました", '結果を確認してください（テキストの翻訳）...'))
         yield from update_ui(chatbot=chatbot, history=history);
         time.sleep(1)  # 画面を更新する
         promote_file_to_downloadzone(file=zip_res, chatbot=chatbot)
@@ -316,7 +316,7 @@ def TranslateChineseToEnglishInLatexAndRecompilePDF(txt, llm_kwargs, plugin_kwar
         from .latex_fns.latex_actions import DecomposeAndConvertLatex, CompileLatex
     except Exception as e:
         chatbot.append([f"プロジェクトを解析する: {txt}",
-                        f"原始文本。LaTeXがインストールされていません, または環境変数PATHに存在しません。インストールテキストの翻訳https://tug.org/texlive/。エラーメッセージ\n\n```\n\n{trimmed_format_exc()}\n\n```\n\n"])
+                        f"オリジナルテキスト。LaTeXがインストールされていません, または環境変数PATHに存在しません。インストールテキストの翻訳https://tug.org/texlive/。エラーメッセージ\n\n```\n\n{trimmed_format_exc()}\n\n```\n\n"])
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
 
@@ -326,7 +326,7 @@ def TranslateChineseToEnglishInLatexAndRecompilePDF(txt, llm_kwargs, plugin_kwar
         txt, arxiv_id = yield from arxiv_download(chatbot, history, txt, allow_cache)
     except tarfile.ReadError as e:
         yield from update_ui_lastest_msg(
-            "なし法自动下载该論文的Latex源码，请前往arxiv打开此論文下载页面，点other Formats，然后download source手动下载latex源码包。次に调用本地Latex翻訳プラグイン即可。",
+            "Latexダウンロード出来ません，arxivへアクセスして、論文ダウンロードページを開いて，other Formatsをクリックして，download sourceクリックしてlatexをダウンロードして下さい。次にローカルLatex翻訳プラグインを利用して下さい。",
             chatbot=chatbot, history=history)
         return
 
@@ -339,7 +339,7 @@ def TranslateChineseToEnglishInLatexAndRecompilePDF(txt, llm_kwargs, plugin_kwar
         project_folder = txt
     else:
         if txt == "": txt = '空の入力欄'
-        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"見つかりません本地项目或なし法处理: {txt}")
+        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"見つかりません: {txt}")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
 
@@ -370,7 +370,7 @@ def TranslateChineseToEnglishInLatexAndRecompilePDF(txt, llm_kwargs, plugin_kwar
     # <-------------- zip PDF ------------->
     zip_res = zip_result(project_folder)
     if success:
-        chatbot.append((f"成功啦", '結果を確認してください（テキストの翻訳）...'))
+        chatbot.append((f"成功しました", '結果を確認してください（テキストの翻訳）...'))
         yield from update_ui(chatbot=chatbot, history=history);
         time.sleep(1)  # 画面を更新する
         promote_file_to_downloadzone(file=zip_res, chatbot=chatbot)
@@ -392,7 +392,7 @@ def TranslatePDFToChineseAndRecompilePDF(txt, llm_kwargs, plugin_kwargs, chatbot
     # <-------------- information about this plugin ------------->
     chatbot.append([
         "関数プラグイン機能？",
-        "置き換えるPDF转换为Latex项目，日本語に翻訳する后重新编译为PDF。関数プラグインの貢献者: Marroh。原始文本: このプラグインはWindowsに最適です，LinuxではDockerを使用するしてインストールする必要があります，詳細はプロジェクトのメインREADME.mdを参照してください。現在、GPT3.5/GPT4のみをサポートしています，他のモデルの変換効果は不明です。現在、機械学習の文献変換効果が最も良いです，他のタイプの文献の変換効果は不明です。"])
+        "PDFをLatexに変更し，日本語に翻訳する後PDFを作ります。関数プラグインの貢献者: Marroh。原始文本: このプラグインはWindowsに最適です，LinuxではDockerを使用するしてインストールする必要があります，詳細はプロジェクトのメインREADME.mdを参照してください。現在、GPT3.5/GPT4のみをサポートしています，他のモデルの変換効果は不明です。現在、機械学習の文献変換効果が最も良いです，他のタイプの文献の変換効果は不明です。"])
     yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
 
     # <-------------- more requirements ------------->
@@ -419,36 +419,36 @@ def TranslatePDFToChineseAndRecompilePDF(txt, llm_kwargs, plugin_kwargs, chatbot
         project_folder = txt
     else:
         if txt == "": txt = '空の入力欄'
-        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"見つかりません本地项目或なし法处理: {txt}")
+        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"見つかりません: {txt}")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
 
     file_manifest = [f for f in glob.glob(f'{project_folder}/**/*.pdf', recursive=True)]
     if len(file_manifest) == 0:
-        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"見つかりません任何.pdf文件: {txt}")
+        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"PDFファイルが見つかりません: {txt}")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
     if len(file_manifest) != 1:
-        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"不支持同時处理多piecespdf文件: {txt}")
+        report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"同時に複数ファイルの処理が出来ません: {txt}")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
     app_id, app_key = get_conf('MATHPIX_APPID', 'MATHPIX_APPKEY')
     if len(app_id) == 0 or len(app_key) == 0:
-        report_exception(chatbot, history, a="缺失 MATHPIX_APPID and MATHPIX_APPKEY。", b=f"请配置 MATHPIX_APPID and MATHPIX_APPKEY")
+        report_exception(chatbot, history, a=" MATHPIX_APPID and MATHPIX_APPKEYなし。", b=f"MATHPIX_APPID and MATHPIX_APPKEYを設定して下さい")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         return
 
     hash_tag = map_file_to_sha256(file_manifest[0])
 
     # <-------------- check repeated pdf ------------->
-    chatbot.append([f"检查PDF是否被重复上传", "正在检查..."])
+    chatbot.append([f"PDFあるかどうかをチェックしています", "チェックしています..."])
     yield from update_ui(chatbot=chatbot, history=history)
     repeat, project_folder = check_repeat_upload(file_manifest[0], hash_tag)
 
     except_flag = False
 
     if repeat:
-        yield from update_ui_lastest_msg(f"发现重复上传，結果を確認してください（テキストの翻訳）...", chatbot=chatbot, history=history)
+        yield from update_ui_lastest_msg(f"ローカルでファイルが見つかりました，結果を確認してください（テキストの翻訳）...", chatbot=chatbot, history=history)
 
         try:
             trans_html_file = [f for f in glob.glob(f'{project_folder}/**/*.trans.html', recursive=True)][0]
@@ -466,29 +466,29 @@ def TranslatePDFToChineseAndRecompilePDF(txt, llm_kwargs, plugin_kwargs, chatbot
             return True
         
         except:
-            report_exception(chatbot, history, b=f"发现重复上传，但是なし法找到相关文件")
+            report_exception(chatbot, history, b=f"ローカルで履歴が見つかりました，ファイルが見つかりませんでした。")
             yield from update_ui(chatbot=chatbot, history=history)
             
-            chatbot.append([f"没有相关文件", 'Try重新翻訳PDF...'])
+            chatbot.append([f"ファイルが見つかりませんでした", '翻訳します...'])
             yield from update_ui(chatbot=chatbot, history=history)
 
             except_flag = True
             
     
     elif not repeat or except_flag:
-        yield from update_ui_lastest_msg(f"未发现重复上传", chatbot=chatbot, history=history)
+        yield from update_ui_lastest_msg(f"履歴が見つかりませんでした", chatbot=chatbot, history=history)
 
         # <-------------- convert pdf into tex ------------->
-        chatbot.append([f"プロジェクトを解析する: {txt}", "正在置き換えるPDF转换为tex项目，お待ちください..."])
+        chatbot.append([f"プロジェクトを解析する: {txt}", "PDFをtexに変換しています，お待ちください..."])
         yield from update_ui(chatbot=chatbot, history=history)
         project_folder = pdf2tex_project(file_manifest[0])
         if project_folder is None:
-            report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"PDF转换为tex项目失敗しました")
+            report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"PDFをtexへの変換が失敗しました")
             yield from update_ui(chatbot=chatbot, history=history)
             return False
 
         # <-------------- translate latex file into Chinese ------------->
-        yield from update_ui_lastest_msg("正在tex项目置き換える日本語に翻訳する...", chatbot=chatbot, history=history)
+        yield from update_ui_lastest_msg("texファイルを日本語に翻訳しています...", chatbot=chatbot, history=history)
         file_manifest = [f for f in glob.glob(f'{project_folder}/**/*.tex', recursive=True)]
         if len(file_manifest) == 0:
             report_exception(chatbot, history, a=f"プロジェクトを解析する: {txt}", b=f"テキストの翻訳: {txt}")
@@ -514,7 +514,7 @@ def TranslatePDFToChineseAndRecompilePDF(txt, llm_kwargs, plugin_kwargs, chatbot
                                         switch_prompt=_switch_prompt_)
 
         # <-------------- compile PDF ------------->
-        yield from update_ui_lastest_msg("正在置き換える翻訳好的项目tex项目编译为PDF...", chatbot=chatbot, history=history)
+        yield from update_ui_lastest_msg("翻訳したtexファイルをPDFに変換しています...", chatbot=chatbot, history=history)
         success = yield from CompileLatex(chatbot, history, main_file_original='merge',
                                     main_file_modified='merge_translate_zh', mode='translate_zh',
                                     work_folder_original=project_folder, work_folder_modified=project_folder,
@@ -523,7 +523,7 @@ def TranslatePDFToChineseAndRecompilePDF(txt, llm_kwargs, plugin_kwargs, chatbot
         # <-------------- zip PDF ------------->
         zip_res = zip_result(project_folder)
         if success:
-            chatbot.append((f"成功啦", '結果を確認してください（テキストの翻訳）...'))
+            chatbot.append((f"成功しました", '結果を確認してください（テキストの翻訳）...'))
             yield from update_ui(chatbot=chatbot, history=history);
             time.sleep(1)  # 画面を更新する
             promote_file_to_downloadzone(file=zip_res, chatbot=chatbot)

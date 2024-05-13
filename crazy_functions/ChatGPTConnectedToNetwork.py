@@ -66,7 +66,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
     user_request    当前用户的请求信息（IPAddress等）
     """
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
-    chatbot.append((f"以下の問題にインターネット情報を組み合わせて回答してください：{txt}",
+    chatbot.append((f"以下の問題にインターネットからの情報を組み合わせて回答してください：{txt}",
                     "[Local Message] 注意してください，あなたは呼び出しています[関数プラグイン]のテンプレート，このテンプレートは、ChatGPTネットワーク情報の総合を実現できます。この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions。If you want to share new functional modules，PRを遠慮なく提出してください！"))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
@@ -77,7 +77,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
     history = []
     if len(urls) == 0:
         chatbot.append((f"结论：{txt}",
-                        "[Local Message] 受到google限制，なし法从google获取信息！"))
+                        "[Local Message] googleから制限されて，googleから情報取ることが出来ません！"))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
         return
     # ------------- < ステップ2：ウェブページに順次アクセスする > -------------
@@ -89,7 +89,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
     # ------------- < ステップ3：ChatGPT総合 > -------------
-    i_say = f"上記の検索結果から情報を抽出する，Then answer the question：{txt}"
+    i_say = f"上記の検索結果から情報を抽出して，答えてください：{txt}"
     i_say, history = input_clipping(    # 入力をトリミングする，最長のエントリからトリミングを開始する，トークンの爆発を防止する
         inputs=i_say,
         history=history,
@@ -98,7 +98,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
     gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
         inputs=i_say, inputs_show_user=i_say,
         llm_kwargs=llm_kwargs, chatbot=chatbot, history=history,
-        sys_prompt="指定された複数の検索結果から情報を抽出してください，最も関連性の高い2つの検索結果をまとめる，Then answer the question。"
+        sys_prompt="指定された複数の検索結果から情報を抽出してください，最も関連性の高い2つの検索結果をまとめて，答えてください。"
     )
     chatbot[-1] = (i_say, gpt_say)
     history.append(i_say);history.append(gpt_say)

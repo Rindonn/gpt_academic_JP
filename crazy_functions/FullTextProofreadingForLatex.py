@@ -93,13 +93,13 @@ def ProofreadMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
         sys_prompt_array = ["You are a professional academic paper writer." for _ in range(n_split)]
     elif language == 'zh':
         if mode == 'polish':
-            inputs_array = [r"以下は学術論文の一部です，この部分を学術基準に合わせて磨き上げてください，文法、明確さ、全体的な読みやすさを向上させる，LaTeXコマンドを変更しないでください，\セクションのように，\citeと方程式：" +
+            inputs_array = [r"以下は学術論文の一部です，この部分を学術基準に合わせて磨き上げてください，文法、明確さ、全体的な読みやすさを向上させて，LaTeXコマンドを変更しないでください，\セクションのように，\citeと方程式：" +
                             f"\n\n{frag}" for frag in pfg.sp_file_contents]
         else:
             inputs_array = [r"以下は学術論文の一部です，この部分の内容に文法修正を行ってください。LaTeXコマンドを変更しないでください，\セクションのように，\citeと方程式：" +
                             f"\n\n{frag}" for frag in pfg.sp_file_contents]
         inputs_show_user_array = [f"校正中 {f}" for f in pfg.sp_file_tag]
-        sys_prompt_array=["あなたは専門の中国語学術論文作家です。" for _ in range(n_split)]
+        sys_prompt_array=["あなたは専門の日本語学術論文作家です。" for _ in range(n_split)]
 
 
     gpt_response_collection = yield from request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(

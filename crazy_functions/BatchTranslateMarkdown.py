@@ -69,7 +69,7 @@ def TranslateMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
 
     #  <-------- マルチスレッド翻訳が開始されました ---------->
     if language == 'en->zh':
-        inputs_array = ["This is a Markdown file, translate it into Chinese, do not modify any existing Markdown commands:" +
+        inputs_array = ["This is a Markdown file, translate it into japanese, do not modify any existing Markdown commands:" +
                         f"\n\n{frag}" for frag in pfg.sp_file_contents]
         inputs_show_user_array = [f"翻訳 {f}" for f in pfg.sp_file_tag]
         sys_prompt_array = ["You are a professional academic paper translator." for _ in range(n_split)]
@@ -257,5 +257,5 @@ def TranslateMarkdownToSpecifiedLanguage(txt, llm_kwargs, plugin_kwargs, chatbot
         return
 
     if ("advanced_arg" in plugin_kwargs) and (plugin_kwargs["advanced_arg"] == ""): plugin_kwargs.pop("advanced_arg")
-    language = plugin_kwargs.get("advanced_arg", 'Chinese')
+    language = plugin_kwargs.get("advanced_arg", 'japanese')
     yield from TranslateMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, language=language)

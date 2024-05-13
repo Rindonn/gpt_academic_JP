@@ -70,10 +70,10 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
         else:                       focus = previous_iteration_files_string
         i_say = f'以下のファイルの機能を簡単にMarkdownテーブルで説明してください：{focus}。上記の分析に基づいて，プログラムの全体的な機能を一言で表す。'
         if last_iteration_result != "":
-            sys_prompt_additional = "テキストの翻訳:" + last_iteration_result + "\n请继续分析其他源代码，プロジェクトの全体的な機能をより理解するために。"
+            sys_prompt_additional = "テキストの翻訳:" + last_iteration_result + "\nプロジェクトの全体的な機能をより理解するために、ほかのコードを分析して下さい。"
         else:
             sys_prompt_additional = ""
-        inputs_show_user = f'上記の分析に基づいて，プログラムの全体的な機能と構造を再概要化する，入力長の制限のため，グループ化処理が必要な場合があります，このグループのファイルは {current_iteration_focus} すでにまとめられたファイルグループ。'
+        inputs_show_user = f'上記の分析に基づいて，プログラムの全体的な機能と構造をもう一度概要化して下さい，入力長の制限のため，グループ化処理が必要な場合があります，このグループのファイルは {current_iteration_focus} すでにまとめられたファイルグループ。'
         this_iteration_history = copy.deepcopy(this_iteration_gpt_response_collection)
         this_iteration_history.append(last_iteration_result)
         # inputをトリミングする

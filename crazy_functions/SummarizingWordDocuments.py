@@ -37,7 +37,7 @@ def ParseDocx(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot,
         paper_fragments = breakdown_text_to_satisfy_token_limit(txt=file_content, limit=TOKEN_LIMIT_PER_FRAGMENT, llm_model=llm_kwargs['llm_model'])
         this_paper_history = []
         for i, paper_frag in enumerate(paper_fragments):
-            i_say = f'以下の記事の断片について、中国語で概要を説明してください，ファイル名は{os.path.relpath(fp, project_folder)}，The content of the article is ```{paper_frag}```'
+            i_say = f'以下の記事の断片について、日本語で概要を説明してください，ファイル名は{os.path.relpath(fp, project_folder)}，The content of the article is ```{paper_frag}```'
             i_say_show_user = f'以下の記事の断片について概要を説明してください: {os.path.abspath(fp)}の{i+1}/{len(paper_fragments)}フラグメント。'
             gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
                 inputs=i_say,

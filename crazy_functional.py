@@ -40,120 +40,120 @@ def get_crazy_functions():
         "VoidTerminal": {
             "Group": "对话|编程|学术|智能体",
             "Color": "stop",
-            "AsButton": True,
+            "AsButton": False,
             "Function": HotReload(VoidTerminal),
         },
-        "テキストの翻訳": {
+        "pythonプロジェクトを翻訳": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": True,
-            "Info": "ParsePythonProject的所有源文件(.py) | 入力パラメータ为路径",
+            "AsButton": False,
+            "Info": "PythonProject全てのソースコード(.py) | 入力パラメータはパス",
             "Function": HotReload(ParsePythonProject),
         },
         "LoadConversationHistoryArchive（アーカイブをアップロードするか、パスを入力してください）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,
-            "Info": "LoadConversationHistoryArchive | 入力パラメータ为路径",
+            "Info": "LoadConversationHistoryArchive | 入力パラメータはパス",
             "Function": HotReload(LoadConversationHistoryArchive),
         },
-        "DeleteAllLocalConversationHistoryRecords（谨慎操作）": {
+        "DeleteAllLocalConversationHistoryRecords（慎重にご利用）": {
             "Group": "对话",
             "AsButton": False,
-            "Info": "DeleteAllLocalConversationHistoryRecords，谨慎操作 | 不需要入力パラメータ",
+            "Info": "DeleteAllLocalConversationHistoryRecords，慎重にご利用 | 入力パラメータなし",
             "Function": HotReload(DeleteAllLocalConversationHistoryRecords),
         },
-        "クリア所有缓存文件（谨慎操作）": {
+        "キャッチクリア（慎重にご利用）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "クリア所有缓存文件，谨慎操作 | 不需要入力パラメータ",
+            "Info": "キャッチ削除，慎重にご利用 | 入力パラメータなし",
             "Function": HotReload(ClearCache),
         },
-        "GenerateMultipleMermaidCharts(从当前对话或路径(.pdf/.md/.docx)中生产图表）": {
+        "GenerateMultipleMermaidCharts(今の対話とパスから(.pdf/.md/.docx)グラフを作る）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,
-            "Info" : "基于当前对话或文件GenerateMultipleMermaidCharts,图表类型由模型判断",
+            "Info" : "今の対話とファイルからグラフを作る,モデルからグラフの種類を判断します",
             "Function": HotReload(GenerateMultipleMermaidCharts),
             "AdvancedArgs": True,
-            "ArgsReminder": "请入力图类型对应的数字,不入力则为模型自行判断:1-流程图,2-序列图,3-类图,4-饼图,5-甘特图,6-ステータス图,7-实体关系图,8-象限ヒント图,9-思维导图",
+            "ArgsReminder": "選択肢に対応する数字を入力して下さい,入力しないとモデルから判断します:1-フローチャート,2-シーケンス図,3-クラス図,4-円グラフ,5-ガントチャート,6-ステータス图,7-実体関係図,8-象限ヒント图,9-マインドマップ",
         },
         "Word文書を一括で要約する": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": True,
-            "Info": "バッチ量SummarizingWordDocuments | 入力パラメータ为路径",
+            "AsButton": False,
+            "Info": "バッチ量SummarizingWordDocuments | 入力パラメータはパスです。",
             "Function": HotReload(SummarizingWordDocuments),
         },
-        "解析整piecesMatlab项目": {
+        "Matlabプロジェクトを解析": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "AnalyzeAMatlabProject的所有源文件(.m) | 入力パラメータ为路径",
+            "Info": "AnalyzeAMatlabProjectのソースファイル(.m) | 入力パラメータはパスです。",
             "Function": HotReload(AnalyzeAMatlabProject),
         },
-        "C++プロジェクトのヘッダーファイル全体を解析する": {
+        "C++プロジェクトのヘッダーファイルを解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "解析一piecesC++项目的所有头文件(.h/.hpp) | 入力パラメータ为路径",
+            "Info": "C++プロジェクトのヘッダーファイルを解析(.h/.hpp) | 入力パラメータはパスです。",
             "Function": HotReload(ParseCProjectHeaderFiles),
         },
         "C++プロジェクト全体を解析する（.cpp/.hpp/.c/.h）": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "解析一piecesC++项目的所有源文件（.cpp/.hpp/.c/.h）| 入力パラメータ为路径",
+            "Info": "C++プロジェクトの全体を解析（.cpp/.hpp/.c/.h）| 入力パラメータはパスです。",
             "Function": HotReload(ParseCProject),
         },
         "Goプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "解析一piecesGo项目的所有源文件 | 入力パラメータ为路径",
+            "Info": "Goプロジェクト全体を解析する | 入力パラメータはパスです。",
             "Function": HotReload(ParseGolangProject),
         },
         "Rustプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "ParseRustProject的所有源文件 | 入力パラメータ为路径",
+            "Info": "Rustプロジェクト全体を解析する | 入力パラメータはパスです。",
             "Function": HotReload(ParseRustProject),
         },
         "Javaプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "ParseJavaProject的所有源文件 | 入力パラメータ为路径",
+            "Info": "Javaプロジェクト全体を解析する | 入力パラメータはパスです。",
             "Function": HotReload(ParseJavaProject),
         },
         "フロントエンドプロジェクト全体を解析する（js,ts,CSSなど）": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "ParseFrontendProject的所有源文件（js,ts,CSSなど） | 入力パラメータ为路径",
+            "Info": "Frontendプロジェクト全体を解析する（js,ts,CSSなど） | 入力パラメータはパスです。",
             "Function": HotReload(ParseFrontendProject),
         },
         "Luaプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "ParsingLuaProject的所有源文件 | 入力パラメータ为路径",
+            "Info": "LuaProjectプロジェクト全体を解析する | 入力パラメータはパスです。",
             "Function": HotReload(ParsingLuaProject),
         },
         "CSharpプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "ParsingCSharpProject的所有源文件 | 入力パラメータ为路径",
+            "Info": "CSharpプロジェクト全体を解析する | 入力パラメータはパスです。",
             "Function": HotReload(ParsingCSharpProject),
         },
         "Jupyter Notebookファイルの解析": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "Jupyter Notebookファイルの解析 | 入力パラメータ为路径",
+            "Info": "Jupyter Notebookファイルの解析 | 入力パラメータはパスです。",
             "Function": HotReload(ParsingIpynbFiles),
             "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
             "ArgsReminder": "0を入力する場合，したがって、ノートブックのMarkdownブロックを解析しない",  # 高度なパラメータ入力エリアの表示ヒント
@@ -162,87 +162,87 @@ def get_crazy_functions():
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,
-            "Info": "读取Tex論文并写摘要 | 入力パラメータ为路径",
+            "Info": "Tex論文を読んで要約を書く | 入力パラメータはパスです。",
             "Function": HotReload(ReadArticleWriteSummary),
         },
-        "翻訳README或MD": {
-            "Group": "编程",
-            "Color": "stop",
-            "AsButton": True,
-            "Info": "置き換えるMarkdownの翻訳为中文 | 入力パラメータ为路径或URL",
-            "Function": HotReload(TranslateMarkdownFromEnglishToChinese),
-        },
-        "翻訳Markdown或README（支持Github链接）": {
+        "READMEとMDを翻訳する": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "置き換えるMarkdown或README日本語に翻訳する | 入力パラメータ为路径或URL",
+            "Info": "Markdownのファイルを翻訳 | 入力パラメータはパスとURLです",
+            "Function": HotReload(TranslateMarkdownFromEnglishToChinese),
+        },
+        "MarkdownとREADMEを翻訳（Githubリンク解析でき）": {
+            "Group": "编程",
+            "Color": "stop",
+            "AsButton": True,
+            "Info": "MarkdownとREADMEを日本語に翻訳 | 入力パラメータはパスとURLです",
             "Function": HotReload(TranslateMarkdownFromEnglishToChinese),
         },
         "BatchGenerateFunctionComments": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "バッチ量生成函数的注释 | 入力パラメータ为路径",
+            "Info": "関数のコメント文を自動的に生成する | 入力パラメータはパスです。",
             "Function": HotReload(BatchGenerateFunctionComments),
         },
         "現在の対話を保存する": {
             "Group": "对话",
-            "AsButton": True,
-            "Info": "現在の対話を保存する | 不需要入力パラメータ",
+            "AsButton": False,
+            "Info": "現在の対話を保存する | 入力パラメータなし",
             "Function": HotReload(ConversationHistoryArchive),
         },
         "[マルチスレッドデモ]このプロジェクト自体を解析する（ソースコードの自動翻訳解析）": {
             "Group": "对话|编程",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "マルチスレッド解析并翻訳此项目的源码 | 不需要入力パラメータ",
+            "Info": "マルチスレッドで解析と翻訳 | 入力パラメータなし",
             "Function": HotReload(ParseProjectItself),
         },
         "Today in history": {
             "Group": "对话",
-            "AsButton": True,
-            "Info": "查看Today in history事件 (这是一pieces面向开发者的プラグインDemo) | 不需要入力パラメータ",
+            "AsButton": False,
+            "Info": "Today in historyをチェック (開発者向けのプラグインDemo) | 入力パラメータなし",
             "Function": HotReload(HighOrderFunctionTemplateFunctions),
         },
-        "精准翻訳PDF論文": {
+        "精確にPDF論文を翻訳": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,
-            "Info": "精准翻訳PDF論文为中文 | 入力パラメータ为路径",
+            "Info": "精確にPDF論文を翻訳 | 入力パラメータはパスです。",
             "Function": HotReload(BatchTranslatePDFDocuments),
         },
         "複数のGPTモデルについて問い合わせる": {
             "Group": "对话",
             "Color": "stop",
-            "AsButton": True,
+            "AsButton": False,
             "Function": HotReload(SimultaneousInquiry),
         },
         "BatchSummarizePDFDocuments": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "BatchSummarizePDFDocuments的内容 | 入力パラメータ为路径",
+            "Info": "BatchSummarizePDFDocumentsの内容 | 入力パラメータはパスです。",
             "Function": HotReload(BatchSummarizePDFDocuments),
         },
         "Google学術検索アシスタント（Google Scholar検索ページのURLを入力してください）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "使用するGoogle学術検索アシスタント搜索指定URL的结果 | 入力パラメータ为谷歌学术搜索页的URL",
+            "Info": "Google学術検索アシスタントを使用した結果 | 入力パラメータはGoogle ScholarのURL",
             "Function": HotReload(GoogleSearchAssistant),
         },
         "UnderstandPdfDocumentContent （ChatPDFを模倣する）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "理解PDF文档的内容并进行回答 | 入力パラメータ为路径",
+            "Info": "PDFの内容を理解し、問題を答える | 入力パラメータはパスです。",
             "Function": HotReload(UnderstandPdfDocumentContentStandardFileInput),
         },
         "英語のLatexプロジェクト全体を校正する（パスを入力するか、圧縮ファイルをアップロードする）": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "对英文Latex项目全文进行校正中处理 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Info": "英語のLatexプロジェクト全体を校正する | 入力パラメータはパスとアプロードした圧縮ファイル",
             "Function": HotReload(EnglishProofreadingForLatex),
         },
 
@@ -250,7 +250,7 @@ def get_crazy_functions():
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "对中文Latex项目全文进行校正中处理 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Info": "中国語のLatexプロジェクトの全文を校正する | 入力パラメータはパスとアプロードした圧縮ファイル",
             "Function": HotReload(LatexChineseProofreading),
         },
         # 已经被新プラグイン取代
@@ -277,11 +277,11 @@ def get_crazy_functions():
         #     "Info": "对Latex项目全文进行英語から中国語への翻訳处理 | 入力パラメータ为路径或上传テキストの翻訳",
         #     "Function": HotReload(LatexEnglishToChinese)
         # },
-        "バッチ量MarkdownChineseToEnglish（パスを入力するか、圧縮ファイルをアップロードする）": {
+        "MarkdownChineseToEnglish（パスを入力するか、圧縮ファイルをアップロードする）": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,  # ドロップダウンメニューに追加する
-            "Info": "バッチ量置き換えるMarkdown文件中文翻訳为英文 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Info": "Markdownを英語に翻訳 | 入力パラメータはパスとアプロードした圧縮ファイル",
             "Function": HotReload(MarkdownChineseToEnglish),
         },
     }
@@ -292,11 +292,11 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "一键DownloadArxivPaperAndTranslateAbstract（まずinputに番号を入力してください，例えば1812.10695のように）": {
+                "Arxiv論文ダウンロードと要約": {
                     "Group": "学术",
                     "Color": "stop",
-                    "AsButton": False,  # ドロップダウンメニューに追加する
-                    # "Info": "DownloadArxivPaperAndTranslateAbstract | 入力パラメータ为arxiv编号例えば1812.10695のように",
+                    "AsButton": True,  # ドロップダウンメニューに追加する
+                    "Info": "Arxiv論文ダウンロードと要約（まずinputに番号を入力してください，例えば1812.10695のように） | 入力パラメータ为arxiv编号例えば1812.10695のように",
                     "Function": HotReload(DownloadArxivPaperAndTranslateAbstract),
                 }
             }
@@ -323,11 +323,11 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "ConnectToNetworkToAnswerQuestions（中国語Bing版，質問を入力した後、このプラグインをクリックします）": {
+                "ConnectToNetworkToAnswerQuestions（中国語Bing，質問を入力した後、このプラグインをクリックします）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,  # ドロップダウンメニューに追加する
-                    "Info": "ConnectToNetworkToAnswerQuestions（需要访问中文Bing）| 入力パラメータ是一pieces問題",
+                    "Info": "ConnectToNetworkToAnswerQuestions（中国語Bingへアクセスが必要）| 入力パラメータは質問内容",
                     "Function": HotReload(ConnectBingSearchAnswerQuestion),
                 }
             }
@@ -379,33 +379,33 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "ImageGeneration_DALLE2 （先切换模型到gpt-*）": {
+                "ImageGeneration_DALLE2 （まずgpt-*へ切り替え）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
-                    "ArgsReminder": "解像度をここに入力してください, 1024x1024のように（#），支持 256x256, 512x512, 1024x1024",  # 高度なパラメータ入力エリアの表示ヒント
-                    "Info": "使用するDALLE2生成图片 | 入力パラメータ文字列，提供图像的内容",
+                    "ArgsReminder": "解像度をここに入力してください, 1024x1024のように（#），例： 256x256, 512x512, 1024x1024",  # 高度なパラメータ入力エリアの表示ヒント
+                    "Info": "DALLE2で写真を生成する | 入力パラメータは生成したい写真の内容",
                     "Function": HotReload(ImageGeneration_DALLE2),
                 },
             }
         )
         function_plugins.update(
             {
-                "ImageGeneration_DALLE3 （先切换模型到gpt-*）": {
+                "ImageGeneration_DALLE3 （まずgpt-*へ切り替え）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
-                    "ArgsReminder": "在这里入力自定义パラメータ「分辨率-质量(オプション)-风格(オプション)」, パラメータ示例「1024x1024-hd-vivid」 || 分辨率支持 「1024x1024」(#) /「1792x1024」/「1024x1792」 || 质量支持 「-standard」(#) /「-hd」 || 风格支持 「-vivid」(#) /「-natural」",  # 高度なパラメータ入力エリアの表示ヒント
-                    "Info": "使用するDALLE3生成图片 | 入力パラメータ文字列，提供图像的内容",
+                    "ArgsReminder": "ここにパラメータを入力「解像度-質(オプション)-スタイル(オプション)」, パラメータ例「1024x1024-hd-vivid」 || 選択できる解像度 「1024x1024」(#) /「1792x1024」/「1024x1792」 || 質 「-standard」(#) /「-hd」 || スタイル 「-vivid」(#) /「-natural」",  # 高度なパラメータ入力エリアの表示ヒント
+                    "Info": "DALLE3で写真を生成する | 入力パラメータは生成したい写真の内容",
                     "Function": HotReload(ImageGeneration_DALLE3),
                 },
             }
         )
         function_plugins.update(
             {
-                "ImageModification_DALLE2 （先切换模型到gpt-*）": {
+                "ImageModification_DALLE2 （まずgpt-*へ切り替え）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
@@ -424,13 +424,13 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "バッチ量SummaryAudioVideo（パスを入力するか、圧縮ファイルをアップロードする）": {
+                "SummaryAudioVideo（パスを入力するか、圧縮ファイルをアップロードする）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "テキストの翻訳, 現在サポートされている形式:mp4, m4a, wav, mpga, mpeg, mp3。此处可以入力解析ヒント，例えば：テキストの翻訳（#）。",
-                    "Info": "バッチ量音声をまとめる或视频 | 入力パラメータ为路径",
+                    "ArgsReminder": "サポートされている形式:mp4, m4a, wav, mpga, mpeg, mp3。",
+                    "Info": "バッチ音声とビデオをまとめる | 入力パラメータはパス",
                     "Function": HotReload(SummaryAudioVideo),
                 }
             }
@@ -444,11 +444,11 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "数学AnimationGeneration（Manim）": {
+                "AnimationGeneration（Manim）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "Info": "按照自然语言描述生成一pieces动画 | 入力パラメータ是一段话",
+                    "Info": "入力した内容からビデオを生成する | 入力パラメータはビデオの内容",
                     "Function": HotReload(AnimationGeneration),
                 }
             }
@@ -462,7 +462,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "Markdownの翻訳（指定翻訳成何种语言）": {
+                "Markdownの翻訳（言語を指定して下さい）": {
                     "Group": "编程",
                     "Color": "stop",
                     "AsButton": False,
@@ -538,45 +538,45 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "LatexEnglishCorrection+高亮修正位置 [LaTeXが必要です]": {
+                "LatexEnglishCorrection [LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "ある場合必要, ここにより詳細なエラー修正命令を追加してください（使用する英文）。",
+                    "ArgsReminder": "必要な場合, ここにより詳細なエラー修正命令を追加してください（英語で）。",
                     "Function": HotReload(CorrectEnglishInLatexWithPDFComparison),
                 },
-                "Arxiv論文精细翻訳（arxivIDを入力する）[LaTeXが必要です]": {
+                "Arxiv論文精確に翻訳（arxivIDを入力する）[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
-                    "AsButton": False,
+                    "AsButton": True,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
-                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
-                                    r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "Arixv論文の詳細な翻訳 | 入力パラメータarxiv論文的ID，比例えば1812.10695のように",
+                    "ArgsReminder": r"必要な場合, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正を解決することができる。 "
+                                    r"例えば'agent'翻訳が間違えた時, テキストの翻訳: エージェント"
+                                    r'If the term "agent" is used in this section, it should be translated to "エージェント". ',
+                    "Info": "Arixv論文を精確に翻訳 | 入力はarxiv論文的ID，1812.10695のように",
                     "Function": HotReload(TranslateChineseToEnglishInLatexAndRecompilePDF),
                 },
-                "ローカルのLaTeX論文の詳細な翻訳（Latexプロジェクトをアップロードする）[LaTeXが必要です]": {
+                "ローカルのLaTeX論文を精確に翻訳（Latexプロジェクトをアップロードする）[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
-                    "AsButton": False,
+                    "AsButton": True,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
-                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
-                                    r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "ローカルのLaTeX論文の詳細な翻訳 | 入力パラメータ是路径",
+                    "ArgsReminder": r"必要な場合, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正を解決することができる。 "
+                                    r"例えば'agent'翻訳が間違えた時, テキストの翻訳: エージェント "
+                                    r'If the term "agent" is used in this section, it should be translated to "エージェント". ',
+                    "Info": "ローカルのLaTeX論文を精確に翻訳 | 入力パラメータはファイルのルート",
                     "Function": HotReload(TranslateChineseToEnglishInLatexAndRecompilePDF),
                 },
-                "TranslatePDFToChineseAndRecompilePDF（上传PDF）[LaTeXが必要です]": {
+                "PDF翻訳[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
-                    "AsButton": False,
+                    "AsButton": True,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
-                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
-                                    r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "PDF翻訳中文，并重新编译PDF | 入力パラメータ为路径",
+                    "ArgsReminder": r"必要な場合, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正を解決することができる。 "
+                                    r"例えば'agent'翻訳が間違えた時, テキストの翻訳: エージェント "
+                                    r'If the term "agent" is used in this section, it should be translated to "エージェント". ',
+                    "Info": "PDF翻訳 | 入力パラメータはファイルのルート",
                     "Function": HotReload(TranslatePDFToChineseAndRecompilePDF)
                 }
             }
@@ -594,11 +594,11 @@ def get_crazy_functions():
 
             function_plugins.update(
                 {
-                    "实時语音对话": {
+                    "ライブ音声対話": {
                         "Group": "对话",
                         "Color": "stop",
                         "AsButton": True,
-                        "Info": "这是一pieces時刻聆听着的语音对话助手 | 没有入力パラメータ",
+                        "Info": "音声対話アシスタントです。 | 入力パラメータなし",
                         "Function": HotReload(VoiceAssistant),
                     }
                 }
@@ -612,7 +612,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "精准翻訳PDF文档（NOUGAT）": {
+                "PDFドキュメントを翻訳する（NOUGAT）": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
@@ -629,7 +629,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "动态代码解释器（CodeInterpreter）": {
+                "ダイナミックコード説明機（CodeInterpreter）": {
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,
@@ -646,7 +646,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "AutoGenMultiAgentTerminal（仅供测试）": {
+                "AutoGenMultiAgentTerminal（テストだけ）": {
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,
@@ -663,7 +663,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "随机InteractiveMiniGame（仅供测试）": {
+                "ランダムMiniGame（テストだけ）": {
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,

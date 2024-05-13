@@ -11,7 +11,7 @@ def download_arxiv_(url_pdf):
             # download_arxiv_(new_url)
             return download_arxiv_(new_url)
         else:
-            print('認識できないURL！')
+            print('URL認識できない！')
             return None
     if 'abs' in url_pdf:
         url_pdf = url_pdf.replace('abs', 'pdf')
@@ -164,7 +164,7 @@ def DownloadArxivPaperAndTranslateAbstract(txt, llm_kwargs, plugin_kwargs, chatb
         return
 
     # 要約などを翻訳する
-    i_say =            f"以下の学術論文に関連する資料を読んでください，要約を抽出する，日本語に翻訳する。材料如下：{str(info)}"
+    i_say =            f"以下の学術論文に関連する資料を読んでください，要約を抽出する，日本語に翻訳する。資料：{str(info)}"
     i_say_show_user =  f'以下の学術論文に関連する資料を読んでください，要約を抽出する，日本語に翻訳する。論文：{pdf_path}'
     chatbot.append((i_say_show_user, "[Local Message] waiting gpt response."))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
@@ -176,7 +176,7 @@ def DownloadArxivPaperAndTranslateAbstract(txt, llm_kwargs, plugin_kwargs, chatb
         inputs_show_user=i_say_show_user,
         llm_kwargs=llm_kwargs,
         chatbot=chatbot, history=[],
-        sys_prompt="Your job is to collect information from materials and translate to Chinese。",
+        sys_prompt="Your job is to collect information from materials and translate to Japanese.",
     )
 
     chatbot[-1] = (i_say_show_user, gpt_say)

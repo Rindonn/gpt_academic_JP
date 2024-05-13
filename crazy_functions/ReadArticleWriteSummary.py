@@ -12,7 +12,7 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
             file_content = f.read()
 
         prefix = "次に、論文ファイルを1つずつ分析してください，内容を要約する" if index==0 else ""
-        i_say = prefix + f'Please summarize the following article fragment in Chinese，ファイル名は{os.path.relpath(fp, project_folder)}，The content of the article is ```{file_content}```'
+        i_say = prefix + f'Please summarize the following article fragment in japanese，ファイル名は{os.path.relpath(fp, project_folder)}，The content of the article is ```{file_content}```'
         i_say_show_user = prefix + f'[{index}/{len(file_manifest)}] Please summarize the following article fragment: {os.path.abspath(fp)}'
         chatbot.append((i_say_show_user, "[Local Message] waiting gpt response."))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
@@ -25,7 +25,7 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
         time.sleep(2)
 
     all_file = ', '.join([os.path.relpath(fp, project_folder) for index, fp in enumerate(file_manifest)])
-    i_say = f'上記の分析に基づいて自分自身を分析する，全文を要約する，学術的な言葉で中国語の要約を書く，そして、もう一つの英文要約を書く（含む{all_file}）。'
+    i_say = f'上記の分析に基づいて自分自身を分析する，全文を要約する，学術的な言葉で日本語の要約を書く，そして、もう一つの英文要約を書く（含む{all_file}）。'
     chatbot.append((i_say, "[Local Message] waiting gpt response."))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 

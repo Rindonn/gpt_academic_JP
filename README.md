@@ -2,10 +2,11 @@ Based on gpt_academic 3.7.3
 
 Done:
 arxiv translate to japanese
+できるだけpromptを変更
+説明文を変更
+ボタンを変更
 
-To-do:
-翻訳した内容を修正
-prompt変更
+BUGテストはまだ
 
 
 
