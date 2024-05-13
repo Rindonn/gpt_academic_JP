@@ -9,11 +9,11 @@ import random
 class MiniGame_ASCII_Art(GptAcademicGameBaseState):
     def step(self, prompt, chatbot, history):
         if self.step_cnt == 0:
-            chatbot.append(["我画你猜（动物）", "请稍等..."])
+            chatbot.append(["我画你猜（动物）", "お待ちください..."])
         else:
             if prompt.strip() == 'exit':
                 self.delete_game = True
-                yield from update_ui_lastest_msg(lastmsg=f"谜底是{self.obj}，游戏结束。", chatbot=chatbot, history=history, delay=0.)
+                yield from update_ui_lastest_msg(lastmsg=f"谜底是{self.obj}，游戏終了する。", chatbot=chatbot, history=history, delay=0.)
                 return
             chatbot.append([prompt, ""])
         yield from update_ui(chatbot=chatbot, history=history)
@@ -39,4 +39,4 @@ class MiniGame_ASCII_Art(GptAcademicGameBaseState):
                 yield from update_ui_lastest_msg(lastmsg="你猜对了！", chatbot=chatbot, history=history, delay=0.)
             else:
                 self.cur_task = 'identify user guess'
-                yield from update_ui_lastest_msg(lastmsg="猜错了，再试试，输入“exit”获取答案。", chatbot=chatbot, history=history, delay=0.)
+                yield from update_ui_lastest_msg(lastmsg="猜错了，再试试，入力“exit”获取答案。", chatbot=chatbot, history=history, delay=0.)

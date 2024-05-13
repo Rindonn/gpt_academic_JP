@@ -1,8 +1,7 @@
 https://public.agent-matrix.com/publish/gradio-3.32.9-py3-none-any.whl
-fastapi==0.110
 gradio-client==0.8
 pypdf2==2.12.1
-zhipuai==2.0.1
+zhipuai>=2
 tiktoken>=0.3.3
 requests[socks]
 pydantic==2.5.2
@@ -18,15 +17,12 @@ prompt_toolkit
 latex2mathml
 python-docx
 mdtex2html
-dashscope
 pyautogen
 colorama
 Markdown
 pygments
-edge-tts
 pymupdf
 openai
-rjsmin
 arxiv
 numpy
 rich

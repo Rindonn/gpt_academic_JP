@@ -84,7 +84,7 @@ def adjust_theme():
         )
     except:
         set_theme = None
-        print("gradio版本较旧, 不能自定义字体和颜色")
+        print("Gradioのバージョンが古いです, フォントと色をカスタマイズできません")
     return set_theme
 
 

@@ -27,11 +27,11 @@ class Ws_Param(object):
 
     # 生成url
     def create_url(self):
-        # 生成RFC1123格式的时间戳
+        # 生成RFC1123フォーマット的時间戳
         now = datetime.now()
         date = format_date_time(mktime(now.timetuple()))
 
-        # 拼接字符串
+        # 拼接文字列
         signature_origin = "host: " + self.host + "\n"
         signature_origin += "date: " + date + "\n"
         signature_origin += "GET " + self.path + " HTTP/1.1"
@@ -42,15 +42,15 @@ class Ws_Param(object):
         authorization_origin = f'api_key="{self.APIKey}", algorithm="hmac-sha256", headers="host date request-line", signature="{signature_sha_base64}"'
         authorization = base64.b64encode(authorization_origin.encode('utf-8')).decode(encoding='utf-8')
 
-        # 将请求的鉴权参数组合为字典
+        # 置き換える请求的鉴权パラメータ组合为字典
         v = {
             "authorization": authorization,
             "date": date,
             "host": self.host
         }
-        # 拼接鉴权参数，生成url
+        # 拼接鉴权パラメータ，生成url
         url = self.gpt_url + '?' + urlencode(v)
-        # 此处打印出建立连接时候的url,参考本demo的时候可取消上方打印的注释，比对相同参数时生成的url与自己代码生成的url是否一致
+        # 此处打印出建立连接時候的url,参考本demo的時候可取消上方打印的注释，比对相同パラメータ時生成的url与自己代码生成的url是否一致
         return url
 
 
@@ -101,13 +101,13 @@ class SparkRequestInstance():
             if llm_kwargs['most_recent_uploaded'].get('path'):
                 file_manifest = get_pictures_list(llm_kwargs['most_recent_uploaded']['path'])
                 if len(file_manifest) > 0:
-                    print('正在使用讯飞图片理解API')
+                    print('正在使用する讯飞图片理解API')
                     gpt_url = self.gpt_url_img
         wsParam = Ws_Param(self.appid, self.api_key, self.api_secret, gpt_url)
         websocket.enableTrace(False)
         wsUrl = wsParam.create_url()
 
-        # 收到websocket连接建立的处理
+        # 受信websocket连接建立的处理
         def on_open(ws):
             import _thread as thread
             thread.start_new_thread(run, (ws,))
@@ -115,7 +115,7 @@ class SparkRequestInstance():
             data = json.dumps(gen_params(ws.appid, *ws.all_args, file_manifest))
             ws.send(data)
 
-        # 收到websocket消息的处理
+        # 受信websocket消息的处理
         def on_message(ws, message):
             data = json.loads(message)
             code = data['header']['code']
@@ -135,12 +135,12 @@ class SparkRequestInstance():
                     self.time_to_exit_event.set()
             self.time_to_yield_event.set()
 
-        # 收到websocket错误的处理
+        # 受信websocket错误的处理
         def on_error(ws, error):
             print("error:", error)
             self.time_to_exit_event.set()
 
-        # 收到websocket关闭的处理
+        # 受信websocket关闭的处理
         def on_close(ws, *args):
             self.time_to_exit_event.set()
 
@@ -187,7 +187,7 @@ def generate_message_payload(inputs, llm_kwargs, history, system_prompt, file_ma
 
 def gen_params(appid, inputs, llm_kwargs, history, system_prompt, file_manifest):
     """
-    通过appid和用户的提问来生成请参数
+    通过appidand用户的提问来生成请パラメータ
     """
     domains = {
         "spark": "general",

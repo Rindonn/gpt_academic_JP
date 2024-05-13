@@ -20,7 +20,7 @@ def gpt_academic_generate_oai_reply(
     for message in messages[:-1]:
         history.append(message['content'])
     context=messages[-1].pop("context", None)
-    assert context is None, "预留参数 context 未实现"
+    assert context is None, "预留パラメータ context 未实现"
 
     reply = predict_no_ui_long_connection(
         inputs=inputs,
@@ -58,7 +58,7 @@ class AutoGenGeneral(PluginMultiprocessManager):
         if wait_success:
             return self.child_conn.recv().content
         else:
-            raise TimeoutError("等待用户输入超时")
+            raise TimeoutError("待つ用户入力超時")
 
     def define_agents(self):
         raise NotImplementedError
@@ -92,7 +92,7 @@ class AutoGenGeneral(PluginMultiprocessManager):
                 user_proxy.initiate_chat(assistant, message=input)
         except Exception as e:
             tb_str = '```\n' + trimmed_format_exc() + '```'
-            self.child_conn.send(PipeCom("done", "AutoGen 执行失败: \n\n" + tb_str))
+            self.child_conn.send(PipeCom("done", "AutoGen 执行失敗しました: \n\n" + tb_str))
 
     def subprocess_worker(self, child_conn):
         # ⭐⭐ run in subprocess

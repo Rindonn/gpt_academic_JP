@@ -8,12 +8,12 @@ import time
 from toolbox import get_conf
 import asyncio
 
-load_message = "正在加载Claude组件，请稍候..."
+load_message = "Claudeコンポーネントを読み込んでいます，お待ちください..."
 
 try:
     """
     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    第一部分：Slack API Client
+    第1部分：Slack API Client
     https://github.com/yokonsan/claude-in-slack-api
     =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     """
@@ -22,16 +22,16 @@ try:
     from slack_sdk.web.async_client import AsyncWebClient
 
     class SlackClient(AsyncWebClient):
-        """SlackClient类用于与Slack API进行交互，实现消息发送、接收等功能。
+        """SlackClientクラスはSlack APIとのインタラクションに使用するされます，メッセージの送受信などの機能を実現する。
 
-        属性：
-        - CHANNEL_ID：str类型，表示频道ID。
+        原始文本：
+        - CHANNEL_ID：strタイプ，チャネルIDを表示する。
 
-        方法：
-        - open_channel()：异步方法。通过调用conversations_open方法打开一个频道，并将返回的频道ID保存在属性CHANNEL_ID中。
-        - chat(text: str)：异步方法。向已打开的频道发送一条文本消息。
-        - get_slack_messages()：异步方法。获取已打开频道的最新消息并返回消息列表，目前不支持历史消息查询。
-        - get_reply()：异步方法。循环监听已打开频道的消息，如果收到"Typing…_"结尾的消息说明Claude还在继续输出，否则结束循环。
+        テキストの翻訳：
+        - open_channel()：非同期メソッド。テキストの翻訳，テキストの翻訳。
+        - chat(text: str)：非同期メソッド。既に開いているチャンネルにテキストメッセージを送信する。
+        - get_slack_messages()：非同期メソッド。テキストの翻訳，現在、過去のメッセージのクエリはサポートされていません。
+        - get_reply()：非同期メソッド。テキストの翻訳，如果受信"Typing…_"结尾的消息言う明Claude还在继续出力，それ以外の場合はループを終了する。
 
         """
 
@@ -52,7 +52,7 @@ try:
 
         async def get_slack_messages(self):
             try:
-                # TODO：暂时不支持历史消息，因为在同一个频道里存在多人使用时历史消息渗透问题
+                # TODO：一時的に歴史メッセージはサポートされていません，同じチャンネルで複数の人が使用するする場合、過去のメッセージが漏洩する問題があります
                 resp = await self.conversations_history(
                     channel=self.CHANNEL_ID, oldest=self.LAST_TS, limit=1
                 )
@@ -63,7 +63,7 @@ try:
                 ]
                 return msg
             except (SlackApiError, KeyError) as e:
-                raise RuntimeError(f"获取Slack消息失败。")
+                raise RuntimeError(f"Slackメッセージの取得に失敗しました。")
 
         async def get_reply(self):
             while True:
@@ -84,7 +84,7 @@ except:
 
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第二部分：子进程Worker（调用主体）
+第2部分：サブプロセスWorker（Call subject）
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 
@@ -107,10 +107,10 @@ class ClaudeHandle(Process):
             self.success = False
             import slack_sdk
 
-            self.info = "依赖检测通过，等待Claude响应。注意目前不能多人同时调用Claude接口（有线程锁），否则将导致每个人的Claude问询历史互相渗透。调用Claude时，会自动使用已配置的代理。"
+            self.info = "Dependency check passed，原始文本。現在、複数の人が同時にClaudeインターフェースを呼び出すことはできません（スレッドロックあり），さもないと、各人のClaudeの問い合わせ履歴が相互に侵入します。テキストの翻訳，事前に設定されたプロキシを自動的に使用するします。"
             self.success = True
         except:
-            self.info = "缺少的依赖，如果要使用Claude，除了基础的pip依赖以外，您还需要运行`pip install -r request_llms/requirements_slackclaude.txt`安装Claude的依赖，然后重启程序。"
+            self.info = "不足している依存関係，Claudeを使用するする場合は，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_slackclaude.txt`テキストの翻訳，それからプログラムを再起動してください。"
             self.success = False
 
     def ready(self):
@@ -119,19 +119,19 @@ class ClaudeHandle(Process):
     async def async_run(self):
         await self.claude_model.open_channel()
         while True:
-            # 等待
+            # 待つ
             kwargs = self.child.recv()
             question = kwargs["query"]
             history = kwargs["history"]
 
-            # 开始问问题
+            # 質問を始める
             prompt = ""
 
-            # 问题
+            # 問題
             prompt += question
             print("question:", prompt)
 
-            # 提交
+            # 提出
             await self.claude_model.chat(prompt)
 
             # 获取回复
@@ -140,7 +140,7 @@ class ClaudeHandle(Process):
                     print(response)
                     self.child.send(str(response))
                 else:
-                    # 防止丢失最后一条消息
+                    # テキストの翻訳
                     slack_msgs = await self.claude_model.get_slack_messages()
                     last_msg = (
                         slack_msgs[-1]["text"]
@@ -154,13 +154,13 @@ class ClaudeHandle(Process):
 
     def run(self):
         """
-        这个函数运行在子进程
+        この関数はサブプロセスで実行されます
         """
-        # 第一次运行，加载参数
+        # 最初の実行，パラメータをロードする
         self.success = False
         self.local_history = []
         if (self.claude_model is None) or (not self.success):
-            # 代理设置
+            # プロキシ設定
             proxies = get_conf("proxies")
             if proxies is None:
                 self.proxies_https = None
@@ -172,7 +172,7 @@ class ClaudeHandle(Process):
                 self.claude_model = SlackClient(
                     token=SLACK_CLAUDE_USER_TOKEN, proxy=self.proxies_https
                 )
-                print("Claude组件初始化成功。")
+                print("原始文本。")
             except:
                 self.success = False
                 tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
@@ -183,35 +183,35 @@ class ClaudeHandle(Process):
 
         self.success = True
         try:
-            # 进入任务等待状态
+            # タスク待機状態に入る
             asyncio.run(self.async_run())
         except Exception:
             tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
-            self.child.send(f"[Local Message] Claude失败 {tb_str}.")
+            self.child.send(f"[Local Message] テキストの翻訳 {tb_str}.")
             self.child.send("[Fail]")
             self.child.send("[Finish]")
 
     def stream_chat(self, **kwargs):
         """
-        这个函数运行在主进程
+        この関数はメインプロセスで実行されます
         """
         self.threadLock.acquire()
-        self.parent.send(kwargs)  # 发送请求到子进程
+        self.parent.send(kwargs)  # 子プロセスにリクエストを送信する
         while True:
-            res = self.parent.recv()  # 等待Claude回复的片段
+            res = self.parent.recv()  # Claudeの返信を待っているフラグメント
             if res == "[Finish]":
-                break  # 结束
+                break  # 終了する
             elif res == "[Fail]":
                 self.success = False
                 break
             else:
-                yield res  # Claude回复的片段
+                yield res  # Claudeの返信の一部
         self.threadLock.release()
 
 
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第三部分：主进程统一调用函数接口
+第3部分：メインプロセスが関数インターフェースを統一的に呼び出します
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 global claude_handle
@@ -227,8 +227,8 @@ def predict_no_ui_long_connection(
     console_slience=False,
 ):
     """
-    多线程方法
-    函数的说明请见 request_llms/bridge_all.py
+    Multi-threaded method
+    関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     global claude_handle
     if (claude_handle is None) or (not claude_handle.success):
@@ -239,14 +239,14 @@ def predict_no_ui_long_connection(
             claude_handle = None
             raise RuntimeError(error)
 
-    # 没有 sys_prompt 接口，因此把prompt加入 history
+    # sys_promptインターフェースがありません，したがって、履歴にpromptを追加します
     history_feedin = []
     for i in range(len(history) // 2):
         history_feedin.append([history[2 * i], history[2 * i + 1]])
 
-    watch_dog_patience = 5  # 看门狗 (watchdog) 的耐心, 设置5秒即可
+    watch_dog_patience = 5  # ウォッチドッグ (watchdog) の忍耐力, Set for 5 seconds
     response = ""
-    observe_window[0] = "[Local Message] 等待Claude响应中 ..."
+    observe_window[0] = "[Local Message] Claudeの応答を待っています ..."
     for response in claude_handle.stream_chat(
         query=inputs,
         history=history_feedin,
@@ -258,7 +258,7 @@ def predict_no_ui_long_connection(
         observe_window[0] = preprocess_newbing_out_simple(response)
         if len(observe_window) >= 2:
             if (time.time() - observe_window[1]) > watch_dog_patience:
-                raise RuntimeError("程序终止。")
+                raise RuntimeError("プログラムの終了。")
     return preprocess_newbing_out_simple(response)
 
 
@@ -273,10 +273,10 @@ def predict(
     additional_fn=None,
 ):
     """
-    单线程方法
-    函数的说明请见 request_llms/bridge_all.py
+    シングルスレッドメソッド
+    関数の説明については、request_llms/bridge_all.pyを参照してください
     """
-    chatbot.append((inputs, "[Local Message] 等待Claude响应中 ..."))
+    chatbot.append((inputs, "[Local Message] Claudeの応答を待っています ..."))
 
     global claude_handle
     if (claude_handle is None) or (not claude_handle.success):
@@ -298,21 +298,21 @@ def predict(
     for i in range(len(history) // 2):
         history_feedin.append([history[2 * i], history[2 * i + 1]])
 
-    chatbot[-1] = (inputs, "[Local Message] 等待Claude响应中 ...")
-    response = "[Local Message] 等待Claude响应中 ..."
+    chatbot[-1] = (inputs, "[Local Message] Claudeの応答を待っています ...")
+    response = "[Local Message] Claudeの応答を待っています ..."
     yield from update_ui(
-        chatbot=chatbot, history=history, msg="Claude响应缓慢，尚未完成全部响应，请耐心完成后再提交新问题。"
+        chatbot=chatbot, history=history, msg="Claudeの応答が遅い，すべての応答が完了していません，Please submit a new question after completing it patiently。"
     )
     for response in claude_handle.stream_chat(
         query=inputs, history=history_feedin, system_prompt=system_prompt
     ):
         chatbot[-1] = (inputs, preprocess_newbing_out(response))
         yield from update_ui(
-            chatbot=chatbot, history=history, msg="Claude响应缓慢，尚未完成全部响应，请耐心完成后再提交新问题。"
+            chatbot=chatbot, history=history, msg="Claudeの応答が遅い，すべての応答が完了していません，Please submit a new question after completing it patiently。"
         )
-    if response == "[Local Message] 等待Claude响应中 ...":
-        response = "[Local Message] Claude响应异常，请刷新界面重试 ..."
+    if response == "[Local Message] Claudeの応答を待っています ...":
+        response = "[Local Message] Claudeの応答が異常です，ページを更新して再試行してください ..."
     history.extend([inputs, response])
     logging.info(f"[raw_input] {inputs}")
     logging.info(f"[response] {response}")
-    yield from update_ui(chatbot=chatbot, history=history, msg="完成全部响应，请提交新问题。")
+    yield from update_ui(chatbot=chatbot, history=history, msg="すべての応答を完了する，新しい問題を提出してください。")

@@ -1,25 +1,25 @@
 
 def check_proxy(proxies):
     import requests
-    proxies_https = proxies['https'] if proxies is not None else '无'
+    proxies_https = proxies['https'] if proxies is not None else 'なし'
     try:
         response = requests.get("https://ipapi.co/json/", proxies=proxies, timeout=4)
         data = response.json()
         if 'country_name' in data:
             country = data['country_name']
-            result = f"代理配置 {proxies_https}, 代理所在地：{country}"
+            result = f"プロキシの設定 {proxies_https}, Location of the proxy：{country}"
         elif 'error' in data:
             alternative = _check_with_backup_source(proxies)
             if alternative is None:
-                result = f"代理配置 {proxies_https}, 代理所在地：未知，IP查询频率受限"
+                result = f"プロキシの設定 {proxies_https}, Location of the proxy：不明，IPクエリ頻度が制限されています"
             else:
-                result = f"代理配置 {proxies_https}, 代理所在地：{alternative}"
+                result = f"プロキシの設定 {proxies_https}, Location of the proxy：{alternative}"
         else:
-            result = f"代理配置 {proxies_https}, 代理数据解析失败：{data}"
+            result = f"プロキシの設定 {proxies_https}, プロキシデータの解析に失敗しました：{data}"
         print(result)
         return result
     except:
-        result = f"代理配置 {proxies_https}, 代理所在地查询超时，代理可能无效"
+        result = f"プロキシの設定 {proxies_https}, プロキシの場所のクエリがタイムアウトしました，プロキシは無効かもしれません"
         print(result)
         return result
 
@@ -31,7 +31,7 @@ def _check_with_backup_source(proxies):
 
 def backup_and_download(current_version, remote_version):
     """
-    一键更新协议：备份和下载
+    One-click update agreement：バックアップとダウンロード
     """
     from toolbox import get_conf
     import shutil
@@ -63,7 +63,7 @@ def backup_and_download(current_version, remote_version):
 
 def patch_and_restart(path):
     """
-    一键更新协议：覆盖和重启
+    One-click update agreement：上書きして再起動する
     """
     from distutils import dir_util
     import shutil
@@ -71,23 +71,23 @@ def patch_and_restart(path):
     import sys
     import time
     import glob
-    from colorful import print亮黄, print亮绿, print亮红
+    from colorful import PrintBrightYellow, PrintBrightGreen, PrintBrightRed
     # if not using config_private, move origin config.py as config_private.py
     if not os.path.exists('config_private.py'):
-        print亮黄('由于您没有设置config_private.py私密配置，现将您的现有配置移动至config_private.py以防止配置丢失，',
-              '另外您可以随时在history子文件夹下找回旧版的程序。')
+        PrintBrightYellow('config_private.pyのプライベート設定が設定されていないため，Now move your existing configuration to config_private.py to prevent configuration loss，',
+              'また、いつでもhistoryサブフォルダーで古いバージョンのプログラムを取得できます。')
         shutil.copyfile('config.py', 'config_private.py')
     path_new_version = glob.glob(path + '/*-master')[0]
     dir_util.copy_tree(path_new_version, './')
-    print亮绿('代码已经更新，即将更新pip包依赖……')
+    PrintBrightGreen('コードはすでに更新されています，pipパッケージ依存関係を更新する予定...')
     for i in reversed(range(5)): time.sleep(1); print(i)
     try:
         import subprocess
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
     except:
-        print亮红('pip包依赖安装出现问题，需要手动安装新增的依赖库 `python -m pip install -r requirements.txt`，然后在用常规的`python main.py`的方式启动。')
-    print亮绿('更新完成，您可以随时在history子文件夹下找回旧版的程序，5s之后重启')
-    print亮红('假如重启失败，您可能需要手动安装新增的依赖库 `python -m pip install -r requirements.txt`，然后在用常规的`python main.py`的方式启动。')
+        PrintBrightRed('pipパッケージの依存関係のインストールに問題が発生しました，新しい依存ライブラリを手動でインストールする必要があります `python -m pip install -r requirements.txt`，その後、通常のテキストの翻訳を使用するする`python main.py`のテキストの翻訳で起動する。')
+    PrintBrightGreen('更新が完了しました，いつでもhistoryサブフォルダーで以前のバージョンのプログラムを取得できます，5秒後に再起動します')
+    PrintBrightRed('再起動に失敗した場合，You may need to manually install the new dependency library `python -m pip install -r requirements.txt`，その後、通常のテキストの翻訳を使用するする`python main.py`のテキストの翻訳で起動する。')
     print(' ------------------------------ -----------------------------------')
     for i in reversed(range(8)): time.sleep(1); print(i)
     os.execl(sys.executable, sys.executable, *sys.argv)
@@ -105,7 +105,7 @@ def get_current_version():
 
 def auto_update(raise_error=False):
     """
-    一键更新协议：查询版本和用户意见
+    One-click update agreement：バージョンとユーザーの意見を検索する
     """
     try:
         from toolbox import get_conf
@@ -117,51 +117,51 @@ def auto_update(raise_error=False):
         remote_json_data = json.loads(response.text)
         remote_version = remote_json_data['version']
         if remote_json_data["show_feature"]:
-            new_feature = "新功能：" + remote_json_data["new_feature"]
+            new_feature = "新機能：" + remote_json_data["new_feature"]
         else:
             new_feature = ""
         with open('./version', 'r', encoding='utf8') as f:
             current_version = f.read()
             current_version = json.loads(current_version)['version']
         if (remote_version - current_version) >= 0.01-1e-5:
-            from colorful import print亮黄
-            print亮黄(f'\n新版本可用。新版本:{remote_version}，当前版本:{current_version}。{new_feature}')
-            print('（1）Github更新地址:\nhttps://github.com/binary-husky/chatgpt_academic\n')
-            user_instruction = input('（2）是否一键更新代码（Y+回车=确认，输入其他/无输入+回车=不更新）？')
+            from colorful import PrintBrightYellow
+            PrintBrightYellow(f'\n新しいバージョンが利用可能です。新しいバージョン:{remote_version}，Current version:{current_version}。{new_feature}')
+            print('（1）Githubの更新アドレス:\nhttps://github.com/binary-husky/chatgpt_academic\n')
+            user_instruction = input('（2）コードをワンクリックで更新するかどうか（Y+Enter=確認，他の入力/入力なし+ Enter = 更新しない）？')
             if user_instruction in ['Y', 'y']:
                 path = backup_and_download(current_version, remote_version)
                 try:
                     patch_and_restart(path)
                 except:
-                    msg = '更新失败。'
+                    msg = '更新に失敗しました。'
                     if raise_error:
                         from toolbox import trimmed_format_exc
                         msg += trimmed_format_exc()
                     print(msg)
             else:
-                print('自动更新程序：已禁用')
+                print('Automatic update program：テキストの翻訳')
                 return
         else:
             return
     except:
-        msg = '自动更新程序：已禁用。建议排查：代理网络配置。'
+        msg = 'Automatic update program：テキストの翻訳。トラブルシューティングの提案：プロキシネットワークの設定。'
         if raise_error:
             from toolbox import trimmed_format_exc
             msg += trimmed_format_exc()
         print(msg)
 
 def warm_up_modules():
-    print('正在执行一些模块的预热 ...')
+    print('モジュールのプレウォームを実行しています ...')
     from toolbox import ProxyNetworkActivate
     from request_llms.bridge_all import model_info
     with ProxyNetworkActivate("Warmup_Modules"):
         enc = model_info["gpt-3.5-turbo"]['tokenizer']
-        enc.encode("模块预热", disallowed_special=())
+        enc.encode("モジュールのプレヒート", disallowed_special=())
         enc = model_info["gpt-4"]['tokenizer']
-        enc.encode("模块预热", disallowed_special=())
+        enc.encode("モジュールのプレヒート", disallowed_special=())
 
 def warm_up_vectordb():
-    print('正在执行一些模块的预热 ...')
+    print('モジュールのプレウォームを実行しています ...')
     from toolbox import ProxyNetworkActivate
     with ProxyNetworkActivate("Warmup_Modules"):
         import nltk
@@ -170,7 +170,7 @@ def warm_up_vectordb():
 
 if __name__ == '__main__':
     import os
-    os.environ['no_proxy'] = '*'  # 避免代理网络产生意外污染
+    os.environ['no_proxy'] = '*'  # プロキシネットワークによる予期しない汚染を回避する
     from toolbox import get_conf
     proxies = get_conf('proxies')
     check_proxy(proxies)

@@ -15,12 +15,12 @@ from threading import Thread
 class GetLlamaHandle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         import os, glob
         import os
         import platform
@@ -39,7 +39,7 @@ class GetLlamaHandle(LocalLLMHandle):
             return self._model, self._tokenizer
 
     def llm_stream_generator(self, **kwargs):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         def adaptor(kwargs):
             query = kwargs['query']
             max_length = kwargs['max_length']
@@ -79,7 +79,7 @@ class GetLlamaHandle(LocalLLMHandle):
 
     def try_to_import_special_deps(self, **kwargs):
         # import something that will raise error if the user does not install requirement_*.txt
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 主进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ Main process execution
         import importlib
         importlib.import_module('transformers')
 

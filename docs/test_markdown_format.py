@@ -1,21 +1,21 @@
 sample = """
-[1]: https://baike.baidu.com/item/%E8%B4%A8%E8%83%BD%E6%96%B9%E7%A8%8B/1884527 "质能方程（质能方程式）_百度百科"
+[1]: https://baike.baidu.com/item/%E8%B4%A8%E8%83%BD%E6%96%B9%E7%A8%8B/1884527 "质能方程（質量エネルギー方程式）_百度百科"
 [2]: https://www.zhihu.com/question/348249281 "如何理解质能方程 E＝mc²？ - 知乎"
 [3]: https://zhuanlan.zhihu.com/p/32597385 "质能方程的推导与理解 - 知乎 - 知乎专栏"
 
-你好，这是必应。质能方程是描述质量与能量之间的当量关系的方程[^1^][1]。用tex格式，质能方程可以写成$$E=mc^2$$，其中$E$是能量，$m$是质量，$c$是光速[^2^][2] [^3^][3]。
+こんにちは，これはBingです。質量とエネルギーの間の等価関係を記述する質量エネルギー方程式[^1^][1]。TeX形式で，The mass-energy equation can be written as $$E=mc^2$$，ここで$E$はエネルギーです，質量を表します，$c$は光速です[^2^][2] [^3^][3]。
 """
 import re
 
 
 def preprocess_newbing_out(s):
-    pattern = r"\^(\d+)\^"  # 匹配^数字^
-    pattern2 = r"\[(\d+)\]"  # 匹配^数字^
+    pattern = r"\^(\d+)\^"  # ^数字^に一致する
+    pattern2 = r"\[(\d+)\]"  # ^数字^に一致する
 
     def sub(m):
-        return "\\[" + m.group(1) + "\\]"  # 将匹配到的数字作为替换值
+        return "\\[" + m.group(1) + "\\]"  # 一致した数字を置換値として使用するする
 
-    result = re.sub(pattern, sub, s)  # 替换操作
+    result = re.sub(pattern, sub, s)  # 置換操作
     if "[1]" in result:
         result += (
             '<br/><hr style="border-top: dotted 1px #44ac5c;"><br/><small>'
@@ -33,13 +33,13 @@ def preprocess_newbing_out(s):
 
 def close_up_code_segment_during_stream(gpt_reply):
     """
-    在gpt输出代码的中途（输出了前面的```，但还没输出完后面的```），补上后面的```
+    GPTがコードを出力する途中で（前のものを出力し、1つの文字列に結合します```，しかし、まだ後ろの出力が完了していません```），後ろに補完する```
 
     Args:
-        gpt_reply (str): GPT模型返回的回复字符串。
+        gpt_reply (str): GPTモデルからの返信文字列。
 
     Returns:
-        str: 返回一个新的字符串，将输出代码片段的“后面的```”补上。
+        str: Return a new string，コードスニペットの後ろに出力する```補う。
 
     """
     if "```" not in gpt_reply:
@@ -47,11 +47,11 @@ def close_up_code_segment_during_stream(gpt_reply):
     if gpt_reply.endswith("```"):
         return gpt_reply
 
-    # 排除了以上两个情况，我们
+    # Excludes the above two cases，私たちは
     segments = gpt_reply.split("```")
     n_mark = len(segments) - 1
     if n_mark % 2 == 1:
-        # print('输出代码片段中！')
+        # print('出力代码フラグメント中！')
         return gpt_reply + "\n```"
     else:
         return gpt_reply
@@ -63,13 +63,13 @@ from latex2mathml.converter import convert as tex2mathml
 
 def markdown_convertion(txt):
     """
-    将Markdown格式的文本转换为HTML格式。如果包含数学公式，则先将公式转换为HTML格式。
+    Markdown形式のテキストをHTML形式に変換する。数式が含まれている場合，公式をHTML形式に変換してください。
     """
     pre = '<div class="markdown-body">'
     suf = "</div>"
     if txt.startswith(pre) and txt.endswith(suf):
-        # print('警告，输入了已经经过转化的字符串，二次转化可能出问题')
-        return txt  # 已经被转化过，不需要再次转化
+        # print('Warning，変換済みの文字列が入力されました，二次转化可能出問題')
+        return txt  # すでに変換されています，再変換する必要はありません
 
     markdown_extension_configs = {
         "mdx_math": {
@@ -108,7 +108,7 @@ def markdown_convertion(txt):
 
     def markdown_bug_hunt(content):
         """
-        解决一个mdx_math的bug（单$包裹begin命令时多余<script>）
+        mdx_mathのバグを解決する（beginコマンドを単一の$で囲むと余分になります<script>）
         """
         content = content.replace(
             '<script type="math/tex">\n<script type="math/tex; mode=display">',
@@ -117,7 +117,7 @@ def markdown_convertion(txt):
         content = content.replace("</script>\n</script>", "</script>")
         return content
 
-    if ("$" in txt) and ("```" not in txt):  # 有$标识的公式符号，且没有代码段```的标识
+    if ("$" in txt) and ("```" not in txt):  # $記号を持つ数式記号，And there is no code segment```のマーク
         # convert everything to html format
         split = markdown.markdown(text="---")
         convert_stage_1 = markdown.markdown(

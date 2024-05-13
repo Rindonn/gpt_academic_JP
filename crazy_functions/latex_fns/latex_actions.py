@@ -1,11 +1,10 @@
 from toolbox import update_ui, update_ui_lastest_msg, get_log_folder
-from toolbox import get_conf, promote_file_to_downloadzone
+from toolbox import get_conf, objdump, objload, promote_file_to_downloadzone
 from .latex_toolbox import PRESERVE, TRANSFORM
 from .latex_toolbox import set_forbidden_text, set_forbidden_text_begin_end, set_forbidden_text_careful_brace
 from .latex_toolbox import reverse_forbidden_text_careful_brace, reverse_forbidden_text, convert_to_linklist, post_process
 from .latex_toolbox import fix_content, find_main_tex_file, merge_tex_files, compile_latex_with_timeout
 from .latex_toolbox import find_title_and_abs
-from .latex_pickle_io import objdump, objload
 
 import os, shutil
 import re
@@ -23,16 +22,16 @@ def split_subprocess(txt, project_folder, return_dict, opts):
     text = txt
     mask = np.zeros(len(txt), dtype=np.uint8) + TRANSFORM
 
-    # 吸收title与作者以上的部分
+    # タイトルと著者以上の部分を吸収する
     text, mask = set_forbidden_text(text, mask, r"^(.*?)\\maketitle", re.DOTALL)
     text, mask = set_forbidden_text(text, mask, r"^(.*?)\\begin{document}", re.DOTALL)
-    # 吸收iffalse注释
+    # iffalseコメントを吸収する
     text, mask = set_forbidden_text(text, mask, r"\\iffalse(.*?)\\fi", re.DOTALL)
-    # 吸收在42行以内的begin-end组合
+    # 42行以内のbegin-endの組み合わせを取り込む
     text, mask = set_forbidden_text_begin_end(text, mask, r"\\begin\{([a-z\*]*)\}(.*?)\\end\{\1\}", re.DOTALL, limit_n_lines=42)
-    # 吸收匿名公式
+    # テキストの翻訳
     text, mask = set_forbidden_text(text, mask, [ r"\$\$([^$]+)\$\$",  r"\\\[.*?\\\]" ], re.DOTALL)
-    # 吸收其他杂项
+    # 他の雑項を吸収する
     text, mask = set_forbidden_text(text, mask, [ r"\\section\{(.*?)\}", r"\\section\*\{(.*?)\}", r"\\subsection\{(.*?)\}", r"\\subsubsection\{(.*?)\}" ])
     text, mask = set_forbidden_text(text, mask, [ r"\\bibliography\{(.*?)\}", r"\\bibliographystyle\{(.*?)\}" ])
     text, mask = set_forbidden_text(text, mask, r"\\begin\{thebibliography\}.*?\\end\{thebibliography\}", re.DOTALL)
@@ -49,16 +48,16 @@ def split_subprocess(txt, project_folder, return_dict, opts):
     text, mask = set_forbidden_text(text, mask, [r"\\includepdf\[(.*?)\]\{(.*?)\}", r"\\clearpage", r"\\newpage", r"\\appendix", r"\\tableofcontents", r"\\include\{(.*?)\}"])
     text, mask = set_forbidden_text(text, mask, [r"\\vspace\{(.*?)\}", r"\\hspace\{(.*?)\}", r"\\label\{(.*?)\}", r"\\begin\{(.*?)\}", r"\\end\{(.*?)\}", r"\\item "])
     text, mask = set_forbidden_text_careful_brace(text, mask, r"\\hl\{(.*?)\}", re.DOTALL)
-    # reverse 操作必须放在最后
+    # reverse操作は最後に配置する必要があります
     text, mask = reverse_forbidden_text_careful_brace(text, mask, r"\\caption\{(.*?)\}", re.DOTALL, forbid_wrapper=True)
     text, mask = reverse_forbidden_text_careful_brace(text, mask, r"\\abstract\{(.*?)\}", re.DOTALL, forbid_wrapper=True)
     text, mask = reverse_forbidden_text(text, mask, r"\\begin\{abstract\}(.*?)\\end\{abstract\}", re.DOTALL, forbid_wrapper=True)
     root = convert_to_linklist(text, mask)
 
-    # 最后一步处理，增强稳健性
+    # 最後のステップの処理，信頼性を向上させる
     root = post_process(root)
 
-    # 输出html调试文件，用红色标注处保留区（PRESERVE），用黑色标注转换区（TRANSFORM）
+    # HTMLデバッグファイルの出力，テキストの翻訳（PRESERVE），黒い注釈で変換エリアをマークする（TRANSFORM）
     with open(pj(project_folder, 'debug_log.html'), 'w', encoding='utf8') as f:
         segment_parts_for_gpt = []
         nodes = []
@@ -87,11 +86,11 @@ class LatexPaperSplit():
     """
     def __init__(self) -> None:
         self.nodes = None
-        self.msg = "*{\\scriptsize\\textbf{警告：该PDF由GPT-Academic开源项目调用大语言模型+Latex翻译插件一键生成，" + \
-            "版权归原文作者所有。翻译内容可靠性无保障，请仔细鉴别并以原文为准。" + \
-            "项目Github地址 \\url{https://github.com/binary-husky/gpt_academic/}。"
-        # 请您不要删除或修改这行警告，除非您是论文的原作者（如果您是论文原作者，欢迎加REAME中的QQ联系开发者）
-        self.msg_declare = "为了防止大语言模型的意外谬误产生扩散影响，禁止移除或修改此警告。}}\\\\"
+        self.msg = "*{\\scriptsize\\textbf{Warning：このPDFはGPT-Academicオープンソースプロジェクトによって大規模言語モデル+Latex翻訳プラグインを使用するして一括生成されました，" + \
+            "原始文本。テキストの翻訳，注意深く確認し、元のテキストを参照してください。" + \
+            "项目GithubAddress \\url{https://github.com/binary-husky/gpt_academic/}。"
+        # テキストの翻訳，テキストの翻訳（テキストの翻訳，欢迎加REAME中的QQ联系开发者）
+        self.msg_declare = "大規模言語モデルの誤った結果が広がるのを防ぐために，禁止移除或修改此Warning。}}\\\\"
         self.title = "unknown"
         self.abstract = "unknown"
 
@@ -213,18 +212,18 @@ class LatexPaperFileGroup():
         return manifest
 
 
-def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, mode='proofread', switch_prompt=None, opts=[]):
+def DecomposeAndConvertLatex(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, mode='proofread', switch_prompt=None, opts=[]):
     import time, os, re
     from ..crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
     from .latex_actions import LatexPaperFileGroup, LatexPaperSplit
 
-    #  <-------- 寻找主tex文件 ---------->
+    #  <-------- メインのtexファイルを検索する ---------->
     maintex = find_main_tex_file(file_manifest, mode)
-    chatbot.append((f"定位主Latex文件", f'[Local Message] 分析结果：该项目的Latex主文件是{maintex}, 如果分析错误, 请立即终止程序, 删除或修改歧义文件, 然后重试。主程序即将开始, 请稍候。'))
-    yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+    chatbot.append((f"メインのLatexファイルを特定する", f'[Local Message] 結果を分析する：このプロジェクトのLaTeXメインファイルは{maintex}, もし解析エラーがある場合, プログラムを即座に終了してください, 曖昧なファイルを削除または修正する, その後、再試行してください。メインプログラムがすぐに開始されます, お待ちください。'))
+    yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     time.sleep(3)
 
-    #  <-------- 读取Latex文件, 将多文件tex工程融合为一个巨型tex ---------->
+    #  <-------- Latexファイルを読み込む, 複数のファイルのtexプロジェクトを1つの巨大なtexに統合する ---------->
     main_tex_basename = os.path.basename(maintex)
     assert main_tex_basename.endswith('.tex')
     main_tex_basename_bare = main_tex_basename[:-4]
@@ -241,13 +240,13 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
     with open(project_folder + '/merge.tex', 'w', encoding='utf-8', errors='replace') as f:
         f.write(merged_content)
 
-    #  <-------- 精细切分latex文件 ---------->
-    chatbot.append((f"Latex文件融合完成", f'[Local Message] 正在精细切分latex文件，这需要一段时间计算，文档越长耗时越长，请耐心等待。'))
-    yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+    #  <-------- LaTeXファイルを細かく分割する ---------->
+    chatbot.append((f"Latexファイルの統合が完了しました", f'[Local Message] LaTeXファイルを細かく分割しています，これには時間がかかります，ドキュメントが長いほど時間がかかります，お待ちください。'))
+    yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     lps = LatexPaperSplit()
     lps.read_title_and_abstract(merged_content)
-    res = lps.split(merged_content, project_folder, opts) # 消耗时间的函数
-    #  <-------- 拆分过长的latex片段 ---------->
+    res = lps.split(merged_content, project_folder, opts) # 消耗時间的函数
+    #  <-------- 原始文本 ---------->
     pfg = LatexPaperFileGroup()
     for index, r in enumerate(res):
         pfg.file_paths.append('segment-' + str(index))
@@ -256,17 +255,17 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
     pfg.run_file_split(max_token_limit=1024)
     n_split = len(pfg.sp_file_contents)
 
-    #  <-------- 根据需要切换prompt ---------->
+    #  <-------- テキストの翻訳 ---------->
     inputs_array, sys_prompt_array = switch_prompt(pfg, mode)
     inputs_show_user_array = [f"{mode} {f}" for f in pfg.sp_file_tag]
 
     if os.path.exists(pj(project_folder,'temp.pkl')):
 
-        #  <-------- 【仅调试】如果存在调试缓存文件，则跳过GPT请求环节 ---------->
+        #  <-------- 【デバッグのみ】デバッグキャッシュファイルが存在する場合，GPTリクエストのスキップ ---------->
         pfg = objload(file=pj(project_folder,'temp.pkl'))
 
     else:
-        #  <-------- gpt 多线程请求 ---------->
+        #  <-------- GPTマルチスレッドリクエスト ---------->
         history_array = [[""] for _ in range(n_split)]
         # LATEX_EXPERIMENTAL, = get_conf('LATEX_EXPERIMENTAL')
         # if LATEX_EXPERIMENTAL:
@@ -281,24 +280,24 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
             chatbot=chatbot,
             history_array=history_array,
             sys_prompt_array=sys_prompt_array,
-            # max_workers=5,  # 并行任务数量限制, 最多同时执行5个, 其他的排队等待
+            # max_workers=5,  # Parallel task quantity limit, 同時に最大5つ実行できます, その他の待ち行列
             scroller_max_len = 40
         )
 
-        #  <-------- 文本碎片重组为完整的tex片段 ---------->
+        #  <-------- 文本碎片原始文本为完整的texフラグメント ---------->
         pfg.sp_file_result = []
         for i_say, gpt_say, orig_content in zip(gpt_response_collection[0::2], gpt_response_collection[1::2], pfg.sp_file_contents):
             pfg.sp_file_result.append(gpt_say)
         pfg.merge_result()
 
-        # <-------- 临时存储用于调试 ---------->
+        # <-------- デバッグ用の一時的なストレージ ---------->
         pfg.get_token_num = None
         objdump(pfg, file=pj(project_folder,'temp.pkl'))
 
     write_html(pfg.sp_file_contents, pfg.sp_file_result, chatbot=chatbot, project_folder=project_folder)
 
-    #  <-------- 写出文件 ---------->
-    msg = f"当前大语言模型: {llm_kwargs['llm_model']}，当前语言模型温度设定: {llm_kwargs['temperature']}。"
+    #  <-------- ファイルに書き出す ---------->
+    msg = f"テキストの翻訳: {llm_kwargs['llm_model']}，現在の言語モデルの温度設定: {llm_kwargs['temperature']}。"
     final_tex = lps.merge_result(pfg.file_result, mode, msg)
     objdump((lps, pfg.file_result, mode, msg), file=pj(project_folder,'merge_result.pkl'))
 
@@ -306,11 +305,11 @@ def Latex精细分解与转化(file_manifest, project_folder, llm_kwargs, plugin
         if mode != 'translate_zh' or "binary" in final_tex: f.write(final_tex)
 
 
-    #  <-------- 整理结果, 退出 ---------->
-    chatbot.append((f"完成了吗？", 'GPT结果已输出, 即将编译PDF'))
-    yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+    #  <-------- Organized results, 終了 ---------->
+    chatbot.append((f"完了しましたか？", 'GPTの結果が出力されました, PDFをコンパイルする予定です'))
+    yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
-    #  <-------- 返回 ---------->
+    #  <-------- 戻る ---------->
     return project_folder + f'/merge_{mode}.tex'
 
 
@@ -325,7 +324,7 @@ def remove_buggy_lines(file_path, log_path, tex_name, tex_name_pure, n_fix, work
         buggy_line = buggy_lines[0]-1
         print("reversing tex line that has errors", buggy_line)
 
-        # 重组，逆转出错的段落
+        # 原始文本，エラーのあるパラグラフを逆転させます
         if buggy_line not in fixed_line:
             fixed_line.append(buggy_line)
 
@@ -341,14 +340,14 @@ def remove_buggy_lines(file_path, log_path, tex_name, tex_name_pure, n_fix, work
         return False, -1, [-1]
 
 
-def 编译Latex(chatbot, history, main_file_original, main_file_modified, work_folder_original, work_folder_modified, work_folder, mode='default'):
+def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_folder_original, work_folder_modified, work_folder, mode='default'):
     import os, time
     n_fix = 1
     fixed_line = []
     max_try = 32
-    chatbot.append([f"正在编译PDF文档", f'编译已经开始。当前工作路径为{work_folder}，如果程序停顿5分钟以上，请直接去该路径下取回翻译结果，或者重启之后再度尝试 ...']); yield from update_ui(chatbot=chatbot, history=history)
-    chatbot.append([f"正在编译PDF文档", '...']); yield from update_ui(chatbot=chatbot, history=history); time.sleep(1); chatbot[-1] = list(chatbot[-1]) # 刷新界面
-    yield from update_ui_lastest_msg('编译已经开始...', chatbot, history)   # 刷新Gradio前端界面
+    chatbot.append([f"原始文本", f'コンパイルが開始されました。現在の作業パスは{work_folder}，原始文本，直接そのパスに移動して翻訳結果を取得してください，または再起動後に再試行してください ...']); yield from update_ui(chatbot=chatbot, history=history)
+    chatbot.append([f"原始文本", '...']); yield from update_ui(chatbot=chatbot, history=history); time.sleep(1); chatbot[-1] = list(chatbot[-1]) # 画面を更新する
+    yield from update_ui_lastest_msg('コンパイルが開始されました...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
 
     while True:
         import os
@@ -358,58 +357,58 @@ def 编译Latex(chatbot, history, main_file_original, main_file_modified, work_f
             shutil.copyfile(may_exist_bbl, target_bbl)
 
         # https://stackoverflow.com/questions/738755/dont-make-me-manually-abort-a-latex-compile-when-theres-an-error
-        yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 编译原始PDF ...', chatbot, history)   # 刷新Gradio前端界面
+        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 元のPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
         ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
 
-        yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 编译转化后的PDF ...', chatbot, history)   # 刷新Gradio前端界面
+        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 変換されたPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
         ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
 
         if ok and os.path.exists(pj(work_folder_modified, f'{main_file_modified}.pdf')):
-            # 只有第二步成功，才能继续下面的步骤
-            yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 编译BibTex ...', chatbot, history)    # 刷新Gradio前端界面
+            # テキストの翻訳，次の手順に進むために
+            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, BibTexのコンパイル ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
             if not os.path.exists(pj(work_folder_original, f'{main_file_original}.bbl')):
                 ok = compile_latex_with_timeout(f'bibtex  {main_file_original}.aux', work_folder_original)
             if not os.path.exists(pj(work_folder_modified, f'{main_file_modified}.bbl')):
                 ok = compile_latex_with_timeout(f'bibtex  {main_file_modified}.aux', work_folder_modified)
 
-            yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 编译文献交叉引用 ...', chatbot, history)  # 刷新Gradio前端界面
+            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 文献の相互参照をコンパイルする ...', chatbot, history)  # Gradioフロントエンドインターフェースをリフレッシュする
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
 
             if mode!='translate_zh':
-                yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 使用latexdiff生成论文转化前后对比 ...', chatbot, history) # 刷新Gradio前端界面
+                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, テキストの翻訳 ...', chatbot, history) # Gradioフロントエンドインターフェースをリフレッシュする
                 print(    f'latexdiff --encoding=utf8 --append-safecmd=subfile {work_folder_original}/{main_file_original}.tex  {work_folder_modified}/{main_file_modified}.tex --flatten > {work_folder}/merge_diff.tex')
                 ok = compile_latex_with_timeout(f'latexdiff --encoding=utf8 --append-safecmd=subfile {work_folder_original}/{main_file_original}.tex  {work_folder_modified}/{main_file_modified}.tex --flatten > {work_folder}/merge_diff.tex', os.getcwd())
 
-                yield from update_ui_lastest_msg(f'尝试第 {n_fix}/{max_try} 次编译, 正在编译对比PDF ...', chatbot, history)   # 刷新Gradio前端界面
+                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, テキストの翻訳 ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
                 ok = compile_latex_with_timeout(f'pdflatex  -interaction=batchmode -file-line-error merge_diff.tex', work_folder)
                 ok = compile_latex_with_timeout(f'bibtex    merge_diff.aux', work_folder)
                 ok = compile_latex_with_timeout(f'pdflatex  -interaction=batchmode -file-line-error merge_diff.tex', work_folder)
                 ok = compile_latex_with_timeout(f'pdflatex  -interaction=batchmode -file-line-error merge_diff.tex', work_folder)
 
-        # <---------- 检查结果 ----------->
+        # <---------- 結果をチェックする ----------->
         results_ = ""
         original_pdf_success = os.path.exists(pj(work_folder_original, f'{main_file_original}.pdf'))
         modified_pdf_success = os.path.exists(pj(work_folder_modified, f'{main_file_modified}.pdf'))
         diff_pdf_success     = os.path.exists(pj(work_folder, f'merge_diff.pdf'))
-        results_ += f"原始PDF编译是否成功: {original_pdf_success};"
-        results_ += f"转化PDF编译是否成功: {modified_pdf_success};"
-        results_ += f"对比PDF编译是否成功: {diff_pdf_success};"
-        yield from update_ui_lastest_msg(f'第{n_fix}编译结束:<br/>{results_}...', chatbot, history) # 刷新Gradio前端界面
+        results_ += f"元のPDFのコンパイルは成功しましたか: {original_pdf_success};"
+        results_ += f"PDFのコンパイルが成功したかどうかを変換する: {modified_pdf_success};"
+        results_ += f"PDFのコンパイルが成功したかどうかを比較する: {diff_pdf_success};"
+        yield from update_ui_lastest_msg(f'第{n_fix}コンパイル終了:<br/>{results_}...', chatbot, history) # Gradioフロントエンドインターフェースをリフレッシュする
 
         if diff_pdf_success:
             result_pdf = pj(work_folder_modified, f'merge_diff.pdf')    # get pdf path
             promote_file_to_downloadzone(result_pdf, rename_file=None, chatbot=chatbot)  # promote file to web UI
         if modified_pdf_success:
-            yield from update_ui_lastest_msg(f'转化PDF编译已经成功, 正在尝试生成对比PDF, 请稍候 ...', chatbot, history)    # 刷新Gradio前端界面
+            yield from update_ui_lastest_msg(f'PDF変換コンパイルが成功しました, 正在Try生成对比PDF, お待ちください ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
             result_pdf = pj(work_folder_modified, f'{main_file_modified}.pdf') # get pdf path
             origin_pdf = pj(work_folder_original, f'{main_file_original}.pdf') # get pdf path
             if os.path.exists(pj(work_folder, '..', 'translation')):
                 shutil.copyfile(result_pdf, pj(work_folder, '..', 'translation', 'translate_zh.pdf'))
             promote_file_to_downloadzone(result_pdf, rename_file=None, chatbot=chatbot)  # promote file to web UI
-            # 将两个PDF拼接
+            # 2つのPDFを結合する
             if original_pdf_success:
                 try:
                     from .latex_toolbox import merge_pdfs
@@ -434,10 +433,10 @@ def 编译Latex(chatbot, history, main_file_original, main_file_modified, work_f
                 work_folder_modified=work_folder_modified,
                 fixed_line=fixed_line
             )
-            yield from update_ui_lastest_msg(f'由于最为关键的转化PDF编译失败, 将根据报错信息修正tex源文件并重试, 当前报错的latex代码处于第{buggy_lines}行 ...', chatbot, history)   # 刷新Gradio前端界面
+            yield from update_ui_lastest_msg(f'最も重要なPDF変換コンパイルが失敗したため, 原始文本, 現在のエラーのあるLaTeXコードは第{buggy_lines}行 ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
             if not can_retry: break
 
-    return False # 失败啦
+    return False # 失敗しました
 
 
 def write_html(sp_file_contents, sp_file_result, chatbot, project_folder):

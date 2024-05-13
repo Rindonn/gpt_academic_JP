@@ -8,7 +8,7 @@ import importlib
 from toolbox import update_ui, get_conf
 from multiprocessing import Process, Pipe
 
-load_message = "ChatGLMFT尚未加载，加载需要一段时间。注意，取决于`config.py`的配置，ChatGLMFT消耗大量的内存（CPU）或显存（GPU），也许会导致低配计算机卡死 ……"
+load_message = "テキストの翻訳，読み込みには時間がかかります。注意，に依存する`config.py`の設定，ChatGLMFTは大量のメモリを消費します（CPU）またはグラフィックスメモリ（GPU），低スペックのコンピューターがクラッシュする可能性があります......"
 
 def string_to_options(arguments):
     import argparse
@@ -41,18 +41,18 @@ class GetGLMFTHandle(Process):
     def check_dependency(self):
         try:
             import sentencepiece
-            self.info = "依赖检测通过"
+            self.info = "Dependency check passed"
             self.success = True
         except:
-            self.info = "缺少ChatGLMFT的依赖，如果要使用ChatGLMFT，除了基础的pip依赖以外，您还需要运行`pip install -r request_llms/requirements_chatglm.txt`安装ChatGLM的依赖。"
+            self.info = "ChatGLMFTの依存関係が不足しています，ChatGLMFTを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_chatglm.txt`Install dependencies for ChatGLM。"
             self.success = False
 
     def ready(self):
         return self.chatglmft_model is not None
 
     def run(self):
-        # 子进程执行
-        # 第一次运行，加载参数
+        # Subprocess execution
+        # 最初の実行，パラメータをロードする
         retry = 0
         while True:
             try:
@@ -60,11 +60,11 @@ class GetGLMFTHandle(Process):
                     from transformers import AutoConfig
                     import torch
                     # conf = 'request_llms/current_ptune_model.json'
-                    # if not os.path.exists(conf): raise RuntimeError('找不到微调模型信息')
+                    # if not os.path.exists(conf): raise RuntimeError('見つかりません微调模型信息')
                     # with open(conf, 'r', encoding='utf8') as f:
                     #     model_args = json.loads(f.read())
                     CHATGLM_PTUNING_CHECKPOINT = get_conf('CHATGLM_PTUNING_CHECKPOINT')
-                    assert os.path.exists(CHATGLM_PTUNING_CHECKPOINT), "找不到微调模型检查点"
+                    assert os.path.exists(CHATGLM_PTUNING_CHECKPOINT), "ファインチューニングモデルのチェックポイントが見つかりません"
                     conf = os.path.join(CHATGLM_PTUNING_CHECKPOINT, "config.json")
                     with open(conf, 'r', encoding='utf8') as f:
                         model_args = json.loads(f.read())
@@ -102,28 +102,28 @@ class GetGLMFTHandle(Process):
             except Exception as e:
                 retry += 1
                 if retry > 3:
-                    self.child.send('[Local Message] Call ChatGLMFT fail 不能正常加载ChatGLMFT的参数。')
-                    raise RuntimeError("不能正常加载ChatGLMFT的参数！")
+                    self.child.send('[Local Message] ChatGLMFTのパラメータを正常にロードできませんでした。')
+                    raise RuntimeError("ChatGLMFTのパラメータを正常にロードできません！")
 
         while True:
-            # 进入任务等待状态
+            # タスク待機状態に入る
             kwargs = self.child.recv()
-            # 收到消息，开始请求
+            # メッセージを受信しました，リクエストを開始する
             try:
                 for response, history in self.chatglmft_model.stream_chat(self.chatglmft_tokenizer, **kwargs):
                     self.child.send(response)
-                    # # 中途接收可能的终止指令（如果有的话）
+                    # # 途中で可能な終了命令を受信する（ある場合は）
                     # if self.child.poll():
                     #     command = self.child.recv()
                     #     if command == '[Terminate]': break
             except:
                 from toolbox import trimmed_format_exc
                 self.child.send('[Local Message] Call ChatGLMFT fail.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
-            # 请求处理结束，开始下一个循环
+            # リクエスト処理が終了しました，次のループを開始する
             self.child.send('[Finish]')
 
     def stream_chat(self, **kwargs):
-        # 主进程执行
+        # Main process execution
         self.threadLock.acquire()
         self.parent.send(kwargs)
         while True:
@@ -137,11 +137,10 @@ class GetGLMFTHandle(Process):
 global glmft_handle
 glmft_handle = None
 #################################################################################
-def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], sys_prompt:str="",
-                                  observe_window:list=[], console_slience:bool=False):
+def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=[], console_slience=False):
     """
-        多线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        Multi-threaded method
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     global glmft_handle
     if glmft_handle is None:
@@ -152,27 +151,27 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
             glmft_handle = None
             raise RuntimeError(error)
 
-    # chatglmft 没有 sys_prompt 接口，因此把prompt加入 history
+    # chatglmftにはsys_promptインターフェースがありません，したがって、履歴にpromptを追加します
     history_feedin = []
     history_feedin.append(["What can I do?", sys_prompt])
     for i in range(len(history)//2):
         history_feedin.append([history[2*i], history[2*i+1]] )
 
-    watch_dog_patience = 5 # 看门狗 (watchdog) 的耐心, 设置5秒即可
+    watch_dog_patience = 5 # ウォッチドッグ (watchdog) の忍耐力, Set for 5 seconds
     response = ""
     for response in glmft_handle.stream_chat(query=inputs, history=history_feedin, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
         if len(observe_window) >= 1:  observe_window[0] = response
         if len(observe_window) >= 2:
             if (time.time()-observe_window[1]) > watch_dog_patience:
-                raise RuntimeError("程序终止。")
+                raise RuntimeError("プログラムの終了。")
     return response
 
 
 
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
-        单线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        シングルスレッドメソッド
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     chatbot.append((inputs, ""))
 
@@ -189,20 +188,20 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         from core_functional import handle_core_functionality
         inputs, history = handle_core_functionality(additional_fn, inputs, history, chatbot)
 
-    # 处理历史信息
+    # 履歴情報の処理
     history_feedin = []
     history_feedin.append(["What can I do?", system_prompt] )
     for i in range(len(history)//2):
         history_feedin.append([history[2*i], history[2*i+1]] )
 
-    # 开始接收chatglmft的回复
-    response = "[Local Message] 等待ChatGLMFT响应中 ..."
+    # テキストの翻訳
+    response = "[Local Message] ChatGLMFTの応答を待っています ..."
     for response in glmft_handle.stream_chat(query=inputs, history=history_feedin, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
         chatbot[-1] = (inputs, response)
         yield from update_ui(chatbot=chatbot, history=history)
 
-    # 总结输出
-    if response == "[Local Message] 等待ChatGLMFT响应中 ...":
-        response = "[Local Message] ChatGLMFT响应异常 ..."
+    # 出力をまとめる
+    if response == "[Local Message] ChatGLMFTの応答を待っています ...":
+        response = "[Local Message] ChatGLMFTの応答異常 ..."
     history.extend([inputs, response])
     yield from update_ui(chatbot=chatbot, history=history)

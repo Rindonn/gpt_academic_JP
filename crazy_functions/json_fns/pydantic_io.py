@@ -62,8 +62,8 @@ class GptJsonIO():
         if "type" in reduced_schema:
             del reduced_schema["type"]
         # Ensure json in context is well-formed with double quotes.
-        schema_str = json.dumps(reduced_schema)
         if self.example_instruction:
+            schema_str = json.dumps(reduced_schema)
             return PYDANTIC_FORMAT_INSTRUCTIONS.format(schema=schema_str)
         else:
             return PYDANTIC_FORMAT_INSTRUCTIONS_SIMPLE.format(schema=schema_str)
@@ -104,7 +104,7 @@ class GptJsonIO():
                 result = self.generate_output(gpt_gen_fn(repair_prompt, self.format_instructions))
                 logging.info('Repaire json success.')
             except Exception as e:
-                # 没辙了，放弃治疗
+                # 没辙了，放棄する治疗
                 logging.info('Repaire json fail.')
                 raise JsonStringError('Cannot repair json.', str(e))
         return result

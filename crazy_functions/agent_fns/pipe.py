@@ -72,8 +72,8 @@ class PluginMultiprocessManager:
         if file_type.lower() in ['png', 'jpg']:
             image_path = os.path.abspath(fp)
             self.chatbot.append([
-                '检测到新生图像:',
-                f'本地文件预览: <br/><div align="center"><img src="file={image_path}"></div>'
+                '検出された新生图像:',
+                f'ローカルファイルのプレビュー: <br/><div align="center"><img src="file={image_path}"></div>'
             ])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
 
@@ -81,9 +81,9 @@ class PluginMultiprocessManager:
         # ⭐ 主进程 Docker 外挂文件夹监控
         path_to_overwatch = self.autogen_work_dir
         change_list = []
-        # 扫描路径下的所有文件, 并与self.previous_work_dir_files中所记录的文件进行对比，
-        # 如果有新文件出现，或者文件的修改时间发生变化，则更新self.previous_work_dir_files中
-        # 把新文件和发生变化的文件的路径记录到 change_list 中
+        # 扫描路径下的所有文件, 并与self.previous_work_dir_files中所记录のファイル进行对比，
+        # ある場合新文件出现，または文件的修改時间发生变化，则更新self.previous_work_dir_files中
+        # 把新文件and发生变化のファイル的路径记录到 change_list 中
         for root, dirs, files in os.walk(path_to_overwatch):
             for file in files:
                 file_path = os.path.join(root, file)
@@ -103,7 +103,7 @@ class PluginMultiprocessManager:
                 file_links += f'<br/><a href="file={res}" target="_blank">{res}</a>'
                 yield from self.immediate_showoff_when_possible(f)
 
-            self.chatbot.append(['检测到新生文档.', f'文档清单如下: {file_links}'])
+            self.chatbot.append(['検出された新生文档.', f'文档清单如下: {file_links}'])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
         return change_list
 
@@ -115,7 +115,7 @@ class PluginMultiprocessManager:
             self.parent_conn = self.launch_subprocess_with_pipe() # ⭐⭐⭐
         repeated, cmd_to_autogen = self.send_command(txt)
         if txt == 'exit':
-            self.chatbot.append([f"结束", "结束信号已明确，终止AutoGen程序。"])
+            self.chatbot.append([f"終了する", "終了する信号已明确，终止AutoGen程序。"])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
             self.terminate()
             return "terminate"
@@ -130,15 +130,15 @@ class PluginMultiprocessManager:
                 return "terminate"
             if self.parent_conn.poll():
                 self.feed_heartbeat_watchdog()
-                if "[GPT-Academic] 等待中" in self.chatbot[-1][-1]:
+                if "[GPT-Academic] 待機中" in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)  # remove the last line
-                if "等待您的进一步指令" in self.chatbot[-1][-1]:
+                if "待つ您的进一步指令" in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)  # remove the last line
-                if '[GPT-Academic] 等待中' in self.chatbot[-1][-1]:
+                if '[GPT-Academic] 待機中' in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)    # remove the last line
                 msg = self.parent_conn.recv() # PipeCom
                 if msg.cmd == "done":
-                    self.chatbot.append([f"结束", msg.content])
+                    self.chatbot.append([f"終了する", msg.content])
                     self.cnt += 1
                     yield from update_ui(chatbot=self.chatbot, history=self.history)
                     self.terminate()
@@ -146,30 +146,30 @@ class PluginMultiprocessManager:
                 if msg.cmd == "show":
                     yield from self.overwatch_workdir_file_change()
                     notice = ""
-                    if repeated: notice = "（自动忽略重复的输入）"
-                    self.chatbot.append([f"运行阶段-{self.cnt}（上次用户反馈输入为: 「{cmd_to_autogen}」{notice}", msg.content])
+                    if repeated: notice = "（自动忽略重复的入力）"
+                    self.chatbot.append([f"运行阶段-{self.cnt}（上次ユーザーフィードバック入力为: 「{cmd_to_autogen}」{notice}", msg.content])
                     self.cnt += 1
                     yield from update_ui(chatbot=self.chatbot, history=self.history)
                 if msg.cmd == "interact":
                     yield from self.overwatch_workdir_file_change()
-                    self.chatbot.append([f"程序抵达用户反馈节点.", msg.content +
-                                         "\n\n等待您的进一步指令." +
-                                         "\n\n(1) 一般情况下您不需要说什么, 清空输入区, 然后直接点击“提交”以继续. " +
-                                         "\n\n(2) 如果您需要补充些什么, 输入要反馈的内容, 直接点击“提交”以继续. " +
-                                         "\n\n(3) 如果您想终止程序, 输入exit, 直接点击“提交”以终止AutoGen并解锁. "
+                    self.chatbot.append([f"程序抵达ユーザーフィードバック节点.", msg.content +
+                                         "\n\n待つ您的进一步指令." +
+                                         "\n\n(1) 一般情况下您不需要言う什么, 清空入力エリア, 然后直接点击“提出”以继续. " +
+                                         "\n\n(2) 如果您需要补充些什么, 入力要反馈的内容, 直接点击“提出”以继续. " +
+                                         "\n\n(3) 如果您想终止程序, 入力exit, 直接点击“提出”以终止AutoGen并解锁. "
                     ])
                     yield from update_ui(chatbot=self.chatbot, history=self.history)
                     # do not terminate here, leave the subprocess_worker instance alive
                     return "wait_feedback"
             else:
                 self.feed_heartbeat_watchdog()
-                if '[GPT-Academic] 等待中' not in self.chatbot[-1][-1]:
+                if '[GPT-Academic] 待機中' not in self.chatbot[-1][-1]:
                     # begin_waiting_time = time.time()
-                    self.chatbot.append(["[GPT-Academic] 等待AutoGen执行结果 ...", "[GPT-Academic] 等待中"])
-                self.chatbot[-1] = [self.chatbot[-1][0], self.chatbot[-1][1].replace("[GPT-Academic] 等待中", "[GPT-Academic] 等待中.")]
+                    self.chatbot.append(["[GPT-Academic] 待つAutoGen执行结果 ...", "[GPT-Academic] 待機中"])
+                self.chatbot[-1] = [self.chatbot[-1][0], self.chatbot[-1][1].replace("[GPT-Academic] 待機中", "[GPT-Academic] 待機中.")]
                 yield from update_ui(chatbot=self.chatbot, history=self.history)
                 # if time.time() - begin_waiting_time > patience:
-                #     self.chatbot.append([f"结束", "等待超时, 终止AutoGen程序。"])
+                #     self.chatbot.append([f"終了する", "待つ超時, 终止AutoGen程序。"])
                 #     yield from update_ui(chatbot=self.chatbot, history=self.history)
                 #     self.terminate()
                 #     return "terminate"

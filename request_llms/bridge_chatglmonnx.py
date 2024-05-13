@@ -20,14 +20,14 @@ from .chatglmoonx import ChatGLMModel, chat_template
 class GetONNXGLMHandle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         import os, glob
-        if not len(glob.glob("./request_llms/ChatGLM-6b-onnx-u8s8/chatglm-6b-int8-onnx-merged/*.bin")) >= 7: # 该模型有七个 bin 文件
+        if not len(glob.glob("./request_llms/ChatGLM-6b-onnx-u8s8/chatglm-6b-int8-onnx-merged/*.bin")) >= 7: # 该模型有七pieces bin 文件
             from huggingface_hub import snapshot_download
             snapshot_download(repo_id="K024/ChatGLM-6b-onnx-u8s8", local_dir="./request_llms/ChatGLM-6b-onnx-u8s8")
         def create_model():
@@ -39,7 +39,7 @@ class GetONNXGLMHandle(LocalLLMHandle):
         return self._model, None
 
     def llm_stream_generator(self, **kwargs):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         def adaptor(kwargs):
             query = kwargs['query']
             max_length = kwargs['max_length']
@@ -62,7 +62,7 @@ class GetONNXGLMHandle(LocalLLMHandle):
 
     def try_to_import_special_deps(self, **kwargs):
         # import something that will raise error if the user does not install requirement_*.txt
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ 子进程执行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
         pass
 
 

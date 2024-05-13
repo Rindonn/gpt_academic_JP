@@ -42,7 +42,7 @@ def file_manifest_filter_type(file_list, filter_: list = None):
 
 
 def zip_extract_member_new(self, member, targetpath, pwd):
-    # 修复中文乱码的问题
+    # 修复中文乱码的問題
     """Extract the ZipInfo object 'member' to a physical
         file on the path targetpath.
     """
@@ -98,25 +98,17 @@ def extract_archive(file_path, dest_dir):
     # Extract the archive based on its extension
     if file_extension == ".zip":
         with zipfile.ZipFile(file_path, "r") as zipobj:
-            zipobj._extract_member = lambda a,b,c: zip_extract_member_new(zipobj, a,b,c)    # 修复中文乱码的问题
+            zipobj._extract_member = lambda a,b,c: zip_extract_member_new(zipobj, a,b,c)    # 修复中文乱码的問題
             zipobj.extractall(path=dest_dir)
             print("Successfully extracted zip archive to {}".format(dest_dir))
 
     elif file_extension in [".tar", ".gz", ".bz2"]:
         with tarfile.open(file_path, "r:*") as tarobj:
-            # 清理提取路径，移除任何不安全的元素
-            for member in tarobj.getmembers():
-                member_path = os.path.normpath(member.name)
-                full_path = os.path.join(dest_dir, member_path)
-                full_path = os.path.abspath(full_path)
-                if not full_path.startswith(os.path.abspath(dest_dir) + os.sep):
-                    raise Exception(f"Attempted Path Traversal in {member.name}")
-
             tarobj.extractall(path=dest_dir)
             print("Successfully extracted tar archive to {}".format(dest_dir))
 
-    # 第三方库，需要预先pip install rarfile
-    # 此外，Windows上还需要安装winrar软件，配置其Path环境变量，如"C:\Program Files\WinRAR"才可以
+    # サードパーティのライブラリ，rarfileを事前にpip installする必要があります
+    # さらに，Windowsにはwinrarソフトウェアのインストールが必要です，そのPath環境変数を設定する，如"C:\Program Files\WinRAR"才可以
     elif file_extension == ".rar":
         try:
             import rarfile
@@ -126,9 +118,9 @@ def extract_archive(file_path, dest_dir):
                 print("Successfully extracted rar archive to {}".format(dest_dir))
         except:
             print("Rar format requires additional dependencies to install")
-            return "\n\n解压失败! 需要安装pip install rarfile来解压rar文件。建议：使用zip压缩格式。"
+            return "\n\n解凍に失敗しました！rarファイルを解凍するにはpip install rarfileをインストールする必要があります。提案する：使用するzip压缩フォーマット。"
 
-    # 第三方库，需要预先pip install py7zr
+    # サードパーティのライブラリ，事前にpip install py7zrが必要です
     elif file_extension == ".7z":
         try:
             import py7zr
@@ -138,7 +130,7 @@ def extract_archive(file_path, dest_dir):
                 print("Successfully extracted 7z archive to {}".format(dest_dir))
         except:
             print("7z format requires additional dependencies to install")
-            return "\n\n解压失败! 需要安装pip install py7zr来解压7z文件"
+            return "\n\n解凍に失敗しました！7zファイルを解凍するにはpip install py7zrをインストールする必要があります"
     else:
         return ""
     return ""

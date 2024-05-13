@@ -10,9 +10,9 @@ from textwrap import dedent
 def get_core_functions():
     return {
 
-        "学术语料润色": {
-            # [1*] 前缀字符串，会被加在你的输入之前。例如，用来描述你的要求，例如翻译、解释代码、润色等等。
-            #      这里填一个提示词字符串就行了，这里为了区分中英文情景搞复杂了一点
+        "学术语料校正中": {
+            # [1*] テキストの翻訳文字列，あなたの入力の前に追加されます。例えば，要求を説明するために使用するされます，例えば翻訳、コードの説明、修正など。
+            #      这里填一piecesヒント词文字列就行了，这里为了区分中英文情景搞复杂了一点
             "Prefix":   build_gpt_academic_masked_string_langbased(
                             text_show_english=
                                 r"Below is a paragraph from an academic paper. Polish the writing to meet the academic style, "
@@ -20,32 +20,32 @@ def get_core_functions():
                                 r"Firstly, you should provide the polished paragraph. "
                                 r"Secondly, you should list all your modification and explain the reasons to do so in markdown table.",
                             text_show_chinese=
-                                r"作为一名中文学术论文写作改进助理，你的任务是改进所提供文本的拼写、语法、清晰、简洁和整体可读性，"
-                                r"同时分解长句，减少重复，并提供改进建议。请先提供文本的更正版本，然后在markdown表格中列出修改的内容，并给出修改的理由:"
+                                r"中国語学術論文の執筆改善アシスタントとして，Your task is to improve the spelling, grammar, clarity, conciseness, and overall readability of the provided text，"
+                                r"同時に長い文を分解する，重複を減らす，And provide improvement suggestions。请先提供文本的更正版本，然后在markdown表格中列出修改的内容，并给出修改的理由:"
                         ) + "\n\n",
-            # [2*] 后缀字符串，会被加在你的输入之后。例如，配合前缀可以把你的输入内容用引号圈起来
+            # [2*] 后缀文字列，あなたの入力の後に追加されます。例えば，接頭辞と組み合わせて、入力内容を引用符で囲むことができます
             "Suffix":   r"",
-            # [3] 按钮颜色 (可选参数，默认 secondary)
+            # [3] ボタンの色 (オプションパラメータ，デフォルトのセカンダリ)
             "Color":    r"secondary",
-            # [4] 按钮是否可见 (可选参数，默认 True，即可见)
+            # [4] ボタンが表示可能かどうか (オプションパラメータ，原始文本，テキストの翻訳)
             "Visible": True,
-            # [5] 是否在触发时清除历史 (可选参数，默认 False，即不处理之前的对话历史)
+            # [5] 原始文本 (オプションパラメータ，デフォルトはFalseです，以前の対話履歴を処理しない)
             "AutoClearHistory": False,
-            # [6] 文本预处理 （可选参数，默认 None，举例：写个函数移除所有的换行符）
+            # [6] 文本前処理 （オプションパラメータ，# None，例を挙げる：写pieces函数移除所有的换行符）
             "PreProcess": None,
         },
 
 
         "总结绘制脑图": {
-            # 前缀，会被加在你的输入之前。例如，用来描述你的要求，例如翻译、解释代码、润色等等
+            # テキストの翻訳，あなたの入力の前に追加されます。例えば，要求を説明するために使用するされます，例えば翻訳、コードの説明、修正など
             "Prefix":   '''"""\n\n''',
-            # 后缀，会被加在你的输入之后。例如，配合前缀可以把你的输入内容用引号圈起来
+            # 后缀，あなたの入力の後に追加されます。例えば，接頭辞と組み合わせて、入力内容を引用符で囲むことができます
             "Suffix":
-                # dedent() 函数用于去除多行字符串的缩进
+                # dedent() 函数用于去除多行文字列的缩进
                 dedent("\n\n"+r'''
                     """
 
-                    使用mermaid flowchart对以上文本进行总结，概括上述段落的内容以及内在逻辑关系，例如：
+                    使用するmermaid flowchart对以上文本进行总结，概括上述段落的内容以及内在逻辑关系，例えば：
 
                     以下是对以上文本的总结，以mermaid flowchart的形式展示：
                     ```mermaid
@@ -58,15 +58,15 @@ def get_core_functions():
                     ```
 
                     注意：
-                    （1）使用中文
-                    （2）节点名字使用引号包裹，如["Laptop"]
-                    （3）`|` 和 `"`之间不要存在空格
-                    （4）根据情况选择flowchart LR（从左到右）或者flowchart TD（从上到下）
+                    （1）使用する中文
+                    （2）节点名字使用する引号包裹，如["Laptop"]
+                    （3）`|` and `"`之间不要存在空格
+                    （4）根据情况选择flowchart LR（从左到右）またはflowchart TD（从上到下）
                 '''),
         },
 
 
-        "查找语法错误": {
+        "構文エラーを検索する": {
             "Prefix":   r"Help me ensure that the grammar and the spelling is correct. "
                         r"Do not try to polish the text, if no mistake is found, tell me that this paragraph is good. "
                         r"If you find grammar or spelling mistakes, please list mistakes you find in a two-column markdown table, "
@@ -83,11 +83,11 @@ def get_core_functions():
                         r"You need to report all grammar and spelling mistakes as the example before."
                         + "\n\n",
             "Suffix":   r"",
-            "PreProcess": clear_line_break,    # 预处理：清除换行符
+            "PreProcess": clear_line_break,    # 前処理：改行をクリアする
         },
 
 
-        "中译英": {
+        "中国語から英語への翻訳": {
             "Prefix":   r"Please translate following sentence to English:" + "\n\n",
             "Suffix":   r"",
         },
@@ -105,37 +105,37 @@ def get_core_functions():
                                 r"and experience about effective writing techniques to reply. "
                                 r"I'll give you my paragraphs as follows, tell me what language it is written in, and then translate:",
                             text_show_english=
-                                r"你是经验丰富的翻译，请把以下学术文章段落翻译成中文，"
-                                r"并同时充分考虑中文的语法、清晰、简洁和整体可读性，"
-                                r"必要时，你可以修改整个句子的顺序以确保翻译后的段落符合中文的语言习惯。"
-                                r"你需要翻译的文本如下："
+                                r"你是经验丰富的翻訳，请把以下学术文章段落翻訳成中文，"
+                                r"并同時充分考虑中文的语法、清晰、简洁and整体可读性，"
+                                r"必要に応じて，你可以修改整pieces句子的顺序以确保翻訳后的段落符合中文的语言习惯。"
+                                r"你需要翻訳的文本如下："
                         ) + "\n\n",
             "Suffix":   r"",
         },
 
 
-        "英译中": {
-            "Prefix":   r"翻译成地道的中文：" + "\n\n",
+        "英語から中国語への翻訳": {
+            "Prefix":   r"自然な中国語に翻訳する：" + "\n\n",
             "Suffix":   r"",
             "Visible":  False,
         },
 
 
-        "找图片": {
-            "Prefix":   r"我需要你找一张网络图片。使用Unsplash API(https://source.unsplash.com/960x640/?<英语关键词>)获取图片URL，"
-                        r"然后请使用Markdown格式封装，并且不要有反斜线，不要用代码块。现在，请按以下描述给我发送图片：" + "\n\n",
+        "画像を検索する": {
+            "Prefix":   r"インターネット上の画像を探してください。Unsplash APIを使用するする(https://source.unsplash.com/960x640/?<英語のキーワード>)画像のURLを取得する，"
+                        r"次に、Markdown形式でパッケージ化してください，そしてバックスラッシュを含めないでください，コードブロックを使用するしないでください。今，以下の説明に従って画像を送信してください：" + "\n\n",
             "Suffix":   r"",
             "Visible":  False,
         },
 
 
-        "解释代码": {
-            "Prefix":   r"请解释以下代码：" + "\n```\n",
+        "Explain the code": {
+            "Prefix":   r"以下のコードを説明してください：" + "\n```\n",
             "Suffix":   "\n```\n",
         },
 
 
-        "参考文献转Bib": {
+        "参考文献をBibに変換する": {
             "Prefix":   r"Here are some bibliography items, please transform them into bibtex style."
                         r"Note that, reference styles maybe more than one kind, you should transform each item correctly."
                         r"Items need to be transformed:" + "\n\n",
@@ -147,7 +147,7 @@ def get_core_functions():
 
 def handle_core_functionality(additional_fn, inputs, history, chatbot):
     import core_functional
-    importlib.reload(core_functional)    # 热更新prompt
+    importlib.reload(core_functional)    # プロンプトのホット更新
     core_functional = core_functional.get_core_functions()
     addition = chatbot._cookies['customize_fn_overwrite']
     if additional_fn in addition:
@@ -158,8 +158,8 @@ def handle_core_functionality(additional_fn, inputs, history, chatbot):
         # 预制功能
         if "PreProcess" in core_functional[additional_fn]:
             if core_functional[additional_fn]["PreProcess"] is not None:
-                inputs = core_functional[additional_fn]["PreProcess"](inputs)  # 获取预处理函数（如果有的话）
-        # 为字符串加上上面定义的前缀和后缀。
+                inputs = core_functional[additional_fn]["PreProcess"](inputs)  # 前処理関数を取得する（ある場合は）
+        # 为文字列加上上面定义的テキストの翻訳and后缀。
         inputs = apply_gpt_academic_string_mask_langbased(
             string = core_functional[additional_fn]["Prefix"] + inputs + core_functional[additional_fn]["Suffix"],
             lang_reference = inputs,

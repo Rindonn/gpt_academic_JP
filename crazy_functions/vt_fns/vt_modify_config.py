@@ -15,14 +15,14 @@ def modify_configuration_hot(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
         )
         return
 
-    # ⭐ ⭐ ⭐ 读取可配置项目条目
+    # ⭐ ⭐ ⭐ 读取可配置项目条項目
     names = {}
     from enum import Enum
     import config
     for k, v in config.__dict__.items():
         if k.startswith('__'): continue
         names.update({k:k})
-        # if len(names) > 20: break   # 限制最多前10个配置项，如果太多了会导致gpt无法理解
+        # if len(names) > 20: break   # 限制最多前10pieces配置项，如果太多了会导致gptなし法理解
 
     ConfigOptions = Enum('ConfigOptions', names)
     class ModifyConfigurationIntention(BaseModel):
@@ -58,11 +58,11 @@ def modify_configuration_hot(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
         set_conf(explicit_conf, user_intention.new_option_value)
 
         yield from update_ui_lastest_msg(
-            lastmsg=f"正在执行任务: {txt}\n\n配置修改完成，重新页面即可生效。", chatbot=chatbot, history=history, delay=1
+            lastmsg=f"正在执行任务: {txt}\n\n配置修改完了，重新页面即可生效。", chatbot=chatbot, history=history, delay=1
         )
     else:
         yield from update_ui_lastest_msg(
-            lastmsg=f"失败，如果需要配置{explicit_conf}，您需要明确说明并在指令中提到它。", chatbot=chatbot, history=history, delay=5
+            lastmsg=f"失敗しました，如果需要配置{explicit_conf}，您需要明确言う明并在指令中提到它。", chatbot=chatbot, history=history, delay=5
         )
 
 def modify_configuration_reboot(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_intention):
@@ -76,6 +76,6 @@ def modify_configuration_reboot(txt, llm_kwargs, plugin_kwargs, chatbot, history
 
     yield from modify_configuration_hot(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_intention)
     yield from update_ui_lastest_msg(
-        lastmsg=f"正在执行任务: {txt}\n\n配置修改完成，五秒后即将重启！若出现报错请无视即可。", chatbot=chatbot, history=history, delay=5
+        lastmsg=f"正在执行任务: {txt}\n\n配置修改完了，五秒后即置き換える重启！若出现报错请なし视即可。", chatbot=chatbot, history=history, delay=5
     )
     os.execl(sys.executable, sys.executable, *sys.argv)

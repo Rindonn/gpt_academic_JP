@@ -4,24 +4,24 @@ import os
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 接驳void-terminal:
     - set_conf:                     在运行过程中动态地修改配置
-    - set_multi_conf:               在运行过程中动态地修改多个配置
-    - get_plugin_handle:            获取插件的句柄
-    - get_plugin_default_kwargs:    获取插件的默认参数
+    - set_multi_conf:               在运行过程中动态地修改多pieces配置
+    - get_plugin_handle:            获取プラグイン的句柄
+    - get_plugin_default_kwargs:    获取プラグイン的#パラメータ
     - get_chat_handle:              获取简单聊天的句柄
-    - get_chat_default_kwargs:      获取简单聊天的默认参数
+    - get_chat_default_kwargs:      获取简单聊天的#パラメータ
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 
 
 def get_plugin_handle(plugin_name):
     """
-    e.g. plugin_name = 'crazy_functions.批量Markdown翻译->Markdown翻译指定语言'
+    e.g. plugin_name = 'crazy_functions.BatchTranslateMarkdown->TranslateMarkdownToSpecifiedLanguage'
     """
     import importlib
 
     assert (
         "->" in plugin_name
-    ), "Example of plugin_name: crazy_functions.批量Markdown翻译->Markdown翻译指定语言"
+    ), "Example of plugin_name: crazy_functions.BatchTranslateMarkdown->TranslateMarkdownToSpecifiedLanguage"
     module, fn_name = plugin_name.split("->")
     f_hot_reload = getattr(importlib.import_module(module, fn_name), fn_name)
     return f_hot_reload

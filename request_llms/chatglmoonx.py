@@ -51,7 +51,7 @@ def chat_template(history: list[tuple[str, str]], current: str):
 
 def process_response(response: str):
     response = response.strip()
-    response = response.replace("[[训练时间]]", "2023年")
+    response = response.replace("[[训练時间]]", "2023年")
     punkts = [
         [",", "，"],
         ["!", "！"],

@@ -2,21 +2,21 @@ import importlib
 import time
 import os
 from functools import lru_cache
-from colorful import print亮红, print亮绿, print亮蓝
+from colorful import PrintBrightRed, PrintBrightGreen, PrintBrightBlue
 
 pj = os.path.join
 default_user_name = 'default_user'
 
 def read_env_variable(arg, default_value):
     """
-    环境变量可以是 `GPT_ACADEMIC_CONFIG`(优先)，也可以直接是`CONFIG`
-    例如在windows cmd中，既可以写：
+    環境変数は次のようにすることができます `GPT_ACADEMIC_CONFIG`(優先)，直接であることもできます`CONFIG`
+    例えば、Windowsのcmdで，書くことができます：
         set USE_PROXY=True
         set API_KEY=sk-j7caBpkRoxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         set proxies={"http":"http://127.0.0.1:10085", "https":"http://127.0.0.1:10085",}
         set AVAIL_LLM_MODELS=["gpt-3.5-turbo", "chatglm"]
         set AUTHENTICATION=[("username", "password"), ("username2", "password2")]
-    也可以写：
+    書くこともできます：
         set GPT_ACADEMIC_USE_PROXY=True
         set GPT_ACADEMIC_API_KEY=sk-j7caBpkRoxxxxxxxxxxxxxxxxxxxxxxxxxxxx
         set GPT_ACADEMIC_proxies={"http":"http://127.0.0.1:10085", "https":"http://127.0.0.1:10085",}
@@ -30,7 +30,7 @@ def read_env_variable(arg, default_value):
         env_arg = os.environ[arg]
     else:
         raise KeyError
-    print(f"[ENV_VAR] 尝试加载{arg}，默认值：{default_value} --> 修正值：{env_arg}")
+    print(f"[ENV_VAR] 読み込みを試みる{arg}，デフォルト値：{default_value} --> 修正値：{env_arg}")
     try:
         if isinstance(default_value, bool):
             env_arg = env_arg.strip()
@@ -51,13 +51,13 @@ def read_env_variable(arg, default_value):
             assert arg == "proxies"
             r = eval(env_arg)
         else:
-            print亮红(f"[ENV_VAR] 环境变量{arg}不支持通过环境变量设置! ")
+            PrintBrightRed(f"[ENV_VAR] 環境変数{arg}環境変数を介して設定することはできません！ ")
             raise KeyError
     except:
-        print亮红(f"[ENV_VAR] 环境变量{arg}加载失败! ")
-        raise KeyError(f"[ENV_VAR] 环境变量{arg}加载失败! ")
+        PrintBrightRed(f"[ENV_VAR] 環境変数{arg}読み込みに失敗しました！ ")
+        raise KeyError(f"[ENV_VAR] 環境変数{arg}読み込みに失敗しました！ ")
 
-    print亮绿(f"[ENV_VAR] 成功读取环境变量{arg}")
+    PrintBrightGreen(f"[ENV_VAR] 環境変数の読み取りに成功しました{arg}")
     return r
 
 
@@ -65,49 +65,49 @@ def read_env_variable(arg, default_value):
 def read_single_conf_with_lru_cache(arg):
     from shared_utils.key_pattern_manager import is_any_api_key
     try:
-        # 优先级1. 获取环境变量作为配置
-        default_ref = getattr(importlib.import_module('config'), arg) # 读取默认值作为数据类型转换的参考
+        # 優先度1. 環境変数を設定として取得する
+        default_ref = getattr(importlib.import_module('config'), arg) # デフォルト値を読み取り、データ型変換の参考にする
         r = read_env_variable(arg, default_ref)
     except:
         try:
-            # 优先级2. 获取config_private中的配置
+            # 優先度2. config_privateから設定を取得する
             r = getattr(importlib.import_module('config_private'), arg)
         except:
-            # 优先级3. 获取config中的配置
+            # 優先度3. configから設定を取得する
             r = getattr(importlib.import_module('config'), arg)
 
-    # 在读取API_KEY时，检查一下是不是忘了改config
+    # API_KEYの読み取り時，configを変更するのを忘れていないか確認してください
     if arg == 'API_URL_REDIRECT':
-        oai_rd = r.get("https://api.openai.com/v1/chat/completions", None) # API_URL_REDIRECT填写格式是错误的，请阅读`https://github.com/binary-husky/gpt_academic/wiki/项目配置说明`
+        oai_rd = r.get("https://api.openai.com/v1/chat/completions", None) # API_URL_REDIRECT入力フォーマットは错误的，请阅读`https://github.com/binary-husky/gpt_academic/wiki/项目配置言う明`
         if oai_rd and not oai_rd.endswith('/completions'):
-            print亮红("\n\n[API_URL_REDIRECT] API_URL_REDIRECT填错了。请阅读`https://github.com/binary-husky/gpt_academic/wiki/项目配置说明`。如果您确信自己没填错，无视此消息即可。")
+            PrintBrightRed("\n\n[API_URL_REDIRECT] API_URL_REDIRECT填错了。请阅读`https://github.com/binary-husky/gpt_academic/wiki/项目配置言う明`。如果您确信自己没填错，なし视此消息即可。")
             time.sleep(5)
     if arg == 'API_KEY':
-        print亮蓝(f"[API_KEY] 本项目现已支持OpenAI和Azure的api-key。也支持同时填写多个api-key，如API_KEY=\"openai-key1,openai-key2,azure-key3\"")
-        print亮蓝(f"[API_KEY] 您既可以在config.py中修改api-key(s)，也可以在问题输入区输入临时的api-key(s)，然后回车键提交后即可生效。")
+        PrintBrightBlue(f"[API_KEY] このプロジェクトは、OpenAIおよびAzureのAPIキーをサポートしています。複数のAPIキーを同時に入力することもできます，如API_KEY=\"openai-key1,openai-key2,azure-key3\"")
+        PrintBrightBlue(f"[API_KEY] config.pyでapi-keyを変更することができます(s)，You can also enter a temporary api-key in the question input area(s)，Enterキーを押して送信すると有効になります。")
         if is_any_api_key(r):
-            print亮绿(f"[API_KEY] 您的 API_KEY 是: {r[:15]}*** API_KEY 导入成功")
+            PrintBrightGreen(f"[API_KEY] あなたのAPI_KEYは: {r[:15]}*** API_KEY imported successfully")
         else:
-            print亮红("[API_KEY] 您的 API_KEY 不满足任何一种已知的密钥格式，请在config文件中修改API密钥之后再运行。")
+            PrintBrightRed("[API_KEY] テキストの翻訳，APIキーを変更した後にconfigファイルで実行してください。")
     if arg == 'proxies':
-        if not read_single_conf_with_lru_cache('USE_PROXY'): r = None # 检查USE_PROXY，防止proxies单独起作用
+        if not read_single_conf_with_lru_cache('USE_PROXY'): r = None # USE_PROXYを確認する，防止proxies单独起作用
         if r is None:
-            print亮红('[PROXY] 网络代理状态：未配置。无代理状态下很可能无法访问OpenAI家族的模型。建议：检查USE_PROXY选项是否修改。')
+            PrintBrightRed('[PROXY] ネットワークプロキシの状態：設定されていません。It is very likely that you cannot access the OpenAI family of models without a proxy。提案する：USE_PROXYオプションが変更されているかどうかを確認してください。')
         else:
-            print亮绿('[PROXY] 网络代理状态：已配置。配置信息如下：', r)
-            assert isinstance(r, dict), 'proxies格式错误，请注意proxies选项的格式，不要遗漏括号。'
+            PrintBrightGreen('[PROXY] ネットワークプロキシの状態：設定済み。以下は構成情報です：', r)
+            assert isinstance(r, dict), 'プロキシの形式が正しくありません，proxiesオプションの形式に注意してください，括弧を省略しないでください。'
     return r
 
 
 @lru_cache(maxsize=128)
 def get_conf(*args):
     """
-    本项目的所有配置都集中在config.py中。 修改配置有三种方法，您只需要选择其中一种即可：
+    本项目的所有配置都集中在config.py中。 修改配置有三种テキストの翻訳，您只需要选择其中一种即可：
         - 直接修改config.py
         - 创建并修改config_private.py
-        - 修改环境变量（修改docker-compose.yml等价于修改容器内部的环境变量）
+        - 修改環境変数（修改docker-compose.yml等价于修改容器内部的環境変数）
 
-    注意：如果您使用docker-compose部署，请修改docker-compose（等价于修改容器内部的环境变量）
+    注意：如果您使用するdocker-compose部署，请修改docker-compose（等价于修改容器内部的環境変数）
     """
     res = []
     for arg in args:

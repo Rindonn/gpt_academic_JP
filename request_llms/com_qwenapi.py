@@ -55,14 +55,14 @@ class QwenRequestInstance():
                     yield self.result_buf
                     break
                 elif response.output.choices[0].finish_reason == 'length':
-                    self.result_buf += "[Local Message] 生成长度过长，后续输出被截断"
+                    self.result_buf += "[Local Message] 生成长度过长，后续出力被截断"
                     yield self.result_buf
                     break
                 else:
                     self.result_buf += response.output.choices[0].message.content
                     yield self.result_buf
             else:
-                self.result_buf += f"[Local Message] 请求错误：状态码：{response.status_code}，错误码:{response.code}，消息：{response.message}"
+                self.result_buf += f"[Local Message] 请求错误：ステータス码：{response.status_code}，错误码:{response.code}，消息：{response.message}"
                 yield self.result_buf
                 break
         logging.info(f'[raw_input] {inputs}')

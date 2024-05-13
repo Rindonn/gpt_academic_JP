@@ -14,7 +14,7 @@ def is_openai_api_key(key):
     if len(CUSTOM_API_KEY_PATTERN) != 0:
         API_MATCH_ORIGINAL = re.match(CUSTOM_API_KEY_PATTERN, key)
     else:
-        API_MATCH_ORIGINAL = re.match(r"sk-[a-zA-Z0-9]{48}$|sk-proj-[a-zA-Z0-9]{48}$|sess-[a-zA-Z0-9]{40}$", key)
+        API_MATCH_ORIGINAL = re.match(r"sk-[a-zA-Z0-9]{48}$|sess-[a-zA-Z0-9]{40}$", key)
     return bool(API_MATCH_ORIGINAL)
 
 
@@ -28,11 +28,6 @@ def is_api2d_key(key):
     return bool(API_MATCH_API2D)
 
 
-def is_cohere_api_key(key):
-    API_MATCH_AZURE = re.match(r"[a-zA-Z0-9]{40}$", key)
-    return bool(API_MATCH_AZURE)
-
-
 def is_any_api_key(key):
     if ',' in key:
         keys = key.split(',')
@@ -40,7 +35,7 @@ def is_any_api_key(key):
             if is_any_api_key(k): return True
         return False
     else:
-        return is_openai_api_key(key) or is_api2d_key(key) or is_azure_api_key(key) or is_cohere_api_key(key)
+        return is_openai_api_key(key) or is_api2d_key(key) or is_azure_api_key(key)
 
 
 def what_keys(keys):
@@ -59,7 +54,7 @@ def what_keys(keys):
         if is_azure_api_key(k):
             avail_key_list['Azure Key'] += 1
 
-    return f"检测到： OpenAI Key {avail_key_list['OpenAI Key']} 个, Azure Key {avail_key_list['Azure Key']} 个, API2D Key {avail_key_list['API2D Key']} 个"
+    return f"検出された： OpenAI Key {avail_key_list['OpenAI Key']} pieces, Azure Key {avail_key_list['Azure Key']} pieces, API2D Key {avail_key_list['API2D Key']} pieces"
 
 
 def select_api_key(keys, llm_model):
@@ -79,12 +74,8 @@ def select_api_key(keys, llm_model):
         for k in key_list:
             if is_azure_api_key(k): avail_key_list.append(k)
 
-    if llm_model.startswith('cohere-'):
-        for k in key_list:
-            if is_cohere_api_key(k): avail_key_list.append(k)
-
     if len(avail_key_list) == 0:
-        raise RuntimeError(f"您提供的api-key不满足要求，不包含任何可用于{llm_model}的api-key。您可能选择了错误的模型或请求源（左上角更换模型菜单中可切换openai,azure,claude,cohere等请求源）。")
+        raise RuntimeError(f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_model}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります（右下のモデルメニューでopenaiを切り替えることができます,azure,claude,api2dなどのリクエストソース）。")
 
-    api_key = random.choice(avail_key_list) # 随机负载均衡
+    api_key = random.choice(avail_key_list) # ランダムな負荷分散
     return api_key

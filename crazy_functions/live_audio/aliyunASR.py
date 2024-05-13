@@ -139,7 +139,7 @@ class AliyunASR():
         pass
 
     def audio_convertion_thread(self, uuid):
-        # 在一个异步线程中采集音频
+        # 非同期スレッドでオーディオを収集する
         import nls  # pip install git+https://github.com/aliyun/alibabacloud-nls-python-sdk.git
         import tempfile
         from scipy import io
@@ -179,7 +179,7 @@ class AliyunASR():
         vad = webrtcvad.Vad()
         vad.set_mode(1)
 
-        is_previous_frame_transmitted = False   # 上一帧是否有人说话
+        is_previous_frame_transmitted = False   # 上一帧是否有人言う话
         previous_frame_data = None
         echo_cnt = 0        # 在没有声音之后，继续向服务器发送n次音频数据
         echo_cnt_max = 4   # 在没有声音之后，继续向服务器发送n次音频数据
@@ -199,20 +199,20 @@ class AliyunASR():
                 if is_speaking or echo_cnt > 0:
                     # 如果话筒激活 / 如果处于回声收尾阶段
                     echo_cnt -= 1
-                    if not is_previous_frame_transmitted:   # 上一帧没有人声，但是我们把上一帧同样加上
+                    if not is_previous_frame_transmitted:   # 上一帧没有人声，但是私たちは把上一帧同样加上
                         if previous_frame_data is not None: data = previous_frame_data + data
                     if is_speaking:
                         echo_cnt = echo_cnt_max
-                    slices = zip(*(iter(data),) * 640)      # 640个字节为一组
+                    slices = zip(*(iter(data),) * 640)      # 640バイトごとにグループ化します
                     for i in slices: sr.send_audio(bytes(i))
                     keep_alive_last_send_time = time.time()
                     is_previous_frame_transmitted = True
                 else:
                     is_previous_frame_transmitted = False
                     echo_cnt = 0
-                    # 保持链接激活，即使没有声音，也根据时间间隔，发送一些音频片段给服务器
+                    # 保持链接激活，即使没有声音，也根据時间间隔，发送一些音频フラグメント给服务器
                     if time.time() - keep_alive_last_send_time > timeout_limit_second/2:
-                        slices = zip(*(iter(data),) * 640)    # 640个字节为一组
+                        slices = zip(*(iter(data),) * 640)    # 640バイトごとにグループ化します
                         for i in slices: sr.send_audio(bytes(i))
                         keep_alive_last_send_time = time.time()
                         is_previous_frame_transmitted = True
@@ -222,7 +222,7 @@ class AliyunASR():
 
             if not self.aliyun_service_ok:
                 self.stop = True
-                self.stop_msg = 'Aliyun音频服务异常，请检查ALIYUN_TOKEN和ALIYUN_APPKEY是否过期。'
+                self.stop_msg = 'Aliyunオーディオサービスの異常，ALIYUN_TOKENとALIYUN_APPKEYの有効期限を確認してください。'
         r = sr.stop()
 
     def get_token(self):
@@ -232,14 +232,14 @@ class AliyunASR():
         from aliyunsdkcore.client import AcsClient
         AccessKey_ID, AccessKey_secret = get_conf('ALIYUN_ACCESSKEY', 'ALIYUN_SECRET')
 
-        # 创建AcsClient实例
+        # AcsClientのインスタンスを作成する
         client = AcsClient(
             AccessKey_ID,
             AccessKey_secret,
             "cn-shanghai"
         )
 
-        # 创建request，并设置参数。
+        # リクエストの作成，パラメータを設定する。
         request = CommonRequest()
         request.set_method('POST')
         request.set_domain('nls-meta.cn-shanghai.aliyuncs.com')

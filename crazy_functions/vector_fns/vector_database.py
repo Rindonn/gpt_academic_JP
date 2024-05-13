@@ -26,16 +26,16 @@ EMBEDDING_MODEL = "text2vec"
 # Embedding running device
 EMBEDDING_DEVICE = "cpu"
 
-# 基于上下文的prompt模版，请务必保留"{question}"和"{context}"
+# 基于文脈的prompt模版，请务必保留"{question}"and"{context}"
 PROMPT_TEMPLATE = """已知信息：
 {context}
 
-根据上述已知信息，简洁和专业的来回答用户的问题。如果无法从中得到答案，请说 “根据已知信息无法回答该问题” 或 “没有提供足够的相关信息”，不允许在答案中添加编造成分，答案请使用中文。 问题是：{question}"""
+根据上述已知信息，简洁and专业的来回答用户的問題。如果なし法从中得到答案，请言う “根据已知信息なし法回答该問題” 或 “没有提供足够的相关信息”，不允许在答案中添加编造成分，答案请使用する中文。 問題是：{question}"""
 
 # 文本分句长度
 SENTENCE_SIZE = 100
 
-# 匹配后单段上下文长度
+# 匹配后单段文脈长度
 CHUNK_SIZE = 250
 
 # LLM input history length
@@ -44,14 +44,14 @@ LLM_HISTORY_LEN = 3
 # return top-k text chunk from vector store
 VECTOR_SEARCH_TOP_K = 5
 
-# 知识检索内容相关度 Score, 数值范围约为0-1100，如果为0，则不生效，经测试设置为小于500时，匹配结果更精准
+# 知识检索内容相关度 Score, 数值范围约为0-1100，如果为0，则不生效，经测试设置为小于500時，匹配结果更精准
 VECTOR_SEARCH_SCORE_THRESHOLD = 0
 
 NLTK_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "nltk_data")
 
 FLAG_USER_NAME = uuid.uuid4().hex
 
-# 是否开启跨域，默认为False，如果需要开启，请设置为True
+# 是否开启跨域，#为False，如果需要开启，请设置为True
 # is open cross domain
 OPEN_CROSS_DOMAIN = False
 
@@ -156,7 +156,7 @@ class LocalDocQA:
                 file = os.path.split(filepath)[-1]
                 try:
                     docs = load_file(filepath, SENTENCE_SIZE)
-                    print(f"{file} 已成功加载")
+                    print(f"{file} 成功しました加载")
                     loaded_files.append(filepath)
                 except Exception as e:
                     print(e)
@@ -182,7 +182,7 @@ class LocalDocQA:
             docs = []
             for file in filepath:
                 docs += load_file(file, SENTENCE_SIZE)
-                print(f"{file} 已成功加载")
+                print(f"{file} 成功しました加载")
                 loaded_files.append(file)
 
         if len(docs) > 0:
@@ -194,12 +194,12 @@ class LocalDocQA:
                 except:
                     self.vector_store = FAISS.from_documents(docs, text2vec)
             else:
-                self.vector_store = FAISS.from_documents(docs, text2vec)  # docs 为Document列表
+                self.vector_store = FAISS.from_documents(docs, text2vec)  # docs 为Documentリスト
 
             self.vector_store.save_local(vs_path)
             return vs_path, loaded_files
         else:
-            raise RuntimeError("文件加载失败，请检查文件格式是否正确")
+            raise RuntimeError("文件加载失敗しました，请检查文件フォーマット是否正确")
 
     def get_loaded_file(self, vs_path):
         ds = self.vector_store.docstore
@@ -208,10 +208,10 @@ class LocalDocQA:
 
     # query      查询内容
     # vs_path    知识库路径
-    # chunk_conent   是否启用上下文关联
+    # chunk_conent   是否启用文脈关联
     # score_threshold    搜索匹配score阈值
-    # vector_search_top_k   搜索知识库内容条数，默认搜索5条结果
-    # chunk_sizes    匹配单段内容的连接上下文长度
+    # vector_search_top_k   搜索知识库内容条項数，#搜索5条項结果
+    # chunk_sizes    匹配单段内容的连接文脈长度
     def get_knowledge_based_conent_test(self, query, vs_path, chunk_conent,
                                         score_threshold=VECTOR_SEARCH_SCORE_THRESHOLD,
                                         vector_search_top_k=VECTOR_SEARCH_TOP_K, chunk_size=CHUNK_SIZE,
@@ -229,7 +229,7 @@ class LocalDocQA:
                         "source_documents": []}
             return response, ""
         # prompt = f"{query}. You should answer this question using information from following documents: \n\n"
-        prompt = f"{query}. 你必须利用以下文档中包含的信息回答这个问题: \n\n---\n\n"
+        prompt = f"{query}. 你必须利用以下文档中包含的信息回答这pieces問題: \n\n---\n\n"
         prompt += "\n\n".join([f"({k}): " + doc.page_content for k, doc in enumerate(related_docs_with_score)])
         prompt += "\n\n---\n\n"
         prompt = prompt.encode('utf-8', 'ignore').decode()   # avoid reading non-utf8 chars
@@ -242,7 +242,7 @@ class LocalDocQA:
 
 def construct_vector_store(vs_id, vs_path, files, sentence_size, history, one_conent, one_content_segmentation, text2vec):
     for file in files:
-        assert os.path.exists(file), "输入文件不存在：" + file
+        assert os.path.exists(file), "入力文件不存在：" + file
     import nltk
     if NLTK_DATA_PATH not in nltk.data.path: nltk.data.path = [NLTK_DATA_PATH] + nltk.data.path
     local_doc_qa = LocalDocQA()
@@ -258,7 +258,7 @@ def construct_vector_store(vs_id, vs_path, files, sentence_size, history, one_co
     vs_path, loaded_files = local_doc_qa.init_knowledge_vector_store(filelist, os.path.join(vs_path, vs_id), sentence_size, text2vec)
 
     if len(loaded_files):
-        file_status = f"已添加 {'、'.join([os.path.split(i)[-1] for i in loaded_files if i])} 内容至知识库，并已加载知识库，请开始提问"
+        file_status = f"已添加 {'、'.join([os.path.split(i)[-1] for i in loaded_files if i])} 内容至知识库，并已加载知识库，请開始提问"
     else:
         pass
         # file_status = "文件未成功加载，请重新上传文件"
@@ -276,11 +276,11 @@ class knowledge_archive_interface():
 
     def get_chinese_text2vec(self):
         if self.text2vec_large_chinese is None:
-            # < -------------------预热文本向量化模组--------------- >
+            # < ------------------テキストの翻訳--------------- >
             from toolbox import ProxyNetworkActivate
             print('Checking Text2vec ...')
             from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-            with ProxyNetworkActivate('Download_LLM'):    # 临时地激活代理网络
+            with ProxyNetworkActivate('Download_LLM'):    # 临時地激活代理网络
                 self.text2vec_large_chinese = HuggingFaceEmbeddings(model_name="GanymedeNil/text2vec-large-chinese")
 
         return self.text2vec_large_chinese

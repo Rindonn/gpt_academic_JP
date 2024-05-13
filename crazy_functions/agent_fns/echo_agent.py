@@ -9,7 +9,7 @@ class EchoDemo(PluginMultiprocessManager):
             if msg.cmd == "user_input":
                 # wait futher user input
                 self.child_conn.send(PipeCom("show", msg.content))
-                wait_success = self.subprocess_worker_wait_user_feedback(wait_msg="我准备好处理下一个问题了.")
+                wait_success = self.subprocess_worker_wait_user_feedback(wait_msg="我准备好处理下一pieces問題了.")
                 if not wait_success:
                     # wait timeout, terminate this subprocess_worker
                     break

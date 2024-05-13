@@ -84,9 +84,9 @@ class GptAcademicGameBaseState():
         # 游戏主体
         yield from self.step(prompt, chatbot, history)
         self.step_cnt += 1
-        # 保存状态，收尾
+        # 保存ステータス，收尾
         self.dump_state(chatbot)
-        # 如果游戏结束，清理
+        # 如果游戏終了する，清理
         if self.delete_game:
             chatbot._cookies['lock_plugin'] = None
             chatbot._cookies[f'plugin_state/{self.get_plugin_name()}'] = None

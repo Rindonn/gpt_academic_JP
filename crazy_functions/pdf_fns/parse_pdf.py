@@ -17,7 +17,7 @@ def get_avail_grobid_url():
     GROBID_URLS = get_conf('GROBID_URLS')
     if len(GROBID_URLS) == 0: return None
     try:
-        _grobid_url = random.choice(GROBID_URLS) # 随机负载均衡
+        _grobid_url = random.choice(GROBID_URLS) # ランダムな負荷分散
         if _grobid_url.endswith('/'): _grobid_url = _grobid_url.rstrip('/')
         with ProxyNetworkActivate('Connect_Grobid'):
             res = requests.get(_grobid_url+'/api/isalive')
@@ -36,17 +36,17 @@ def parse_pdf(pdf_path, grobid_url):
     except GROBID_OFFLINE_EXCEPTION:
         raise GROBID_OFFLINE_EXCEPTION("GROBID服务不可用，请修改config中的GROBID_URL，可修改成本地GROBID服务。")
     except:
-        raise RuntimeError("解析PDF失败，请检查PDF是否损坏。")
+        raise RuntimeError("ParsePDF失敗しました，请检查PDF是否损坏。")
     return article_dict
 
 
 def produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chatbot, fp, generated_conclusion_files):
-    # -=-=-=-=-=-=-=-= 写出第1个文件：翻译前后混合 -=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-= 写出第1pieces文件：翻訳前后混合 -=-=-=-=-=-=-=-=
     res_path = write_history_to_file(meta +  ["# Meta Translation" , paper_meta_info] + gpt_response_collection, file_basename=f"{gen_time_str()}translated_and_original.md", file_fullname=None)
     promote_file_to_downloadzone(res_path, rename_file=os.path.basename(res_path)+'.md', chatbot=chatbot)
     generated_conclusion_files.append(res_path)
 
-    # -=-=-=-=-=-=-=-= 写出第2个文件：仅翻译后的文本 -=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-= 写出第2pieces文件：仅翻訳后的文本 -=-=-=-=-=-=-=-=
     translated_res_array = []
     # 记录当前的大章节标题：
     last_section_name = ""
@@ -55,13 +55,13 @@ def produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chat
         if index % 2 != 0:
             # 先提取当前英文标题：
             cur_section_name = gpt_response_collection[index-1].split('\n')[0].split(" Part")[0]
-            # 如果index是1的话，则直接使用first section name：
+            # 如果index是1的话，则直接使用するfirst section name：
             if cur_section_name != last_section_name:
                 cur_value = cur_section_name + '\n'
                 last_section_name = copy.deepcopy(cur_section_name)
             else:
                 cur_value = ""
-            # 再做一个小修改：重新修改当前part的标题，默认用英文的
+            # 再做一pieces小修改：重新修改当前part的标题，#用英文的
             cur_value += value
             translated_res_array.append(cur_value)
     res_path = write_history_to_file(meta +  ["# Meta Translation" , paper_meta_info] + translated_res_array,
@@ -78,18 +78,18 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
     from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
     from crazy_functions.crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 
-    prompt = "以下是一篇学术论文的基本信息:\n"
+    prompt = "以下是一篇学术論文的基本情報:\n"
     # title
-    title = article_dict.get('title', '无法获取 title'); prompt += f'title:{title}\n\n'
+    title = article_dict.get('title', 'なし法获取 title'); prompt += f'title:{title}\n\n'
     # authors
-    authors = article_dict.get('authors', '无法获取 authors')[:100]; prompt += f'authors:{authors}\n\n'
+    authors = article_dict.get('authors', 'なし法获取 authors')[:100]; prompt += f'authors:{authors}\n\n'
     # abstract
-    abstract = article_dict.get('abstract', '无法获取 abstract'); prompt += f'abstract:{abstract}\n\n'
+    abstract = article_dict.get('abstract', 'なし法获取 abstract'); prompt += f'abstract:{abstract}\n\n'
     # command
-    prompt += f"请将题目和摘要翻译为{DST_LANG}。"
+    prompt += f"请置き換える题目and摘要翻訳为{DST_LANG}。"
     meta = [f'# Title:\n\n', title, f'# Abstract:\n\n', abstract ]
 
-    # 单线，获取文章meta信息
+    # Single line，記事のメタ情報を取得する
     paper_meta_info = yield from request_gpt_model_in_new_thread_with_ui_alive(
         inputs=prompt,
         inputs_show_user=prompt,
@@ -98,7 +98,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
         sys_prompt="You are an academic paper reader。",
     )
 
-    # 多线，翻译
+    # Multi-threaded，翻訳
     inputs_array = []
     inputs_show_user_array = []
 
@@ -125,7 +125,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
             heading = section['heading']
             if len(section_frags) > 1: heading += f' Part-{i+1}'
             inputs_array.append(
-                f"你需要翻译{heading}章节，内容如下: \n\n{fragment}"
+                f"你需要翻訳{heading}章节，内容如下: \n\n{fragment}"
             )
             inputs_show_user_array.append(
                 f"# {heading}\n\n{fragment}"
@@ -138,7 +138,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
         chatbot=chatbot,
         history_array=[meta for _ in inputs_array],
         sys_prompt_array=[
-            "请你作为一个学术翻译，负责把学术论文准确翻译成中文。注意文章中的每一句话都要翻译。" for _ in inputs_array],
+            "学術翻訳者としてお願いします，学術論文を正確に中国語に翻訳する責任があります。記事の各文は翻訳する必要があります。" for _ in inputs_array],
     )
     # -=-=-=-=-=-=-=-= 写出Markdown文件 -=-=-=-=-=-=-=-=
     produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chatbot, fp, generated_conclusion_files)
@@ -157,7 +157,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
             cur_value = cur_section_name + "\n" + gpt_response_collection_html[i]
             gpt_response_collection_html[i] = cur_value
 
-    final = ["", "", "一、论文概况",  "", "Abstract", paper_meta_info,  "二、论文翻译",  ""]
+    final = ["", "", "1.論文概要",  "", "Abstract", paper_meta_info,  "2.論文翻訳",  ""]
     final.extend(gpt_response_collection_html)
     for i, k in enumerate(final):
         if i%2==0:

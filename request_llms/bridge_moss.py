@@ -4,11 +4,11 @@ import threading
 from toolbox import update_ui, get_conf
 from multiprocessing import Process, Pipe
 
-load_message = "MOSS尚未加载，加载需要一段时间。注意，取决于`config.py`的配置，MOSS消耗大量的内存（CPU）或显存（GPU），也许会导致低配计算机卡死 ……"
+load_message = "MOSSがまだロードされていません，読み込みには時間がかかります。注意，に依存する`config.py`の設定，MOSSは大量のメモリを消費します（CPU）またはグラフィックスメモリ（GPU），低スペックのコンピューターがクラッシュする可能性があります......"
 
 #################################################################################
 class GetGLMHandle(Process):
-    def __init__(self): # 主进程执行
+    def __init__(self): # Main process execution
         super().__init__(daemon=True)
         self.parent, self.child = Pipe()
         self._model = None
@@ -19,15 +19,15 @@ class GetGLMHandle(Process):
             self.start()
             self.threadLock = threading.Lock()
 
-    def check_dependency(self): # 主进程执行
+    def check_dependency(self): # Main process execution
         try:
             import datasets, os
             assert os.path.exists('request_llms/moss/models')
-            self.info = "依赖检测通过"
+            self.info = "Dependency check passed"
             self.success = True
         except:
             self.info = """
-            缺少MOSS的依赖，如果要使用MOSS，除了基础的pip依赖以外，您还需要运行`pip install -r request_llms/requirements_moss.txt`和`git clone https://github.com/OpenLMLab/MOSS.git request_llms/moss`安装MOSS的依赖。
+            MOSSの依存関係が不足しています，MOSSを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_moss.txt`and`git clone https://github.com/OpenLMLab/MOSS.git request_llms/moss`MOSSの依存関係をインストールする。
             """
             self.success = False
         return self.success
@@ -36,9 +36,9 @@ class GetGLMHandle(Process):
         return self._model is not None
 
 
-    def moss_init(self): # 子进程执行
-        # 子进程执行
-        # 这段代码来源 https://github.com/OpenLMLab/MOSS/blob/main/moss_cli_demo.py
+    def moss_init(self): # Subprocess execution
+        # Subprocess execution
+        # このコードの出典：https://github.com/OpenLMLab/MOSS/blob/main/moss_cli_demo.py
         import argparse
         import os
         import platform
@@ -102,9 +102,9 @@ class GetGLMHandle(Process):
         self.prompt = self.meta_instruction
         self.local_history = []
 
-    def run(self): # 子进程执行
-        # 子进程执行
-        # 第一次运行，加载参数
+    def run(self): # Subprocess execution
+        # Subprocess execution
+        # 最初の実行，パラメータをロードする
         def validate_path():
             import os, sys
             root_dir_assume = os.path.abspath(os.path.dirname(__file__) +  '/..')
@@ -115,14 +115,14 @@ class GetGLMHandle(Process):
         try:
             self.moss_init()
         except:
-            self.child.send('[Local Message] Call MOSS fail 不能正常加载MOSS的参数。')
-            raise RuntimeError("不能正常加载MOSS的参数！")
+            self.child.send('[Local Message] MOSSのパラメータを正常にロードできないため、Call MOSS fail。')
+            raise RuntimeError("MOSSのパラメータを正常にロードできません！")
 
-        # 进入任务等待状态
-        # 这段代码来源 https://github.com/OpenLMLab/MOSS/blob/main/moss_cli_demo.py
+        # タスク待機状態に入る
+        # このコードの出典：https://github.com/OpenLMLab/MOSS/blob/main/moss_cli_demo.py
         import torch
         while True:
-            # 等待输入
+            # 入力を待っています
             kwargs = self.child.recv()   # query = input("<|Human|>: ")
             try:
                 query = kwargs['query']
@@ -153,11 +153,11 @@ class GetGLMHandle(Process):
             except:
                 from toolbox import trimmed_format_exc
                 self.child.send('[Local Message] Call MOSS fail.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
-            # 请求处理结束，开始下一个循环
+            # リクエスト処理が終了しました，次のループを開始する
             self.child.send('[Finish]')
 
-    def stream_chat(self, **kwargs): # 主进程执行
-        # 主进程执行
+    def stream_chat(self, **kwargs): # Main process execution
+        # Main process execution
         self.threadLock.acquire()
         self.parent.send(kwargs)
         while True:
@@ -171,11 +171,10 @@ class GetGLMHandle(Process):
 global moss_handle
 moss_handle = None
 #################################################################################
-def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], sys_prompt:str="",
-                                  observe_window:list=[], console_slience:bool=False):
+def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=[], console_slience=False):
     """
-        多线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        Multi-threaded method
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     global moss_handle
     if moss_handle is None:
@@ -186,26 +185,26 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
             moss_handle = None
             raise RuntimeError(error)
 
-    # chatglm 没有 sys_prompt 接口，因此把prompt加入 history
+    # chatglmにはsys_promptインターフェースがありません，したがって、履歴にpromptを追加します
     history_feedin = []
     for i in range(len(history)//2):
         history_feedin.append([history[2*i], history[2*i+1]] )
 
-    watch_dog_patience = 5 # 看门狗 (watchdog) 的耐心, 设置5秒即可
+    watch_dog_patience = 5 # ウォッチドッグ (watchdog) の忍耐力, Set for 5 seconds
     response = ""
     for response in moss_handle.stream_chat(query=inputs, history=history_feedin, sys_prompt=sys_prompt, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
         if len(observe_window) >= 1:  observe_window[0] = response
         if len(observe_window) >= 2:
             if (time.time()-observe_window[1]) > watch_dog_patience:
-                raise RuntimeError("程序终止。")
+                raise RuntimeError("プログラムの終了。")
     return response
 
 
 
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
-        单线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        シングルスレッドメソッド
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     chatbot.append((inputs, ""))
 
@@ -218,7 +217,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
             moss_handle = None
             return
     else:
-        response = "[Local Message] 等待MOSS响应中 ..."
+        response = "[Local Message] MOSSの応答を待っています ..."
         chatbot[-1] = (inputs, response)
         yield from update_ui(chatbot=chatbot, history=history)
 
@@ -226,18 +225,18 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         from core_functional import handle_core_functionality
         inputs, history = handle_core_functionality(additional_fn, inputs, history, chatbot)
 
-    # 处理历史信息
+    # 履歴情報の処理
     history_feedin = []
     for i in range(len(history)//2):
         history_feedin.append([history[2*i], history[2*i+1]] )
 
-    # 开始接收chatglm的回复
+    # chatglmの返信を受け取り始めます
     for response in moss_handle.stream_chat(query=inputs, history=history_feedin, sys_prompt=system_prompt, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
         chatbot[-1] = (inputs, response.strip('<|MOSS|>: '))
         yield from update_ui(chatbot=chatbot, history=history)
 
-    # 总结输出
-    if response == "[Local Message] 等待MOSS响应中 ...":
-        response = "[Local Message] MOSS响应异常 ..."
+    # 出力をまとめる
+    if response == "[Local Message] MOSSの応答を待っています ...":
+        response = "[Local Message] MOSS response exception ..."
     history.extend([inputs, response.strip('<|MOSS|>: ')])
     yield from update_ui(chatbot=chatbot, history=history)

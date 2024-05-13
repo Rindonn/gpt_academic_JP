@@ -20,7 +20,7 @@ def load_dynamic_theme(THEME):
         from .green import adjust_theme, advanced_css
 
         theme_declaration = (
-            '<h2 align="center"  class="small">[Chuanhu-Small-and-Beautiful主题]</h2>'
+            '<h2 align="center"  class="small">[原始文本]</h2>'
         )
     elif THEME == "High-Contrast":
         from .contrast import adjust_theme, advanced_css
@@ -48,8 +48,8 @@ adjust_theme, advanced_css, theme_declaration, _ = load_dynamic_theme(get_conf("
 cookie相关工具函数
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
-def assign_user_uuid(cookies):
-    # 为每一位访问的用户赋予一个独一无二的uuid编码
+def init_cookie(cookies):
+    # テキストの翻訳
     cookies.update({"uuid": uuid.uuid4()})
     return cookies
 
@@ -106,15 +106,15 @@ js_code_for_toggle_darkmode = """() => {
 }"""
 
 
-js_code_for_persistent_cookie_init = """(web_cookie_cache, cookie) => {
-    return [getCookie("web_cookie_cache"), cookie];
+js_code_for_persistent_cookie_init = """(py_pickle_cookie, cookie) => {
+    return [getCookie("py_pickle_cookie"), cookie];
 }
 """
 
-# 详见 themes/common.js
+
 js_code_reset = """
 (a,b,c)=>{
-    return reset_conversation(a,b);
+    return [[], [], "リセットされました"];
 }
 """
 
@@ -132,8 +132,8 @@ setTimeout(() => {
     // get conf
     display_panel_arr = get_checkbox_selected_items("cbs");
 
-    ////////////////////// 输入清除键 ///////////////////////////
-    let searchString = "输入清除键";
+    ////////////////////// 入力クリアキー ///////////////////////////
+    let searchString = "入力クリアキー";
     let ele = "none";
     if (display_panel_arr.includes(searchString)) {
         let clearButton = document.getElementById("elem_clear");
@@ -149,8 +149,8 @@ setTimeout(() => {
         setCookie("js_clearbtn_show_cookie", "False", 365);
     }
 
-    ////////////////////// 基础功能区 ///////////////////////////
-    searchString = "基础功能区";
+    ////////////////////// 基本機能エリア ///////////////////////////
+    searchString = "基本機能エリア";
     if (display_panel_arr.includes(searchString)) {
         ele = document.getElementById("basic-panel");
         ele.style.display = "block";
@@ -159,8 +159,8 @@ setTimeout(() => {
         ele.style.display = "none";
     }
 
-    ////////////////////// 函数插件区 ///////////////////////////
-    searchString = "函数插件区";
+    ////////////////////// 関数プラグインエリア ///////////////////////////
+    searchString = "関数プラグインエリア";
     if (display_panel_arr.includes(searchString)) {
         ele = document.getElementById("plugin-panel");
         ele.style.display = "block";

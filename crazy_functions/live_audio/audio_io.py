@@ -17,7 +17,7 @@ class RealtimeAudioDistribution():
     def __init__(self) -> None:
         self.data = {}
         self.max_len = 1024*1024
-        self.rate = 48000   # 只读，每秒采样数量
+        self.rate = 48000   # 読み取り専用，テキストの翻訳
 
     def clean_up(self):
         self.data = {}

@@ -1,7 +1,6 @@
 import time
 import threading
 from toolbox import update_ui, Singleton
-from toolbox import ChatBotWithCookies
 from multiprocessing import Process, Pipe
 from contextlib import redirect_stdout
 from request_llms.queued_pipe import create_queue_pipe
@@ -125,46 +124,46 @@ class LocalLLMHandle(Process):
         # ⭐run in main process
         try:
             self.try_to_import_special_deps()
-            self.set_state("`依赖检测通过`")
+            self.set_state("`Dependency check passed`")
             self.running = True
         except:
-            self.set_state(f"缺少{self.model_name}的依赖，如果要使用{self.model_name}，除了基础的pip依赖以外，您还需要运行{self.cmd_to_install}安装{self.model_name}的依赖。")
+            self.set_state(f"不足しています{self.model_name}的依赖，使用するする場合{self.model_name}，基本的なpip依存関係以外，実行する必要があります{self.cmd_to_install}テキストの翻訳{self.model_name}的依赖。")
             self.running = False
 
     def run(self):
         # 🏃‍♂️🏃‍♂️🏃‍♂️ run in child process
-        # 第一次运行，加载参数
+        # 最初の実行，パラメータをロードする
         self.child.flush = lambda *args: None
         self.child.write = lambda x: self.child.send(self.std_tag + x)
         reset_tqdm_output()
-        self.set_state("`尝试加载模型`")
+        self.set_state("`読み込みを試みる模型`")
         try:
             with redirect_stdout(self.child):
                 self._model, self._tokenizer = self.load_model_and_tokenizer()
         except:
-            self.set_state("`加载模型失败`")
+            self.set_state("`加载模型失敗しました`")
             self.running = False
             from toolbox import trimmed_format_exc
             self.child.send(
-                f'[Local Message] 不能正常加载{self.model_name}的参数.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
+                f'[Local Message] 正常にロードできません{self.model_name}テキストの翻訳.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
             self.child.send('[FinishBad]')
-            raise RuntimeError(f"不能正常加载{self.model_name}的参数！")
+            raise RuntimeError(f"正常にロードできません{self.model_name}のパラメータ！")
 
         self.set_state("`准备就绪`")
         while True:
-            # 进入任务等待状态
+            # タスク待機状態に入る
             kwargs = self.child.recv()
-            # 收到消息，开始请求
+            # メッセージを受信しました，リクエストを開始する
             try:
                 for response_full in self.llm_stream_generator(**kwargs):
                     self.child.send(response_full)
                     # print('debug' + response_full)
                 self.child.send('[Finish]')
-                # 请求处理结束，开始下一个循环
+                # リクエスト処理が終了しました，次のループを開始する
             except:
                 from toolbox import trimmed_format_exc
                 self.child.send(
-                    f'[Local Message] 调用{self.model_name}失败.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
+                    f'[Local Message] 调用{self.model_name}失敗しました.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
                 self.child.send('[Finish]')
 
     def clear_pending_messages(self):
@@ -184,11 +183,11 @@ class LocalLLMHandle(Process):
     def stream_chat(self, **kwargs):
         # ⭐run in main process
         if self.get_state() == "`准备就绪`":
-            yield "`正在等待线程锁，排队中请稍候 ...`"
+            yield "`正在待つスレッド锁，排队中お待ちください ...`"
 
         with self.threadLock:
             if self.parent.poll():
-                yield "`排队中请稍候 ...`"
+                yield "`排队中お待ちください ...`"
                 self.clear_pending_messages()
             self.parent.send(kwargs)
             std_out = ""
@@ -213,9 +212,9 @@ class LocalLLMHandle(Process):
                     yield res
 
 def get_local_llm_predict_fns(LLMSingletonClass, model_name, history_format='classic'):
-    load_message = f"{model_name}尚未加载，加载需要一段时间。注意，取决于`config.py`的配置，{model_name}消耗大量的内存（CPU）或显存（GPU），也许会导致低配计算机卡死 ……"
+    load_message = f"{model_name}原始文本，読み込みには時間がかかります。注意，に依存する`config.py`の設定，{model_name}大量のメモリを消費する（CPU）またはグラフィックスメモリ（GPU），低スペックのコンピューターがクラッシュする可能性があります......"
 
-    def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], sys_prompt:str="", observe_window:list=[], console_slience:bool=False):
+    def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=[], console_slience=False):
         """
             refer to request_llms/bridge_all.py
         """
@@ -226,7 +225,7 @@ def get_local_llm_predict_fns(LLMSingletonClass, model_name, history_format='cla
             raise RuntimeError(_llm_handle.get_state())
 
         if history_format == 'classic':
-            # 没有 sys_prompt 接口，因此把prompt加入 history
+            # sys_promptインターフェースがありません，したがって、履歴にpromptを追加します
             history_feedin = []
             history_feedin.append([sys_prompt, "Certainly!"])
             for i in range(len(history)//2):
@@ -251,18 +250,17 @@ def get_local_llm_predict_fns(LLMSingletonClass, model_name, history_format='cla
                     else:
                         history_feedin[-1]['content'] = what_gpt_answer['content']
 
-        watch_dog_patience = 5  # 看门狗 (watchdog) 的耐心, 设置5秒即可
+        watch_dog_patience = 5  # ウォッチドッグ (watchdog) の忍耐力, Set for 5 seconds
         response = ""
         for response in _llm_handle.stream_chat(query=inputs, history=history_feedin, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
             if len(observe_window) >= 1:
                 observe_window[0] = response
             if len(observe_window) >= 2:
                 if (time.time()-observe_window[1]) > watch_dog_patience:
-                    raise RuntimeError("程序终止。")
+                    raise RuntimeError("プログラムの終了。")
         return response
 
-    def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWithCookies,
-                history:list=[], system_prompt:str='', stream:bool=True, additional_fn:str=None):
+    def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream=True, additional_fn=None):
         """
             refer to request_llms/bridge_all.py
         """
@@ -279,9 +277,9 @@ def get_local_llm_predict_fns(LLMSingletonClass, model_name, history_format='cla
             inputs, history = handle_core_functionality(
                 additional_fn, inputs, history, chatbot)
 
-        # 处理历史信息
+        # 履歴情報の処理
         if history_format == 'classic':
-            # 没有 sys_prompt 接口，因此把prompt加入 history
+            # sys_promptインターフェースがありません，したがって、履歴にpromptを追加します
             history_feedin = []
             history_feedin.append([system_prompt, "Certainly!"])
             for i in range(len(history)//2):
@@ -306,15 +304,15 @@ def get_local_llm_predict_fns(LLMSingletonClass, model_name, history_format='cla
                     else:
                         history_feedin[-1]['content'] = what_gpt_answer['content']
 
-        # 开始接收回复
-        response = f"[Local Message] 等待{model_name}响应中 ..."
+        # 開始接收回复
+        response = f"[Local Message] 待つ{model_name}テキストの翻訳 ..."
         for response in _llm_handle.stream_chat(query=inputs, history=history_feedin, max_length=llm_kwargs['max_length'], top_p=llm_kwargs['top_p'], temperature=llm_kwargs['temperature']):
             chatbot[-1] = (inputs, response)
             yield from update_ui(chatbot=chatbot, history=history)
 
-        # 总结输出
-        if response == f"[Local Message] 等待{model_name}响应中 ...":
-            response = f"[Local Message] {model_name}响应异常 ..."
+        # 出力をまとめる
+        if response == f"[Local Message] 待つ{model_name}テキストの翻訳 ...":
+            response = f"[Local Message] {model_name}响应Exception ..."
         history.extend([inputs, response])
         yield from update_ui(chatbot=chatbot, history=history)
 

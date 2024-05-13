@@ -1,16 +1,16 @@
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第一部分：来自EdgeGPT.py
+第1部分：From EdgeGPT.py
 https://github.com/acheong08/EdgeGPT
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 from .edge_gpt_free import Chatbot as NewbingChatbot
 
-load_message = "等待NewBing响应。"
+load_message = "NewBingの応答を待っています。"
 
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第二部分：子进程Worker（调用主体）
+第2部分：サブプロセスWorker（Call subject）
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 import time
@@ -25,9 +25,9 @@ from multiprocessing import Process, Pipe
 
 
 def preprocess_newbing_out(s):
-    pattern = r"\^(\d+)\^"  # 匹配^数字^
-    sub = lambda m: "(" + m.group(1) + ")"  # 将匹配到的数字作为替换值
-    result = re.sub(pattern, sub, s)  # 替换操作
+    pattern = r"\^(\d+)\^"  # ^数字^に一致する
+    sub = lambda m: "(" + m.group(1) + ")"  # 一致した数字を置換値として使用するする
+    result = re.sub(pattern, sub, s)  # 置換操作
     if "[1]" in result:
         result += (
             "\n\n```reference\n"
@@ -64,51 +64,51 @@ class NewBingHandle(Process):
             self.success = False
             import certifi, httpx, rich
 
-            self.info = "依赖检测通过，等待NewBing响应。注意目前不能多人同时调用NewBing接口（有线程锁），否则将导致每个人的NewBing问询历史互相渗透。调用NewBing时，会自动使用已配置的代理。"
+            self.info = "Dependency check passed，NewBingの応答を待っています。現時点では、複数のユーザーが同時にNewBing APIを呼び出すことはできません（スレッドロックあり），さもないと、各人のNewBingクエリ履歴が相互に浸透する可能性があります。NewBingを呼び出すとき，事前に設定されたプロキシを自動的に使用するします。"
             self.success = True
         except:
-            self.info = "缺少的依赖，如果要使用Newbing，除了基础的pip依赖以外，您还需要运行`pip install -r request_llms/requirements_newbing.txt`安装Newbing的依赖。"
+            self.info = "不足している依存関係，Newbingを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_newbing.txt`Newbingの依存関係のインストール。"
             self.success = False
 
     def ready(self):
         return self.newbing_model is not None
 
     async def async_run(self):
-        # 读取配置
+        # 構成を読み込む
         NEWBING_STYLE = get_conf("NEWBING_STYLE")
         from request_llms.bridge_all import model_info
 
         endpoint = model_info["newbing"]["endpoint"]
         while True:
-            # 等待
+            # 待つ
             kwargs = self.child.recv()
             question = kwargs["query"]
             history = kwargs["history"]
             system_prompt = kwargs["system_prompt"]
 
-            # 是否重置
+            # リセットしますか
             if len(self.local_history) > 0 and len(history) == 0:
                 await self.newbing_model.reset()
                 self.local_history = []
 
-            # 开始问问题
+            # 質問を始める
             prompt = ""
             if system_prompt not in self.local_history:
                 self.local_history.append(system_prompt)
                 prompt += system_prompt + "\n"
 
-            # 追加历史
+            # 履歴を追加する
             for ab in history:
                 a, b = ab
                 if a not in self.local_history:
                     self.local_history.append(a)
                     prompt += a + "\n"
 
-            # 问题
+            # 問題
             prompt += question
             self.local_history.append(question)
             print("question:", prompt)
-            # 提交
+            # 提出
             async for final, response in self.newbing_model.ask_stream(
                 prompt=question,
                 conversation_style=NEWBING_STYLE,  # ["creative", "balanced", "precise"]
@@ -124,13 +124,13 @@ class NewBingHandle(Process):
 
     def run(self):
         """
-        这个函数运行在子进程
+        この関数はサブプロセスで実行されます
         """
-        # 第一次运行，加载参数
+        # 最初の実行，パラメータをロードする
         self.success = False
         self.local_history = []
         if (self.newbing_model is None) or (not self.success):
-            # 代理设置
+            # プロキシ設定
             proxies, NEWBING_COOKIES = get_conf("proxies", "NEWBING_COOKIES")
             if proxies is None:
                 self.proxies_https = None
@@ -143,10 +143,10 @@ class NewBingHandle(Process):
                 except:
                     self.success = False
                     tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
-                    self.child.send(f"[Local Message] NEWBING_COOKIES未填写或有格式错误。")
+                    self.child.send(f"[Local Message] NEWBING_COOKIESが入力されていないか、形式が正しくありません。")
                     self.child.send("[Fail]")
                     self.child.send("[Finish]")
-                    raise RuntimeError(f"NEWBING_COOKIES未填写或有格式错误。")
+                    raise RuntimeError(f"NEWBING_COOKIESが入力されていないか、形式が正しくありません。")
             else:
                 cookies = None
 
@@ -158,45 +158,45 @@ class NewBingHandle(Process):
                 self.success = False
                 tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
                 self.child.send(
-                    f"[Local Message] 不能加载Newbing组件，请注意Newbing组件已不再维护。{tb_str}"
+                    f"[Local Message] Cannot load Newbing component，注意してくださいNewbing组件已不再维护。{tb_str}"
                 )
                 self.child.send("[Fail]")
                 self.child.send("[Finish]")
-                raise RuntimeError(f"不能加载Newbing组件，请注意Newbing组件已不再维护。")
+                raise RuntimeError(f"Cannot load Newbing component，注意してくださいNewbing组件已不再维护。")
 
         self.success = True
         try:
-            # 进入任务等待状态
+            # タスク待機状態に入る
             asyncio.run(self.async_run())
         except Exception:
             tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
             self.child.send(
-                f"[Local Message] Newbing 请求失败，报错信息如下. 如果是与网络相关的问题，建议更换代理协议（推荐http）或代理节点 {tb_str}."
+                f"[Local Message] Newbing 请求失敗しました，エラーメッセージは次のとおりです。ネットワークに関連する問題の場合，プロキシプロトコルの変更をお勧めします（httpをおすすめします）或代理节点 {tb_str}."
             )
             self.child.send("[Fail]")
             self.child.send("[Finish]")
 
     def stream_chat(self, **kwargs):
         """
-        这个函数运行在主进程
+        この関数はメインプロセスで実行されます
         """
-        self.threadLock.acquire()  # 获取线程锁
-        self.parent.send(kwargs)  # 请求子进程
+        self.threadLock.acquire()  # テキストの翻訳
+        self.parent.send(kwargs)  # サブプロセスを要求する
         while True:
-            res = self.parent.recv()  # 等待newbing回复的片段
+            res = self.parent.recv()  # newbingの返信を待っているフラグメント
             if res == "[Finish]":
-                break  # 结束
+                break  # 終了する
             elif res == "[Fail]":
                 self.success = False
-                break  # 失败
+                break  # 失敗しました
             else:
-                yield res  # newbing回复的片段
-        self.threadLock.release()  # 释放线程锁
+                yield res  # newbingの返信フラグメント
+        self.threadLock.release()  # スレッドロックを解放する
 
 
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第三部分：主进程统一调用函数接口
+第3部分：メインプロセスが関数インターフェースを統一的に呼び出します
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 """
 global newbingfree_handle
@@ -212,8 +212,8 @@ def predict_no_ui_long_connection(
     console_slience=False,
 ):
     """
-    多线程方法
-    函数的说明请见 request_llms/bridge_all.py
+    Multi-threaded method
+    関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     global newbingfree_handle
     if (newbingfree_handle is None) or (not newbingfree_handle.success):
@@ -225,15 +225,15 @@ def predict_no_ui_long_connection(
             newbingfree_handle = None
             raise RuntimeError(error)
 
-    # 没有 sys_prompt 接口，因此把prompt加入 history
+    # sys_promptインターフェースがありません，したがって、履歴にpromptを追加します
     history_feedin = []
     for i in range(len(history) // 2):
         history_feedin.append([history[2 * i], history[2 * i + 1]])
 
-    watch_dog_patience = 5  # 看门狗 (watchdog) 的耐心, 设置5秒即可
+    watch_dog_patience = 5  # ウォッチドッグ (watchdog) の忍耐力, Set for 5 seconds
     response = ""
     if len(observe_window) >= 1:
-        observe_window[0] = "[Local Message] 等待NewBing响应中 ..."
+        observe_window[0] = "[Local Message] NewBingの応答を待っています ..."
     for response in newbingfree_handle.stream_chat(
         query=inputs,
         history=history_feedin,
@@ -246,7 +246,7 @@ def predict_no_ui_long_connection(
             observe_window[0] = preprocess_newbing_out_simple(response)
         if len(observe_window) >= 2:
             if (time.time() - observe_window[1]) > watch_dog_patience:
-                raise RuntimeError("程序终止。")
+                raise RuntimeError("プログラムの終了。")
     return preprocess_newbing_out_simple(response)
 
 
@@ -261,10 +261,10 @@ def predict(
     additional_fn=None,
 ):
     """
-    单线程方法
-    函数的说明请见 request_llms/bridge_all.py
+    シングルスレッドメソッド
+    関数の説明については、request_llms/bridge_all.pyを参照してください
     """
-    chatbot.append((inputs, "[Local Message] 等待NewBing响应中 ..."))
+    chatbot.append((inputs, "[Local Message] NewBingの応答を待っています ..."))
 
     global newbingfree_handle
     if (newbingfree_handle is None) or (not newbingfree_handle.success):
@@ -286,10 +286,10 @@ def predict(
     for i in range(len(history) // 2):
         history_feedin.append([history[2 * i], history[2 * i + 1]])
 
-    chatbot[-1] = (inputs, "[Local Message] 等待NewBing响应中 ...")
-    response = "[Local Message] 等待NewBing响应中 ..."
+    chatbot[-1] = (inputs, "[Local Message] NewBingの応答を待っています ...")
+    response = "[Local Message] NewBingの応答を待っています ..."
     yield from update_ui(
-        chatbot=chatbot, history=history, msg="NewBing响应缓慢，尚未完成全部响应，请耐心完成后再提交新问题。"
+        chatbot=chatbot, history=history, msg="NewBing responds slowly，すべての応答が完了していません，Please submit a new question after completing it patiently。"
     )
     for response in newbingfree_handle.stream_chat(
         query=inputs,
@@ -301,11 +301,11 @@ def predict(
     ):
         chatbot[-1] = (inputs, preprocess_newbing_out(response))
         yield from update_ui(
-            chatbot=chatbot, history=history, msg="NewBing响应缓慢，尚未完成全部响应，请耐心完成后再提交新问题。"
+            chatbot=chatbot, history=history, msg="NewBing responds slowly，すべての応答が完了していません，Please submit a new question after completing it patiently。"
         )
-    if response == "[Local Message] 等待NewBing响应中 ...":
-        response = "[Local Message] NewBing响应异常，请刷新界面重试 ..."
+    if response == "[Local Message] NewBingの応答を待っています ...":
+        response = "[Local Message] NewBingの応答が異常です，ページを更新して再試行してください ..."
     history.extend([inputs, response])
     logging.info(f"[raw_input] {inputs}")
     logging.info(f"[response] {response}")
-    yield from update_ui(chatbot=chatbot, history=history, msg="完成全部响应，请提交新问题。")
+    yield from update_ui(chatbot=chatbot, history=history, msg="すべての応答を完了する，新しい問題を提出してください。")

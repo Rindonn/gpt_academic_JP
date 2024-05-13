@@ -13,11 +13,11 @@ proxies, TIMEOUT_SECONDS = get_conf("proxies", "TIMEOUT_SECONDS")
 
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-第五部分 一些文件处理方法
+第五部分 一些文件处理テキストの翻訳
 files_filter_handler 根据type过滤文件
-input_encode_handler 提取input中的文件，并解析
+input_encode_handler 提取input中のファイル，并解析
 file_manifest_filter_html 根据type过滤文件, 并解析为html or md 文本
-link_mtime_to_md 文件增加本地时间参数，避免下载到缓存文件
+link_mtime_to_md 文件增加本地時间パラメータ，避免下载到缓存文件
 html_view_blank 超链接
 html_local_file 本地文件取相对路径
 to_markdown_tabs 文件list 转换为 md tab
@@ -171,7 +171,7 @@ class GoogleChatInit:
         self, inputs, llm_kwargs, history, system_prompt
     ) -> Tuple[Dict, Dict]:
         messages = [
-            # {"role": "system", "parts": [{"text": system_prompt}]},  # gemini 不允许对话轮次为偶数，所以这个没有用，看后续支持吧。。。
+            # {"role": "system", "parts": [{"text": system_prompt}]},  # gemini 不允许对话轮次为偶数，所以这pieces没有用，看后续支持吧。。。
             # {"role": "user", "parts": [{"text": ""}]},
             # {"role": "model", "parts": [{"text": ""}]}
         ]
@@ -199,5 +199,5 @@ class GoogleChatInit:
 
 if __name__ == "__main__":
     google = GoogleChatInit()
-    # print(gootle.generate_message_payload('你好呀', {},  ['123123', '3123123'], ''))
+    # print(gootle.generate_message_payload('こんにちは呀', {},  ['123123', '3123123'], ''))
     # gootle.input_encode_handle('123123[123123](./123123), ![53425](./asfafa/fff.jpg)')

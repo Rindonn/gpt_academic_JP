@@ -1,303 +1,303 @@
-from toolbox import HotReload  # HotReload 的意思是热更新，修改函数插件后，不需要重启程序，代码直接生效
+from toolbox import HotReload  # HotReloadの意味はホット更新です，関数プラグインを変更した後，プログラムを再起動する必要はありません，コードが直接有効になる
 from toolbox import trimmed_format_exc
 
 
 def get_crazy_functions():
-    from crazy_functions.读文章写摘要 import 读文章写摘要
-    from crazy_functions.生成函数注释 import 批量生成函数注释
-    from crazy_functions.解析项目源代码 import 解析项目本身
-    from crazy_functions.解析项目源代码 import 解析一个Python项目
-    from crazy_functions.解析项目源代码 import 解析一个Matlab项目
-    from crazy_functions.解析项目源代码 import 解析一个C项目的头文件
-    from crazy_functions.解析项目源代码 import 解析一个C项目
-    from crazy_functions.解析项目源代码 import 解析一个Golang项目
-    from crazy_functions.解析项目源代码 import 解析一个Rust项目
-    from crazy_functions.解析项目源代码 import 解析一个Java项目
-    from crazy_functions.解析项目源代码 import 解析一个前端项目
-    from crazy_functions.高级功能函数模板 import 高阶功能模板函数
-    from crazy_functions.Latex全文润色 import Latex英文润色
-    from crazy_functions.询问多个大语言模型 import 同时问询
-    from crazy_functions.解析项目源代码 import 解析一个Lua项目
-    from crazy_functions.解析项目源代码 import 解析一个CSharp项目
-    from crazy_functions.总结word文档 import 总结word文档
-    from crazy_functions.解析JupyterNotebook import 解析ipynb文件
-    from crazy_functions.对话历史存档 import 对话历史存档
-    from crazy_functions.对话历史存档 import 载入对话历史存档
-    from crazy_functions.对话历史存档 import 删除所有本地对话历史记录
-    from crazy_functions.辅助功能 import 清除缓存
-    from crazy_functions.批量Markdown翻译 import Markdown英译中
-    from crazy_functions.批量总结PDF文档 import 批量总结PDF文档
-    from crazy_functions.PDF批量翻译 import 批量翻译PDF文档
-    from crazy_functions.谷歌检索小助手 import 谷歌检索小助手
-    from crazy_functions.理解PDF文档内容 import 理解PDF文档内容标准文件输入
-    from crazy_functions.Latex全文润色 import Latex中文润色
-    from crazy_functions.Latex全文润色 import Latex英文纠错
-    from crazy_functions.批量Markdown翻译 import Markdown中译英
-    from crazy_functions.虚空终端 import 虚空终端
-    from crazy_functions.生成多种Mermaid图表 import 生成多种Mermaid图表
+    from crazy_functions.ReadArticleWriteSummary import ReadArticleWriteSummary
+    from crazy_functions.GenerateFunctionComments import BatchGenerateFunctionComments
+    from crazy_functions.ParseProjectSourceCode import ParseProjectItself
+    from crazy_functions.ParseProjectSourceCode import ParsePythonProject
+    from crazy_functions.ParseProjectSourceCode import AnalyzeAMatlabProject
+    from crazy_functions.ParseProjectSourceCode import ParseCProjectHeaderFiles
+    from crazy_functions.ParseProjectSourceCode import ParseCProject
+    from crazy_functions.ParseProjectSourceCode import ParseGolangProject
+    from crazy_functions.ParseProjectSourceCode import ParseRustProject
+    from crazy_functions.ParseProjectSourceCode import ParseJavaProject
+    from crazy_functions.ParseProjectSourceCode import ParseFrontendProject
+    from crazy_functions.AdvancedFunctionTemplate import HighOrderFunctionTemplateFunctions
+    from crazy_functions.FullTextProofreadingForLatex import EnglishProofreadingForLatex
+    from crazy_functions.InquiryMultipleLargeLanguageModels import SimultaneousInquiry
+    from crazy_functions.ParseProjectSourceCode import ParsingLuaProject
+    from crazy_functions.ParseProjectSourceCode import ParsingCSharpProject
+    from crazy_functions.SummarizingWordDocuments import SummarizingWordDocuments
+    from crazy_functions.ParsingJupyterNotebook import ParsingIpynbFiles
+    from crazy_functions.ConversationHistoryArchive import ConversationHistoryArchive
+    from crazy_functions.ConversationHistoryArchive import LoadConversationHistoryArchive
+    from crazy_functions.ConversationHistoryArchive import DeleteAllLocalConversationHistoryRecords
+    from crazy_functions.Accessibility import ClearCache
+    from crazy_functions.BatchTranslateMarkdown import TranslateMarkdownFromEnglishToChinese
+    from crazy_functions.BatchSummarizePDFDocuments import BatchSummarizePDFDocuments
+    from crazy_functions.BatchTranslatePDFDocuments_MultiThreaded import BatchTranslatePDFDocuments
+    from crazy_functions.GoogleSearchAssistant import GoogleSearchAssistant
+    from crazy_functions.UnderstandPdfDocumentContent import UnderstandPdfDocumentContentStandardFileInput
+    from crazy_functions.FullTextProofreadingForLatex import LatexChineseProofreading
+    from crazy_functions.FullTextProofreadingForLatex import LatexEnglishCorrection
+    from crazy_functions.BatchTranslateMarkdown import MarkdownChineseToEnglish
+    from crazy_functions.VoidTerminal import VoidTerminal
+    from crazy_functions.GenerateMultipleMermaidCharts import GenerateMultipleMermaidCharts
 
     function_plugins = {
-        "虚空终端": {
+        "VoidTerminal": {
             "Group": "对话|编程|学术|智能体",
             "Color": "stop",
             "AsButton": True,
-            "Function": HotReload(虚空终端),
+            "Function": HotReload(VoidTerminal),
         },
-        "解析整个Python项目": {
+        "テキストの翻訳": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": True,
-            "Info": "解析一个Python项目的所有源文件(.py) | 输入参数为路径",
-            "Function": HotReload(解析一个Python项目),
+            "Info": "ParsePythonProject的所有源文件(.py) | 入力パラメータ为路径",
+            "Function": HotReload(ParsePythonProject),
         },
-        "载入对话历史存档（先上传存档或输入路径）": {
+        "LoadConversationHistoryArchive（アーカイブをアップロードするか、パスを入力してください）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,
-            "Info": "载入对话历史存档 | 输入参数为路径",
-            "Function": HotReload(载入对话历史存档),
+            "Info": "LoadConversationHistoryArchive | 入力パラメータ为路径",
+            "Function": HotReload(LoadConversationHistoryArchive),
         },
-        "删除所有本地对话历史记录（谨慎操作）": {
+        "DeleteAllLocalConversationHistoryRecords（谨慎操作）": {
             "Group": "对话",
             "AsButton": False,
-            "Info": "删除所有本地对话历史记录，谨慎操作 | 不需要输入参数",
-            "Function": HotReload(删除所有本地对话历史记录),
+            "Info": "DeleteAllLocalConversationHistoryRecords，谨慎操作 | 不需要入力パラメータ",
+            "Function": HotReload(DeleteAllLocalConversationHistoryRecords),
         },
-        "清除所有缓存文件（谨慎操作）": {
+        "クリア所有缓存文件（谨慎操作）": {
             "Group": "对话",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "清除所有缓存文件，谨慎操作 | 不需要输入参数",
-            "Function": HotReload(清除缓存),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "クリア所有缓存文件，谨慎操作 | 不需要入力パラメータ",
+            "Function": HotReload(ClearCache),
         },
-        "生成多种Mermaid图表(从当前对话或路径(.pdf/.md/.docx)中生产图表）": {
+        "GenerateMultipleMermaidCharts(从当前对话或路径(.pdf/.md/.docx)中生产图表）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,
-            "Info" : "基于当前对话或文件生成多种Mermaid图表,图表类型由模型判断",
-            "Function": HotReload(生成多种Mermaid图表),
+            "Info" : "基于当前对话或文件GenerateMultipleMermaidCharts,图表类型由模型判断",
+            "Function": HotReload(GenerateMultipleMermaidCharts),
             "AdvancedArgs": True,
-            "ArgsReminder": "请输入图类型对应的数字,不输入则为模型自行判断:1-流程图,2-序列图,3-类图,4-饼图,5-甘特图,6-状态图,7-实体关系图,8-象限提示图,9-思维导图",
+            "ArgsReminder": "请入力图类型对应的数字,不入力则为模型自行判断:1-流程图,2-序列图,3-类图,4-饼图,5-甘特图,6-ステータス图,7-实体关系图,8-象限ヒント图,9-思维导图",
         },
-        "批量总结Word文档": {
+        "Word文書を一括で要約する": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,
-            "Info": "批量总结word文档 | 输入参数为路径",
-            "Function": HotReload(总结word文档),
+            "Info": "バッチ量SummarizingWordDocuments | 入力パラメータ为路径",
+            "Function": HotReload(SummarizingWordDocuments),
         },
-        "解析整个Matlab项目": {
+        "解析整piecesMatlab项目": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "解析一个Matlab项目的所有源文件(.m) | 输入参数为路径",
-            "Function": HotReload(解析一个Matlab项目),
+            "Info": "AnalyzeAMatlabProject的所有源文件(.m) | 入力パラメータ为路径",
+            "Function": HotReload(AnalyzeAMatlabProject),
         },
-        "解析整个C++项目头文件": {
+        "C++プロジェクトのヘッダーファイル全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个C++项目的所有头文件(.h/.hpp) | 输入参数为路径",
-            "Function": HotReload(解析一个C项目的头文件),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "解析一piecesC++项目的所有头文件(.h/.hpp) | 入力パラメータ为路径",
+            "Function": HotReload(ParseCProjectHeaderFiles),
         },
-        "解析整个C++项目（.cpp/.hpp/.c/.h）": {
+        "C++プロジェクト全体を解析する（.cpp/.hpp/.c/.h）": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个C++项目的所有源文件（.cpp/.hpp/.c/.h）| 输入参数为路径",
-            "Function": HotReload(解析一个C项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "解析一piecesC++项目的所有源文件（.cpp/.hpp/.c/.h）| 入力パラメータ为路径",
+            "Function": HotReload(ParseCProject),
         },
-        "解析整个Go项目": {
+        "Goプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个Go项目的所有源文件 | 输入参数为路径",
-            "Function": HotReload(解析一个Golang项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "解析一piecesGo项目的所有源文件 | 入力パラメータ为路径",
+            "Function": HotReload(ParseGolangProject),
         },
-        "解析整个Rust项目": {
+        "Rustプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个Rust项目的所有源文件 | 输入参数为路径",
-            "Function": HotReload(解析一个Rust项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "ParseRustProject的所有源文件 | 入力パラメータ为路径",
+            "Function": HotReload(ParseRustProject),
         },
-        "解析整个Java项目": {
+        "Javaプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个Java项目的所有源文件 | 输入参数为路径",
-            "Function": HotReload(解析一个Java项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "ParseJavaProject的所有源文件 | 入力パラメータ为路径",
+            "Function": HotReload(ParseJavaProject),
         },
-        "解析整个前端项目（js,ts,css等）": {
+        "フロントエンドプロジェクト全体を解析する（js,ts,CSSなど）": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个前端项目的所有源文件（js,ts,css等） | 输入参数为路径",
-            "Function": HotReload(解析一个前端项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "ParseFrontendProject的所有源文件（js,ts,CSSなど） | 入力パラメータ为路径",
+            "Function": HotReload(ParseFrontendProject),
         },
-        "解析整个Lua项目": {
+        "Luaプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个Lua项目的所有源文件 | 输入参数为路径",
-            "Function": HotReload(解析一个Lua项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "ParsingLuaProject的所有源文件 | 入力パラメータ为路径",
+            "Function": HotReload(ParsingLuaProject),
         },
-        "解析整个CSharp项目": {
+        "CSharpプロジェクト全体を解析する": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "解析一个CSharp项目的所有源文件 | 输入参数为路径",
-            "Function": HotReload(解析一个CSharp项目),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "ParsingCSharpProject的所有源文件 | 入力パラメータ为路径",
+            "Function": HotReload(ParsingCSharpProject),
         },
-        "解析Jupyter Notebook文件": {
+        "Jupyter Notebookファイルの解析": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "解析Jupyter Notebook文件 | 输入参数为路径",
-            "Function": HotReload(解析ipynb文件),
-            "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-            "ArgsReminder": "若输入0，则不解析notebook中的Markdown块",  # 高级参数输入区的显示提示
+            "Info": "Jupyter Notebookファイルの解析 | 入力パラメータ为路径",
+            "Function": HotReload(ParsingIpynbFiles),
+            "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+            "ArgsReminder": "0を入力する場合，したがって、ノートブックのMarkdownブロックを解析しない",  # 高度なパラメータ入力エリアの表示ヒント
         },
-        "读Tex论文写摘要": {
+        "Tex論文を読んで要約を書く": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": False,
-            "Info": "读取Tex论文并写摘要 | 输入参数为路径",
-            "Function": HotReload(读文章写摘要),
+            "Info": "读取Tex論文并写摘要 | 入力パラメータ为路径",
+            "Function": HotReload(ReadArticleWriteSummary),
         },
-        "翻译README或MD": {
+        "翻訳README或MD": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": True,
-            "Info": "将Markdown翻译为中文 | 输入参数为路径或URL",
-            "Function": HotReload(Markdown英译中),
+            "Info": "置き換えるMarkdownの翻訳为中文 | 入力パラメータ为路径或URL",
+            "Function": HotReload(TranslateMarkdownFromEnglishToChinese),
         },
-        "翻译Markdown或README（支持Github链接）": {
+        "翻訳Markdown或README（支持Github链接）": {
             "Group": "编程",
             "Color": "stop",
             "AsButton": False,
-            "Info": "将Markdown或README翻译为中文 | 输入参数为路径或URL",
-            "Function": HotReload(Markdown英译中),
+            "Info": "置き換えるMarkdown或README日本語に翻訳する | 入力パラメータ为路径或URL",
+            "Function": HotReload(TranslateMarkdownFromEnglishToChinese),
         },
-        "批量生成函数注释": {
+        "BatchGenerateFunctionComments": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "批量生成函数的注释 | 输入参数为路径",
-            "Function": HotReload(批量生成函数注释),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "バッチ量生成函数的注释 | 入力パラメータ为路径",
+            "Function": HotReload(BatchGenerateFunctionComments),
         },
-        "保存当前的对话": {
+        "現在の対話を保存する": {
             "Group": "对话",
             "AsButton": True,
-            "Info": "保存当前的对话 | 不需要输入参数",
-            "Function": HotReload(对话历史存档),
+            "Info": "現在の対話を保存する | 不需要入力パラメータ",
+            "Function": HotReload(ConversationHistoryArchive),
         },
-        "[多线程Demo]解析此项目本身（源码自译解）": {
+        "[マルチスレッドデモ]このプロジェクト自体を解析する（ソースコードの自動翻訳解析）": {
             "Group": "对话|编程",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "多线程解析并翻译此项目的源码 | 不需要输入参数",
-            "Function": HotReload(解析项目本身),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "マルチスレッド解析并翻訳此项目的源码 | 不需要入力パラメータ",
+            "Function": HotReload(ParseProjectItself),
         },
-        "历史上的今天": {
+        "Today in history": {
             "Group": "对话",
             "AsButton": True,
-            "Info": "查看历史上的今天事件 (这是一个面向开发者的插件Demo) | 不需要输入参数",
-            "Function": HotReload(高阶功能模板函数),
+            "Info": "查看Today in history事件 (这是一pieces面向开发者的プラグインDemo) | 不需要入力パラメータ",
+            "Function": HotReload(HighOrderFunctionTemplateFunctions),
         },
-        "精准翻译PDF论文": {
+        "精准翻訳PDF論文": {
             "Group": "学术",
             "Color": "stop",
             "AsButton": True,
-            "Info": "精准翻译PDF论文为中文 | 输入参数为路径",
-            "Function": HotReload(批量翻译PDF文档),
+            "Info": "精准翻訳PDF論文为中文 | 入力パラメータ为路径",
+            "Function": HotReload(BatchTranslatePDFDocuments),
         },
-        "询问多个GPT模型": {
+        "複数のGPTモデルについて問い合わせる": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": True,
-            "Function": HotReload(同时问询),
+            "Function": HotReload(SimultaneousInquiry),
         },
-        "批量总结PDF文档": {
+        "BatchSummarizePDFDocuments": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "批量总结PDF文档的内容 | 输入参数为路径",
-            "Function": HotReload(批量总结PDF文档),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "BatchSummarizePDFDocuments的内容 | 入力パラメータ为路径",
+            "Function": HotReload(BatchSummarizePDFDocuments),
         },
-        "谷歌学术检索助手（输入谷歌学术搜索页url）": {
+        "Google学術検索アシスタント（Google Scholar検索ページのURLを入力してください）": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "使用谷歌学术检索助手搜索指定URL的结果 | 输入参数为谷歌学术搜索页的URL",
-            "Function": HotReload(谷歌检索小助手),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "使用するGoogle学術検索アシスタント搜索指定URL的结果 | 入力パラメータ为谷歌学术搜索页的URL",
+            "Function": HotReload(GoogleSearchAssistant),
         },
-        "理解PDF文档内容 （模仿ChatPDF）": {
+        "UnderstandPdfDocumentContent （ChatPDFを模倣する）": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "理解PDF文档的内容并进行回答 | 输入参数为路径",
-            "Function": HotReload(理解PDF文档内容标准文件输入),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "理解PDF文档的内容并进行回答 | 入力パラメータ为路径",
+            "Function": HotReload(UnderstandPdfDocumentContentStandardFileInput),
         },
-        "英文Latex项目全文润色（输入路径或上传压缩包）": {
+        "英語のLatexプロジェクト全体を校正する（パスを入力するか、圧縮ファイルをアップロードする）": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "对英文Latex项目全文进行润色处理 | 输入参数为路径或上传压缩包",
-            "Function": HotReload(Latex英文润色),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "对英文Latex项目全文进行校正中处理 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Function": HotReload(EnglishProofreadingForLatex),
         },
 
-        "中文Latex项目全文润色（输入路径或上传压缩包）": {
+        "中国語のLatexプロジェクトの全文を校正する（パスを入力するか、圧縮ファイルをアップロードする）": {
             "Group": "学术",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "对中文Latex项目全文进行润色处理 | 输入参数为路径或上传压缩包",
-            "Function": HotReload(Latex中文润色),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "对中文Latex项目全文进行校正中处理 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Function": HotReload(LatexChineseProofreading),
         },
-        # 已经被新插件取代
-        # "英文Latex项目全文纠错（输入路径或上传压缩包）": {
+        # 已经被新プラグイン取代
+        # "英文Latex项目全文纠错（パスを入力するか、圧縮ファイルをアップロードする）": {
         #     "Group": "学术",
         #     "Color": "stop",
-        #     "AsButton": False,  # 加入下拉菜单中
-        #     "Info": "对英文Latex项目全文进行纠错处理 | 输入参数为路径或上传压缩包",
-        #     "Function": HotReload(Latex英文纠错),
+        #     "AsButton": False,  # ドロップダウンメニューに追加する
+        #     "Info": "对英文Latex项目全文进行纠错处理 | 入力パラメータ为路径或上传テキストの翻訳",
+        #     "Function": HotReload(LatexEnglishCorrection),
         # },
-        # 已经被新插件取代
-        # "Latex项目全文中译英（输入路径或上传压缩包）": {
+        # 已经被新プラグイン取代
+        # "LaTeXプロジェクト全文の中国語から英語への翻訳（パスを入力するか、圧縮ファイルをアップロードする）": {
         #     "Group": "学术",
         #     "Color": "stop",
-        #     "AsButton": False,  # 加入下拉菜单中
-        #     "Info": "对Latex项目全文进行中译英处理 | 输入参数为路径或上传压缩包",
-        #     "Function": HotReload(Latex中译英)
+        #     "AsButton": False,  # ドロップダウンメニューに追加する
+        #     "Info": "对Latex项目全文进行中国語から英語への翻訳处理 | 入力パラメータ为路径或上传テキストの翻訳",
+        #     "Function": HotReload(LatexChineseToEnglish)
         # },
-        # 已经被新插件取代
-        # "Latex项目全文英译中（输入路径或上传压缩包）": {
+        # 已经被新プラグイン取代
+        # "Full translation of Latex project from English to Chinese（パスを入力するか、圧縮ファイルをアップロードする）": {
         #     "Group": "学术",
         #     "Color": "stop",
-        #     "AsButton": False,  # 加入下拉菜单中
-        #     "Info": "对Latex项目全文进行英译中处理 | 输入参数为路径或上传压缩包",
-        #     "Function": HotReload(Latex英译中)
+        #     "AsButton": False,  # ドロップダウンメニューに追加する
+        #     "Info": "对Latex项目全文进行英語から中国語への翻訳处理 | 入力パラメータ为路径或上传テキストの翻訳",
+        #     "Function": HotReload(LatexEnglishToChinese)
         # },
-        "批量Markdown中译英（输入路径或上传压缩包）": {
+        "バッチ量MarkdownChineseToEnglish（パスを入力するか、圧縮ファイルをアップロードする）": {
             "Group": "编程",
             "Color": "stop",
-            "AsButton": False,  # 加入下拉菜单中
-            "Info": "批量将Markdown文件中文翻译为英文 | 输入参数为路径或上传压缩包",
-            "Function": HotReload(Markdown中译英),
+            "AsButton": False,  # ドロップダウンメニューに追加する
+            "Info": "バッチ量置き換えるMarkdown文件中文翻訳为英文 | 入力パラメータ为路径或上传テキストの翻訳",
+            "Function": HotReload(MarkdownChineseToEnglish),
         },
     }
 
-    # -=--=- 尚未充分测试的实验性插件 & 需要额外依赖的插件 -=--=-
+    # -=--=- 尚未充分测试的实验性プラグイン & 需要额外依赖的プラグイン -=--=-
     try:
-        from crazy_functions.下载arxiv论文翻译摘要 import 下载arxiv论文并翻译摘要
+        from crazy_functions.DownloadArxivPaperTranslateAbstract import DownloadArxivPaperAndTranslateAbstract
 
         function_plugins.update(
             {
-                "一键下载arxiv论文并翻译摘要（先在input输入编号，如1812.10695）": {
+                "一键DownloadArxivPaperAndTranslateAbstract（まずinputに番号を入力してください，例えば1812.10695のように）": {
                     "Group": "学术",
                     "Color": "stop",
-                    "AsButton": False,  # 加入下拉菜单中
-                    # "Info": "下载arxiv论文并翻译摘要 | 输入参数为arxiv编号如1812.10695",
-                    "Function": HotReload(下载arxiv论文并翻译摘要),
+                    "AsButton": False,  # ドロップダウンメニューに追加する
+                    # "Info": "DownloadArxivPaperAndTranslateAbstract | 入力パラメータ为arxiv编号例えば1812.10695のように",
+                    "Function": HotReload(DownloadArxivPaperAndTranslateAbstract),
                 }
             }
         )
@@ -306,29 +306,29 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.联网的ChatGPT import 连接网络回答问题
+        from crazy_functions.ChatGPTConnectedToNetwork import ConnectToNetworkToAnswerQuestions
 
         function_plugins.update(
             {
-                "连接网络回答问题（输入问题后点击该插件，需要访问谷歌）": {
+                "ConnectToNetworkToAnswerQuestions（質問を入力した後、このプラグインをクリックします，Googleにアクセスする必要があります）": {
                     "Group": "对话",
                     "Color": "stop",
-                    "AsButton": False,  # 加入下拉菜单中
-                    # "Info": "连接网络回答问题（需要访问谷歌）| 输入参数是一个问题",
-                    "Function": HotReload(连接网络回答问题),
+                    "AsButton": False,  # ドロップダウンメニューに追加する
+                    # "Info": "ConnectToNetworkToAnswerQuestions（Googleにアクセスする必要があります）| 入力パラメータ是一pieces問題",
+                    "Function": HotReload(ConnectToNetworkToAnswerQuestions),
                 }
             }
         )
-        from crazy_functions.联网的ChatGPT_bing版 import 连接bing搜索回答问题
+        from crazy_functions.OnlineChatGPT_BingEdition import ConnectBingSearchAnswerQuestion
 
         function_plugins.update(
             {
-                "连接网络回答问题（中文Bing版，输入问题后点击该插件）": {
+                "ConnectToNetworkToAnswerQuestions（中国語Bing版，質問を入力した後、このプラグインをクリックします）": {
                     "Group": "对话",
                     "Color": "stop",
-                    "AsButton": False,  # 加入下拉菜单中
-                    "Info": "连接网络回答问题（需要访问中文Bing）| 输入参数是一个问题",
-                    "Function": HotReload(连接bing搜索回答问题),
+                    "AsButton": False,  # ドロップダウンメニューに追加する
+                    "Info": "ConnectToNetworkToAnswerQuestions（需要访问中文Bing）| 入力パラメータ是一pieces問題",
+                    "Function": HotReload(ConnectBingSearchAnswerQuestion),
                 }
             }
         )
@@ -337,17 +337,17 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.解析项目源代码 import 解析任意code项目
+        from crazy_functions.ParseProjectSourceCode import ParseAnyCodeProject
 
         function_plugins.update(
             {
-                "解析项目源代码（手动指定和筛选源代码文件类型）": {
+                "ParseProjectSourceCode（ソースコードファイルタイプを手動で指定およびフィルタリングする）": {
                     "Group": "编程",
                     "Color": "stop",
                     "AsButton": False,
-                    "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-                    "ArgsReminder": '输入时用逗号隔开, *代表通配符, 加了^代表不匹配; 不输入代表全部匹配。例如: "*.c, ^*.cpp, config.toml, ^*.toml"',  # 高级参数输入区的显示提示
-                    "Function": HotReload(解析任意code项目),
+                    "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+                    "ArgsReminder": '入力時にカンマで区切ってください, * represents a wildcard, ^を追加すると、一致しないことを意味します; No input means all matches。例えば: "*.c, ^*.cpp, config.toml, ^*.toml"',  # 高度なパラメータ入力エリアの表示ヒント
+                    "Function": HotReload(ParseAnyCodeProject),
                 },
             }
         )
@@ -356,17 +356,17 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.询问多个大语言模型 import 同时问询_指定模型
+        from crazy_functions.InquiryMultipleLargeLanguageModels import InquireSimultaneously_SpecifiedModel
 
         function_plugins.update(
             {
-                "询问多个GPT模型（手动指定询问哪些模型）": {
+                "複数のGPTモデルについて問い合わせる（手動でどのモデルを問い合わせるか指定する）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-                    "ArgsReminder": "支持任意数量的llm接口，用&符号分隔。例如chatglm&gpt-3.5-turbo&gpt-4",  # 高级参数输入区的显示提示
-                    "Function": HotReload(同时问询_指定模型),
+                    "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+                    "ArgsReminder": "Support any number of llm interfaces，&記号で分割する。例えばchatglm&gpt-3.5-turbo&gpt-4",  # 高度なパラメータ入力エリアの表示ヒント
+                    "Function": HotReload(InquireSimultaneously_SpecifiedModel),
                 },
             }
         )
@@ -375,43 +375,43 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.图片生成 import 图片生成_DALLE2, 图片生成_DALLE3, 图片修改_DALLE2
+        from crazy_functions.ImageGeneration import ImageGeneration_DALLE2, ImageGeneration_DALLE3, ImageModification_DALLE2
 
         function_plugins.update(
             {
-                "图片生成_DALLE2 （先切换模型到gpt-*）": {
+                "ImageGeneration_DALLE2 （先切换模型到gpt-*）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-                    "ArgsReminder": "在这里输入分辨率, 如1024x1024（默认），支持 256x256, 512x512, 1024x1024",  # 高级参数输入区的显示提示
-                    "Info": "使用DALLE2生成图片 | 输入参数字符串，提供图像的内容",
-                    "Function": HotReload(图片生成_DALLE2),
+                    "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+                    "ArgsReminder": "解像度をここに入力してください, 1024x1024のように（#），支持 256x256, 512x512, 1024x1024",  # 高度なパラメータ入力エリアの表示ヒント
+                    "Info": "使用するDALLE2生成图片 | 入力パラメータ文字列，提供图像的内容",
+                    "Function": HotReload(ImageGeneration_DALLE2),
                 },
             }
         )
         function_plugins.update(
             {
-                "图片生成_DALLE3 （先切换模型到gpt-*）": {
+                "ImageGeneration_DALLE3 （先切换模型到gpt-*）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "AdvancedArgs": True,  # 调用时，唤起高级参数输入区（默认False）
-                    "ArgsReminder": "在这里输入自定义参数「分辨率-质量(可选)-风格(可选)」, 参数示例「1024x1024-hd-vivid」 || 分辨率支持 「1024x1024」(默认) /「1792x1024」/「1024x1792」 || 质量支持 「-standard」(默认) /「-hd」 || 风格支持 「-vivid」(默认) /「-natural」",  # 高级参数输入区的显示提示
-                    "Info": "使用DALLE3生成图片 | 输入参数字符串，提供图像的内容",
-                    "Function": HotReload(图片生成_DALLE3),
+                    "AdvancedArgs": True,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+                    "ArgsReminder": "在这里入力自定义パラメータ「分辨率-质量(オプション)-风格(オプション)」, パラメータ示例「1024x1024-hd-vivid」 || 分辨率支持 「1024x1024」(#) /「1792x1024」/「1024x1792」 || 质量支持 「-standard」(#) /「-hd」 || 风格支持 「-vivid」(#) /「-natural」",  # 高度なパラメータ入力エリアの表示ヒント
+                    "Info": "使用するDALLE3生成图片 | 入力パラメータ文字列，提供图像的内容",
+                    "Function": HotReload(ImageGeneration_DALLE3),
                 },
             }
         )
         function_plugins.update(
             {
-                "图片修改_DALLE2 （先切换模型到gpt-*）": {
+                "ImageModification_DALLE2 （先切换模型到gpt-*）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "AdvancedArgs": False,  # 调用时，唤起高级参数输入区（默认False）
-                    # "Info": "使用DALLE2修改图片 | 输入参数字符串，提供图像的内容",
-                    "Function": HotReload(图片修改_DALLE2),
+                    "AdvancedArgs": False,  # 呼び出し時，高度なパラメータ入力エリアを呼び出す（デフォルトはFalse）
+                    # "Info": "使用するDALLE2修改图片 | 入力パラメータ文字列，提供图像的内容",
+                    "Function": HotReload(ImageModification_DALLE2),
                 },
             }
         )
@@ -420,18 +420,18 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.总结音视频 import 总结音视频
+        from crazy_functions.SummaryAudioVideo import SummaryAudioVideo
 
         function_plugins.update(
             {
-                "批量总结音视频（输入路径或上传压缩包）": {
+                "バッチ量SummaryAudioVideo（パスを入力するか、圧縮ファイルをアップロードする）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "调用openai api 使用whisper-1模型, 目前支持的格式:mp4, m4a, wav, mpga, mpeg, mp3。此处可以输入解析提示，例如：解析为简体中文（默认）。",
-                    "Info": "批量总结音频或视频 | 输入参数为路径",
-                    "Function": HotReload(总结音视频),
+                    "ArgsReminder": "テキストの翻訳, 現在サポートされている形式:mp4, m4a, wav, mpga, mpeg, mp3。此处可以入力解析ヒント，例えば：テキストの翻訳（#）。",
+                    "Info": "バッチ量音声をまとめる或视频 | 入力パラメータ为路径",
+                    "Function": HotReload(SummaryAudioVideo),
                 }
             }
         )
@@ -440,16 +440,16 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.数学动画生成manim import 动画生成
+        from crazy_functions.MathematicalAnimationGenerationManim import AnimationGeneration
 
         function_plugins.update(
             {
-                "数学动画生成（Manim）": {
+                "数学AnimationGeneration（Manim）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "Info": "按照自然语言描述生成一个动画 | 输入参数是一段话",
-                    "Function": HotReload(动画生成),
+                    "Info": "按照自然语言描述生成一pieces动画 | 入力パラメータ是一段话",
+                    "Function": HotReload(AnimationGeneration),
                 }
             }
         )
@@ -458,17 +458,17 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.批量Markdown翻译 import Markdown翻译指定语言
+        from crazy_functions.BatchTranslateMarkdown import TranslateMarkdownToSpecifiedLanguage
 
         function_plugins.update(
             {
-                "Markdown翻译（指定翻译成何种语言）": {
+                "Markdownの翻訳（指定翻訳成何种语言）": {
                     "Group": "编程",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "请输入要翻译成哪种语言，默认为Chinese。",
-                    "Function": HotReload(Markdown翻译指定语言),
+                    "ArgsReminder": "日本語，デフォルトはChineseです。",
+                    "Function": HotReload(TranslateMarkdownToSpecifiedLanguage),
                 }
             }
         )
@@ -477,17 +477,17 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.知识库问答 import 知识库文件注入
+        from crazy_functions.UpdateKnowledgeArchive import InjectKnowledgeBaseFiles
 
         function_plugins.update(
             {
-                "构建知识库（先上传文件素材,再运行此插件）": {
+                "テキストの翻訳（先上传文件素材,再运行此プラグイン）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "此处待注入的知识库名称id, 默认为default。文件进入知识库后可长期保存。可以通过再次调用本插件的方式，向知识库追加更多文档。",
-                    "Function": HotReload(知识库文件注入),
+                    "ArgsReminder": "此处待注入的知识库名称id, デフォルトはdefaultです。文件进入知识库后可长期保存。可以通过再次调用本プラグイン的方式，向知识库追加更多文档。",
+                    "Function": HotReload(InjectKnowledgeBaseFiles),
                 }
             }
         )
@@ -496,17 +496,17 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.知识库问答 import 读取知识库作答
+        from crazy_functions.UpdateKnowledgeArchive import ReadKnowledgeArchiveAnswerQuestions
 
         function_plugins.update(
             {
-                "知识库文件注入（构建知识库后,再运行此插件）": {
+                "InjectKnowledgeBaseFiles（テキストの翻訳后,再运行此プラグイン）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "待提取的知识库名称id, 默认为default, 您需要构建知识库后再运行此插件。",
-                    "Function": HotReload(读取知识库作答),
+                    "ArgsReminder": "原始文本, デフォルトはdefaultです, 您需要テキストの翻訳后再运行此プラグイン。",
+                    "Function": HotReload(ReadKnowledgeArchiveAnswerQuestions),
                 }
             }
         )
@@ -515,7 +515,7 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.交互功能函数模板 import 交互功能模板函数
+        from crazy_functions.InteractiveFunctionFunctionTemplate import InteractiveFunctionTemplateFunction
 
         function_plugins.update(
             {
@@ -523,7 +523,7 @@ def get_crazy_functions():
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
-                    "Function": HotReload(交互功能模板函数),
+                    "Function": HotReload(InteractiveFunctionTemplateFunction),
                 }
             }
         )
@@ -532,52 +532,52 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.Latex输出PDF import Latex英文纠错加PDF对比
-        from crazy_functions.Latex输出PDF import Latex翻译中文并重新编译PDF
-        from crazy_functions.Latex输出PDF import PDF翻译中文并重新编译PDF
+        from crazy_functions.OutputPDFFromLatex import CorrectEnglishInLatexWithPDFComparison
+        from crazy_functions.OutputPDFFromLatex import TranslateChineseToEnglishInLatexAndRecompilePDF
+        from crazy_functions.OutputPDFFromLatex import TranslatePDFToChineseAndRecompilePDF
 
         function_plugins.update(
             {
-                "Latex英文纠错+高亮修正位置 [需Latex]": {
+                "LatexEnglishCorrection+高亮修正位置 [LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": "如果有必要, 请在此处追加更细致的矫错指令（使用英文）。",
-                    "Function": HotReload(Latex英文纠错加PDF对比),
+                    "ArgsReminder": "ある場合必要, ここにより詳細なエラー修正命令を追加してください（使用する英文）。",
+                    "Function": HotReload(CorrectEnglishInLatexWithPDFComparison),
                 },
-                "Arxiv论文精细翻译（输入arxivID）[需Latex]": {
+                "Arxiv論文精细翻訳（arxivIDを入力する）[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 "
-                                    r"例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: "
+                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
+                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
                                     r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "Arixv论文精细翻译 | 输入参数arxiv论文的ID，比如1812.10695",
-                    "Function": HotReload(Latex翻译中文并重新编译PDF),
+                    "Info": "Arixv論文の詳細な翻訳 | 入力パラメータarxiv論文的ID，比例えば1812.10695のように",
+                    "Function": HotReload(TranslateChineseToEnglishInLatexAndRecompilePDF),
                 },
-                "本地Latex论文精细翻译（上传Latex项目）[需Latex]": {
+                "ローカルのLaTeX論文の詳細な翻訳（Latexプロジェクトをアップロードする）[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 "
-                                    r"例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: "
+                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
+                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
                                     r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "本地Latex论文精细翻译 | 输入参数是路径",
-                    "Function": HotReload(Latex翻译中文并重新编译PDF),
+                    "Info": "ローカルのLaTeX論文の詳細な翻訳 | 入力パラメータ是路径",
+                    "Function": HotReload(TranslateChineseToEnglishInLatexAndRecompilePDF),
                 },
-                "PDF翻译中文并重新编译PDF（上传PDF）[需Latex]": {
+                "TranslatePDFToChineseAndRecompilePDF（上传PDF）[LaTeXが必要です]": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
                     "AdvancedArgs": True,
-                    "ArgsReminder": r"如果有必要, 请在此处给出自定义翻译命令, 解决部分词汇翻译不准确的问题。 "
-                                    r"例如当单词'agent'翻译不准确时, 请尝试把以下指令复制到高级参数区: "
+                    "ArgsReminder": r"ある場合必要, カスタム翻訳コマンドをここに入力してください, 一部の用語の翻訳の不正確さを解決する。 "
+                                    r"例えば当单词'agent'翻訳不准确時, テキストの翻訳: "
                                     r'If the term "agent" is used in this section, it should be translated to "智能体". ',
-                    "Info": "PDF翻译中文，并重新编译PDF | 输入参数为路径",
-                    "Function": HotReload(PDF翻译中文并重新编译PDF)
+                    "Info": "PDF翻訳中文，并重新编译PDF | 入力パラメータ为路径",
+                    "Function": HotReload(TranslatePDFToChineseAndRecompilePDF)
                 }
             }
         )
@@ -590,16 +590,16 @@ def get_crazy_functions():
 
         ENABLE_AUDIO = get_conf("ENABLE_AUDIO")
         if ENABLE_AUDIO:
-            from crazy_functions.语音助手 import 语音助手
+            from crazy_functions.VoiceAssistant import VoiceAssistant
 
             function_plugins.update(
                 {
-                    "实时语音对话": {
+                    "实時语音对话": {
                         "Group": "对话",
                         "Color": "stop",
                         "AsButton": True,
-                        "Info": "这是一个时刻聆听着的语音对话助手 | 没有输入参数",
-                        "Function": HotReload(语音助手),
+                        "Info": "这是一pieces時刻聆听着的语音对话助手 | 没有入力パラメータ",
+                        "Function": HotReload(VoiceAssistant),
                     }
                 }
             )
@@ -608,15 +608,15 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.批量翻译PDF文档_NOUGAT import 批量翻译PDF文档
+        from crazy_functions.BatchTranslatePDFDocuments_NOUGAT import BatchTranslatePDFDocuments
 
         function_plugins.update(
             {
-                "精准翻译PDF文档（NOUGAT）": {
+                "精准翻訳PDF文档（NOUGAT）": {
                     "Group": "学术",
                     "Color": "stop",
                     "AsButton": False,
-                    "Function": HotReload(批量翻译PDF文档),
+                    "Function": HotReload(BatchTranslatePDFDocuments),
                 }
             }
         )
@@ -625,7 +625,7 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.函数动态生成 import 函数动态生成
+        from crazy_functions.DynamicFunctionGeneration import DynamicFunctionGeneration
 
         function_plugins.update(
             {
@@ -633,7 +633,7 @@ def get_crazy_functions():
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,
-                    "Function": HotReload(函数动态生成),
+                    "Function": HotReload(DynamicFunctionGeneration),
                 }
             }
         )
@@ -642,15 +642,15 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.多智能体 import 多智能体终端
+        from crazy_functions.MultiAgent import MultiAgentTerminal
 
         function_plugins.update(
             {
-                "AutoGen多智能体终端（仅供测试）": {
+                "AutoGenMultiAgentTerminal（仅供测试）": {
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,
-                    "Function": HotReload(多智能体终端),
+                    "Function": HotReload(MultiAgentTerminal),
                 }
             }
         )
@@ -659,15 +659,15 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     try:
-        from crazy_functions.互动小游戏 import 随机小游戏
+        from crazy_functions.InteractiveMiniGame import RandomMiniGame
 
         function_plugins.update(
             {
-                "随机互动小游戏（仅供测试）": {
+                "随机InteractiveMiniGame（仅供测试）": {
                     "Group": "智能体",
                     "Color": "stop",
                     "AsButton": False,
-                    "Function": HotReload(随机小游戏),
+                    "Function": HotReload(RandomMiniGame),
                 }
             }
         )
@@ -676,7 +676,7 @@ def get_crazy_functions():
         print("Load function plugin failed")
 
     # try:
-    #     from crazy_functions.高级功能函数模板 import 测试图表渲染
+    #     from crazy_functions.AdvancedFunctionTemplate import 测试图表渲染
     #     function_plugins.update({
     #         "绘制逻辑关系（测试图表渲染）": {
     #             "Group": "智能体",
@@ -690,25 +690,25 @@ def get_crazy_functions():
     #     print('Load function plugin failed')
 
     # try:
-    #     from crazy_functions.chatglm微调工具 import 微调数据集生成
+    #     from crazy_functions.ChatGLMFineTuningTool import FineTuneDatasetGeneration
     #     function_plugins.update({
-    #         "黑盒模型学习: 微调数据集生成 (先上传数据集)": {
+    #         "黑盒模型学习: FineTuneDatasetGeneration (まずデータセットをアップロードしてください)": {
     #             "Color": "stop",
     #             "AsButton": False,
     #             "AdvancedArgs": True,
-    #             "ArgsReminder": "针对数据集输入（如 绿帽子*深蓝色衬衫*黑色运动裤）给出指令，例如您可以将以下命令复制到下方: --llm_to_learn=azure-gpt-3.5 --prompt_prefix='根据下面的服装类型提示，想象一个穿着者，对这个人外貌、身处的环境、内心世界、过去经历进行描写。要求：100字以内，用第二人称。' --system_prompt=''",
-    #             "Function": HotReload(微调数据集生成)
+    #             "ArgsReminder": "针对数据集入力（例えば、緑の帽子*濃い青のシャツ*黒のスポーツパンツ）指示を与える，たとえば、以下のコマンドを下にコピーできます: --llm_to_learn=azure-gpt-3.5 --prompt_prefix='根据下面的服装类型ヒント，着用者を想像してください，この人の外見、環境、内面世界、過去の経験について描写する。要求：100文字以内，第二人称を使用するする。' --system_prompt=''",
+    #             "Function": HotReload(FineTuneDatasetGeneration)
     #         }
     #     })
     # except:
     #     print('Load function plugin failed')
 
     """
-    设置默认值:
-    - 默认 Group = 对话
-    - 默认 AsButton = True
-    - 默认 AdvancedArgs = False
-    - 默认 Color = secondary
+    设置デフォルト値:
+    - # Group = 对话
+    - # AsButton = True
+    - # AdvancedArgs = False
+    - # Color = secondary
     """
     for name, function_meta in function_plugins.items():
         if "Group" not in function_meta:

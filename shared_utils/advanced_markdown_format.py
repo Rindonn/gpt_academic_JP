@@ -78,7 +78,7 @@ def replace_math_render(match):
 
 def markdown_bug_hunt(content):
     """
-    解决一个mdx_math的bug（单$包裹begin命令时多余<script>）
+    mdx_mathのバグを解決する（beginコマンドを単一の$で囲むと余分になります<script>）
     """
     content = content.replace(
         '<script type="math/tex">\n<script type="math/tex; mode=display">',
@@ -90,7 +90,7 @@ def markdown_bug_hunt(content):
 
 def is_equation(txt):
     """
-    判定是否为公式 | 测试1 写出洛伦兹定律，使用tex格式公式 测试2 给出柯西不等式，使用latex格式 测试3 写出麦克斯韦方程组
+    判定是否为公式 | 测试1 写出洛伦兹定律，使TeX形式で公式 测试2 给出柯西不等式，使用するlatexフォーマット 测试3 写出麦克斯韦方程组
     """
     if "```" in txt and "```reference" not in txt:
         return False
@@ -198,7 +198,7 @@ def fix_code_segment_indent(txt):
             for i in range(line_start, line_end):
                 add_n = num_spaces_should_be - shared_indent_cnt
                 lines[i] = " " * add_n + lines[i]
-            if not change_any:  # 遇到第一个
+            if not change_any:  # 遇到第一pieces
                 change_any = True
 
     if change_any:
@@ -207,69 +207,22 @@ def fix_code_segment_indent(txt):
         return txt
 
 
-def markdown_convertion_for_file(txt):
-    """
-    将Markdown格式的文本转换为HTML格式。如果包含数学公式，则先将公式转换为HTML格式。
-    """
-    from themes.theme import advanced_css
-    pre = f"""
-    <!DOCTYPE html><head><meta charset="utf-8"><title>对话历史</title><style>{advanced_css}</style></head>
-    <body>
-    <div class="test_temp1" style="width:10%; height: 500px; float:left;"></div>
-    <div class="test_temp2" style="width:80%;padding: 40px;float:left;padding-left: 20px;padding-right: 20px;box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 8px 8px;border-radius: 10px;">
-        <div class="markdown-body">
-    """
-    suf = """
-        </div>
-    </div>
-    <div class="test_temp3" style="width:10%; height: 500px; float:left;"></div>
-    </body>
-    """
-
-    if txt.startswith(pre) and txt.endswith(suf):
-        # print('警告，输入了已经经过转化的字符串，二次转化可能出问题')
-        return txt  # 已经被转化过，不需要再次转化
-
-    find_equation_pattern = r'<script type="math/tex(?:.*?)>(.*?)</script>'
-    txt = fix_markdown_indent(txt)
-    # convert everything to html format
-    split = markdown.markdown(text="---")
-    convert_stage_1 = markdown.markdown(
-        text=txt,
-        extensions=[
-            "sane_lists",
-            "tables",
-            "mdx_math",
-            "pymdownx.superfences",
-            "pymdownx.highlight",
-        ],
-        extension_configs={**markdown_extension_configs, **code_highlight_configs},
-    )
-    convert_stage_1 = markdown_bug_hunt(convert_stage_1)
-
-    # 2. convert to rendered equation
-    convert_stage_2_2, n = re.subn(
-        find_equation_pattern, replace_math_render, convert_stage_1, flags=re.DOTALL
-    )
-    # cat them together
-    return pre + convert_stage_2_2 + suf
-
-@lru_cache(maxsize=128)  # 使用 lru缓存 加快转换速度
+@lru_cache(maxsize=128)  # 変換速度を高速化するためにlruキャッシュを使用するする
 def markdown_convertion(txt):
     """
-    将Markdown格式的文本转换为HTML格式。如果包含数学公式，则先将公式转换为HTML格式。
+    Markdown形式のテキストをHTML形式に変換する。数式が含まれている場合，公式をHTML形式に変換してください。
     """
     pre = '<div class="markdown-body">'
     suf = "</div>"
     if txt.startswith(pre) and txt.endswith(suf):
-        # print('警告，输入了已经经过转化的字符串，二次转化可能出问题')
-        return txt  # 已经被转化过，不需要再次转化
+        # print('Warning，変換済みの文字列が入力されました，二次转化可能出問題')
+        return txt  # すでに変換されています，再変換する必要はありません
 
     find_equation_pattern = r'<script type="math/tex(?:.*?)>(.*?)</script>'
 
     txt = fix_markdown_indent(txt)
     # txt = fix_code_segment_indent(txt)
-    if is_equation(txt):  # 有$标识的公式符号，且没有代码段```的标识
+    if is_equation(txt):  # $記号を持つ数式記号，And there is no code segment```のマーク
         # convert everything to html format
         split = markdown.markdown(text="---")
         convert_stage_1 = markdown.markdown(
@@ -316,13 +269,13 @@ def markdown_convertion(txt):
 
 def close_up_code_segment_during_stream(gpt_reply):
     """
-    在gpt输出代码的中途（输出了前面的```，但还没输出完后面的```），补上后面的```
+    GPTがコードを出力する途中で（前のものを出力し、1つの文字列に結合します```，しかし、まだ後ろの出力が完了していません```），後ろに補完する```
 
     Args:
-        gpt_reply (str): GPT模型返回的回复字符串。
+        gpt_reply (str): GPTモデルからの返信文字列。
 
     Returns:
-        str: 返回一个新的字符串，将输出代码片段的“后面的```”补上。
+        str: Return a new string，コードスニペットの後ろに出力する```補う。
 
     """
     if "```" not in gpt_reply:
@@ -330,17 +283,17 @@ def close_up_code_segment_during_stream(gpt_reply):
     if gpt_reply.endswith("```"):
         return gpt_reply
 
-    # 排除了以上两个情况，我们
+    # Excludes the above two cases，私たちは
     segments = gpt_reply.split("```")
     n_mark = len(segments) - 1
     if n_mark % 2 == 1:
-        return gpt_reply + "\n```"  # 输出代码片段中！
+        return gpt_reply + "\n```"  # 出力代码フラグメント中！
     else:
         return gpt_reply
 
 
 def special_render_issues_for_mermaid(text):
-    # 用不太优雅的方式处理一个core_functional.py中出现的mermaid渲染特例：
+    # 用不太优雅的方式处理一piecescore_functional.py中出现的mermaid渲染特例：
     # 我不希望"总结绘制脑图"prompt中的mermaid渲染出来
     @lru_cache(maxsize=1)
     def get_special_case():
@@ -353,17 +306,17 @@ def special_render_issues_for_mermaid(text):
 
 def compat_non_markdown_input(text):
     """
-    改善非markdown输入的显示效果，例如将空格转换为&nbsp;，将换行符转换为</br>等。
+    改善非markdown入力的显示效果，例えば置き換える空格转换为&nbsp;，置き換える换行符转换为</br>等。
     """
     if "```" in text:
-        # careful input：markdown输入
-        text = special_render_issues_for_mermaid(text)  # 处理特殊的渲染问题
+        # careful input：markdown入力
+        text = special_render_issues_for_mermaid(text)  # 处理特殊的渲染問題
         return text
     elif "</div>" in text:
-        # careful input：html输入
+        # careful input：html入力
         return text
     else:
-        # whatever input：非markdown输入
+        # whatever input：非markdown入力
         lines = text.split("\n")
         for i, line in enumerate(lines):
             lines[i] = lines[i].replace(" ", "&nbsp;")  # 空格转换为&nbsp;
@@ -371,13 +324,13 @@ def compat_non_markdown_input(text):
         return text
 
 
-@lru_cache(maxsize=128)  # 使用lru缓存
+@lru_cache(maxsize=128)  # 使用するlru缓存
 def simple_markdown_convertion(text):
     pre = '<div class="markdown-body">'
     suf = "</div>"
     if text.startswith(pre) and text.endswith(suf):
-        return text  # 已经被转化过，不需要再次转化
-    text = compat_non_markdown_input(text)    # 兼容非markdown输入
+        return text  # すでに変換されています，再変換する必要はありません
+    text = compat_non_markdown_input(text)    # 兼容非markdown入力
     text = markdown.markdown(
         text,
         extensions=["pymdownx.superfences", "tables", "pymdownx.highlight"],
@@ -388,21 +341,21 @@ def simple_markdown_convertion(text):
 
 def format_io(self, y):
     """
-    将输入和输出解析为HTML格式。将y中最后一项的输入部分段落化，并将输出部分的Markdown和数学公式转换为HTML格式。
+    入力と出力をHTML形式で解析する。Paragraphize the input part of the last item in y，出力部分のMarkdownと数式をHTML形式に変換する。
     """
     if y is None or y == []:
         return []
     i_ask, gpt_reply = y[-1]
     i_ask = apply_gpt_academic_string_mask(i_ask, mode="show_render")
     gpt_reply = apply_gpt_academic_string_mask(gpt_reply, mode="show_render")
-    # 当代码输出半截的时候，试着补上后个```
+    # コードが半分出力されたとき，後のものを試してみてください```
     if gpt_reply is not None:
         gpt_reply = close_up_code_segment_during_stream(gpt_reply)
-    # 处理提问与输出
+    # 处理提问与出力
     y[-1] = (
-        # 输入部分
+        # 入力部分
         None if i_ask is None else simple_markdown_convertion(i_ask),
-        # 输出部分
+        # 出力部分
         None if gpt_reply is None else markdown_convertion(gpt_reply),
     )
     return y

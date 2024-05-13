@@ -1,36 +1,36 @@
-# 借鉴了 https://github.com/GaiZhenbiao/ChuanhuChatGPT 项目
+# httpsを参考にしました://github.com/GaiZhenbiao/ChuanhuChatGPT 项目
 
 """
-    该文件中主要包含2个函数
+    このファイルには主に2つの関数が含まれています
 
-    不具备多线程能力的函数：
-    1. predict: 正常对话时使用，具备完备的交互功能，不可多线程
+    マルチスレッド機能を持たない関数：
+    1. predict: 通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
 
-    具备多线程调用能力的函数
-    2. predict_no_ui_long_connection：支持多线程
+    マルチスレッド呼び出し機能を備えた関数
+    2. predict_no_ui_long_connection：支持マルチスレッド
 """
 import logging
 import os
 import time
 import traceback
+from toolbox import get_conf, update_ui, trimmed_format_exc, encode_image, every_image_file_in_path
 import json
 import requests
-from toolbox import get_conf, update_ui, trimmed_format_exc, encode_image, every_image_file_in_path, log_chat
-picture_system_prompt = "\n当回复图像时,必须说明正在回复哪张图像。所有图像仅在最后一个问题中提供,即使它们在历史记录中被提及。请使用'这是第X张图像:'的格式来指明您正在描述的是哪张图像。"
-Claude_3_Models = ["claude-3-haiku-20240307", "claude-3-sonnet-20240229", "claude-3-opus-20240229"]
+picture_system_prompt = "\n当回复图像時,必须言う明正在回复哪张图像。所有图像仅在最後に一pieces問題中提供,即使它们在History记录中被提及。请使用する'これは第X张图像:'的フォーマット来指明您正在描述的是哪张图像。"
+Claude_3_Models = ["claude-3-sonnet-20240229", "claude-3-opus-20240229"]
 
-# config_private.py放自己的秘密如API和代理网址
-# 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
+# config_private.pyに自分のAPIやプロキシアドレスなどの秘密を入力する
+# 読み取り時に、まずconfig_private構成ファイルが存在するかどうかを確認します（Gitの管理外），ある場合，元のconfigファイルを上書きする
 from toolbox import get_conf, update_ui, trimmed_format_exc, ProxyNetworkActivate
 proxies, TIMEOUT_SECONDS, MAX_RETRY, ANTHROPIC_API_KEY = \
     get_conf('proxies', 'TIMEOUT_SECONDS', 'MAX_RETRY', 'ANTHROPIC_API_KEY')
 
 timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check proxy settings in config.py.' + \
-                  '网络错误，检查代理服务器是否可用，以及代理设置的格式是否正确，格式须是[协议]://[地址]:[端口]，缺一不可。'
+                  'ネットワークエラー，プロキシサーバーが利用可能かどうかを確認する，およびプロキシ設定の形式が正しいかどうか，フォーマットは次のようにする必要があります[プロトコル]://[Address]:[ポート]，欠かせない。'
 
 def get_full_error(chunk, stream_response):
     """
-        获取完整的从Openai返回的报错
+        Openaiから返された完全なエラーを取得する
     """
     while True:
         try:
@@ -40,7 +40,7 @@ def get_full_error(chunk, stream_response):
     return chunk
 
 def decode_chunk(chunk):
-    # 提前读取一些信息（用于判断异常）
+    # 提前读取一些信息（用于判断Exception）
     chunk_decoded = chunk.decode()
     chunkjson = None
     is_last_chunk = False
@@ -70,22 +70,22 @@ def decode_chunk(chunk):
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=None, console_slience=False):
     """
-    发送至chatGPT，等待回复，一次性完成，不显示中间过程。但内部用stream的方法避免中途网线被掐。
+    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するしています。
     inputs：
-        是本次问询的输入
+        この問い合わせの入力です
     sys_prompt:
-        系统静默prompt
+        システム静黙プロンプト
     llm_kwargs：
-        chatGPT的内部调优参数
+        chatGPTの内部調整パラメータ
     history：
-        是之前的对话列表
+        以前の会話リストです
     observe_window = None：
-        用于负责跨越线程传递已经输出的部分，大部分时候仅仅为了fancy的视觉效果，留空即可。observe_window[0]：观测窗。observe_window[1]：看门狗
+        スレッドを越えて出力された部分を転送する責任がある，ほとんどの場合、見栄えの良い視覚効果のためだけです，空白のままにしておくことができます。observe_window[0]：Observation window。observe_window[1]：ウォッチドッグ
     """
-    watch_dog_patience = 5 # 看门狗的耐心, 设置5秒即可
+    watch_dog_patience = 5 # 監視犬の忍耐力, Set for 5 seconds
     if len(ANTHROPIC_API_KEY) == 0:
-        raise RuntimeError("没有设置ANTHROPIC_API_KEY选项")
-    if inputs == "":     inputs = "空空如也的输入栏"
+        raise RuntimeError("ANTHROPIC_API_KEYオプションが設定されていません")
+    if inputs == "":     inputs = "空の入力欄"
     headers, message = generate_payload(inputs, llm_kwargs, history, sys_prompt, image_paths=None)
     retry = 0
 
@@ -95,13 +95,13 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
             # make a POST request to the API endpoint, stream=False
             from .bridge_all import model_info
             endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
-            response = requests.post(endpoint, headers=headers, json=message,
+            response = requests.post(endpoint, headers=headers, json=message, 
                                      proxies=proxies, stream=True, timeout=TIMEOUT_SECONDS);break
         except requests.exceptions.ReadTimeout as e:
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'请求超时，正在重试 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
     stream_response = response.iter_lines()
     result = ''
     while True:
@@ -109,33 +109,33 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
         except StopIteration:
             break
         except requests.exceptions.ConnectionError:
-            chunk = next(stream_response) # 失败了，重试一次？再失败就没办法了。
+            chunk = next(stream_response) # 失敗しました，もう一度やり直す？もう失敗したらどうしようもない。
         need_to_pass, chunkjson, is_last_chunk = decode_chunk(chunk)
         if chunk:
             try:
                 if need_to_pass:
                     pass
                 elif is_last_chunk:
-                    # logging.info(f'[response] {result}')
+                    logging.info(f'[response] {result}')
                     break
                 else:
                     if chunkjson and chunkjson['type'] == 'content_block_delta':
                         result += chunkjson['delta']['text']
                         print(chunkjson['delta']['text'], end='')
                         if observe_window is not None:
-                            # 观测窗，把已经获取的数据显示出去
+                            # Observation window，取得したデータを表示する
                             if len(observe_window) >= 1:
                                 observe_window[0] += chunkjson['delta']['text']
-                            # 看门狗，如果超过期限没有喂狗，则终止
+                            # ウォッチドッグ，期限を過ぎてもフィードしない場合，停止する
                             if len(observe_window) >= 2:
                                 if (time.time()-observe_window[1]) > watch_dog_patience:
-                                    raise RuntimeError("用户取消了程序。")
+                                    raise RuntimeError("ユーザーがプログラムをキャンセルしました。")
             except Exception as e:
                 chunk = get_full_error(chunk, stream_response)
                 chunk_decoded = chunk.decode()
                 error_msg = chunk_decoded
                 print(error_msg)
-                raise RuntimeError("Json解析不合常规")
+                raise RuntimeError("Json解析が通常と異なる")
 
     return result
 
@@ -146,18 +146,18 @@ def make_media_input(history,inputs,image_paths):
 
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
-    发送至chatGPT，流式获取输出。
-    用于基础的对话功能。
-    inputs 是本次问询的输入
-    top_p, temperature是chatGPT的内部调优参数
-    history 是之前的对话列表（注意无论是inputs还是history，内容太长了都会触发token数量溢出的错误）
-    chatbot 为WebUI中显示的对话列表，修改它，然后yeild出去，可以直接修改对话界面内容
-    additional_fn代表点击的哪个按钮，按钮见functional.py
+    chatGPTに送信，ストリームで出力を取得する。
+    基本的な対話機能に使用するされます。
+    inputsは今回の問い合わせの入力です
+    top_p, temperatureはchatGPTの内部調整パラメータです
+    historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）
+    Chatbot is the list of conversations displayed in WebUI，それを変更する，そして出力する，対話インターフェースの内容を直接変更できます
+    additional_fnは、クリックされたボタンを表します，functional.pyにあるボタン
     """
-    if inputs == "":     inputs = "空空如也的输入栏"
+    if inputs == "":     inputs = "空の入力欄"
     if len(ANTHROPIC_API_KEY) == 0:
-        chatbot.append((inputs, "没有设置ANTHROPIC_API_KEY"))
-        yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+        chatbot.append((inputs, "ANTHROPIC_API_KEYが設定されていません"))
+        yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています") # 画面を更新する
         return
 
     if additional_fn is not None:
@@ -167,23 +167,23 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     have_recent_file, image_paths = every_image_file_in_path(chatbot)
     if len(image_paths) > 20:
         chatbot.append((inputs, "图片数量超过api上限(20张)"))
-        yield from update_ui(chatbot=chatbot, history=history, msg="等待响应")
+        yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています")
         return
 
     if any([llm_kwargs['llm_model'] == model for model in Claude_3_Models]) and have_recent_file:
-        if inputs == "" or inputs == "空空如也的输入栏":     inputs = "请描述给出的图片"
-        system_prompt += picture_system_prompt  # 由于没有单独的参数保存包含图片的历史，所以只能通过提示词对第几张图片进行定位
+        if inputs == "" or inputs == "空の入力欄":     inputs = "请描述给出的图片"
+        system_prompt += picture_system_prompt  # 由于没有单独テキストの翻訳保存包含图片的History，所以只能通过ヒント词对第几张图片进行定位
         chatbot.append((make_media_input(history,inputs, image_paths), ""))
-        yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+        yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています") # 画面を更新する
     else:
         chatbot.append((inputs, ""))
-        yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+        yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています") # 画面を更新する
 
     try:
         headers, message = generate_payload(inputs, llm_kwargs, history, system_prompt, image_paths)
     except RuntimeError as e:
-        chatbot[-1] = (inputs, f"您提供的api-key不满足要求，不包含任何可用于{llm_kwargs['llm_model']}的api-key。您可能选择了错误的模型或请求源。")
-        yield from update_ui(chatbot=chatbot, history=history, msg="api-key不满足要求") # 刷新界面
+        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
+        yield from update_ui(chatbot=chatbot, history=history, msg="api-keyが要件を満たしていない") # 画面を更新する
         return
 
     history.append(inputs); history.append("")
@@ -194,13 +194,13 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
             # make a POST request to the API endpoint, stream=True
             from .bridge_all import model_info
             endpoint = model_info[llm_kwargs['llm_model']]['endpoint']
-            response = requests.post(endpoint, headers=headers, json=message,
+            response = requests.post(endpoint, headers=headers, json=message, 
                                      proxies=proxies, stream=True, timeout=TIMEOUT_SECONDS);break
         except requests.exceptions.ReadTimeout as e:
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'请求超时，正在重试 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
     stream_response = response.iter_lines()
     gpt_replying_buffer = ""
 
@@ -209,33 +209,32 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         except StopIteration:
             break
         except requests.exceptions.ConnectionError:
-            chunk = next(stream_response) # 失败了，重试一次？再失败就没办法了。
+            chunk = next(stream_response) # 失敗しました，もう一度やり直す？もう失敗したらどうしようもない。
         need_to_pass, chunkjson, is_last_chunk = decode_chunk(chunk)
         if chunk:
             try:
                 if need_to_pass:
                     pass
                 elif is_last_chunk:
-                    log_chat(llm_model=llm_kwargs["llm_model"], input_str=inputs, output_str=gpt_replying_buffer)
-                    # logging.info(f'[response] {gpt_replying_buffer}')
+                    logging.info(f'[response] {gpt_replying_buffer}')
                     break
                 else:
                     if chunkjson and chunkjson['type'] == 'content_block_delta':
                         gpt_replying_buffer += chunkjson['delta']['text']
                         history[-1] = gpt_replying_buffer
                         chatbot[-1] = (history[-2], history[-1])
-                        yield from update_ui(chatbot=chatbot, history=history, msg='正常') # 刷新界面
+                        yield from update_ui(chatbot=chatbot, history=history, msg='正常') # 画面を更新する
 
             except Exception as e:
                 chunk = get_full_error(chunk, stream_response)
                 chunk_decoded = chunk.decode()
                 error_msg = chunk_decoded
                 print(error_msg)
-                raise RuntimeError("Json解析不合常规")
+                raise RuntimeError("Json解析が通常と異なる")
 
 def multiple_picture_types(image_paths):
     """
-    根据图片类型返回image/jpeg, image/png, image/gif, image/webp，无法判断则返回image/jpeg
+    根据图片类型戻るimage/jpeg, image/png, image/gif, image/webp，なし法判断则戻るimage/jpeg
     """
     for image_path in image_paths:
         if image_path.endswith('.jpeg') or image_path.endswith('.jpg'):
@@ -250,7 +249,7 @@ def multiple_picture_types(image_paths):
 
 def generate_payload(inputs, llm_kwargs, history, system_prompt, image_paths):
     """
-    整合所有信息，选择LLM模型，生成http请求，为发送请求做准备
+    すべての情報を統合する，LLMモデルを選択する，httpリクエストを生成する，リクエストの準備をする
     """
 
     conversation_cnt = len(history) // 2
@@ -292,7 +291,7 @@ def generate_payload(inputs, llm_kwargs, history, system_prompt, image_paths):
         what_i_ask_now["role"] = "user"
         what_i_ask_now["content"] = [{"type": "text", "text": inputs}]
     messages.append(what_i_ask_now)
-    # 开始整理headers与message
+    # 開始整理headers与message
     headers = {
         'x-api-key': ANTHROPIC_API_KEY,
         'anthropic-version': '2023-06-01',

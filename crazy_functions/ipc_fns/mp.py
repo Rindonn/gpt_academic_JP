@@ -23,7 +23,7 @@ def run_in_subprocess_with_timeout(func, timeout=60):
             process.join(timeout)
             if process.is_alive():
                 process.terminate()
-                raise TimeoutError(f'功能单元{str(func)}未能在规定时间内完成任务')
+                raise TimeoutError(f'功能单元{str(func)}未能在规定時间内完了任务')
             process.close()
             if 'exception' in exception_dict:
                 # ooops, the subprocess ran into an exception

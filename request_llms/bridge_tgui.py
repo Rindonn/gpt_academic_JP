@@ -87,13 +87,13 @@ async def run(context, max_token, temperature, top_p, addr, port):
 
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
-        发送至chatGPT，流式获取输出。
-        用于基础的对话功能。
-        inputs 是本次问询的输入
-        top_p, temperature是chatGPT的内部调优参数
-        history 是之前的对话列表（注意无论是inputs还是history，内容太长了都会触发token数量溢出的错误）
-        chatbot 为WebUI中显示的对话列表，修改它，然后yeild出去，可以直接修改对话界面内容
-        additional_fn代表点击的哪个按钮，按钮见functional.py
+        chatGPTに送信，ストリームで出力を取得する。
+        基本的な対話機能に使用するされます。
+        inputsは今回の問い合わせの入力です
+        top_p, temperatureはchatGPTの内部調整パラメータです
+        historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）
+        Chatbot is the list of conversations displayed in WebUI，それを変更する，そして出力する，対話インターフェースの内容を直接変更できます
+        additional_fnは、クリックされたボタンを表します，functional.pyにあるボタン
     """
     if additional_fn is not None:
         from core_functional import handle_core_functionality
@@ -102,13 +102,13 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     raw_input = "What I would like to say is the following: " + inputs
     history.extend([inputs, ""])
     chatbot.append([inputs, ""])
-    yield from update_ui(chatbot=chatbot, history=history, msg="等待响应") # 刷新界面
+    yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています") # 画面を更新する
 
     prompt = raw_input
     tgui_say = ""
 
     model_name, addr_port = llm_kwargs['llm_model'].split('@')
-    assert ':' in addr_port, "LLM_MODEL 格式不正确！" + llm_kwargs['llm_model']
+    assert ':' in addr_port, "LLM_MODEL format is incorrect!" + llm_kwargs['llm_model']
     addr, port = addr_port.split(':')
 
 
@@ -138,7 +138,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
             tgui_say = mutable[0]
             history[-1] = tgui_say
             chatbot[-1] = (history[-2], history[-1])
-            yield from update_ui(chatbot=chatbot, history=history) # 刷新界面
+            yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
 
 
@@ -148,7 +148,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history, sys_prompt, obser
     prompt = raw_input
     tgui_say = ""
     model_name, addr_port = llm_kwargs['llm_model'].split('@')
-    assert ':' in addr_port, "LLM_MODEL 格式不正确！" + llm_kwargs['llm_model']
+    assert ':' in addr_port, "LLM_MODEL format is incorrect!" + llm_kwargs['llm_model']
     addr, port = addr_port.split(':')
 
 

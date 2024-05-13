@@ -30,7 +30,7 @@ def cache_decorator(timeout):
 @cache_decorator(timeout=3600)
 def get_access_token():
     """
-    使用 AK，SK 生成鉴权签名（Access Token）
+    使用する AK，SK 生成鉴权签名（Access Token）
     :return: access_token，或是None(如果错误)
     """
     # if (access_token_cache is None) or (time.time() - last_access_token_obtain_time > 3600):
@@ -112,16 +112,15 @@ def generate_from_baidu_qianfan(inputs, llm_kwargs, history, system_prompt):
             yield buffer
         except:
             if ('error_code' in dec) and ("max length" in dec['error_msg']):
-                raise ConnectionAbortedError(dec['error_msg'])  # 上下文太长导致 token 溢出
+                raise ConnectionAbortedError(dec['error_msg'])  # 文脈太长导致 token 溢出
             elif ('error_code' in dec):
                 raise RuntimeError(dec['error_msg'])
 
 
-def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], sys_prompt:str="",
-                                  observe_window:list=[], console_slience:bool=False):
+def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=[], console_slience=False):
     """
-        ⭐多线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        マルチスレッドのテキストの翻訳
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     watch_dog_patience = 5
     response = ""
@@ -130,13 +129,13 @@ def predict_no_ui_long_connection(inputs:str, llm_kwargs:dict, history:list=[], 
         if len(observe_window) >= 1:
             observe_window[0] = response
         if len(observe_window) >= 2:
-            if (time.time()-observe_window[1]) > watch_dog_patience: raise RuntimeError("程序终止。")
+            if (time.time()-observe_window[1]) > watch_dog_patience: raise RuntimeError("プログラムの終了。")
     return response
 
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
-        ⭐单线程方法
-        函数的说明请见 request_llms/bridge_all.py
+        ⭐シングルスレッドメソッド
+        関数の説明については、request_llms/bridge_all.pyを参照してください
     """
     chatbot.append((inputs, ""))
 
@@ -145,9 +144,9 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         inputs, history = handle_core_functionality(additional_fn, inputs, history, chatbot)
 
     yield from update_ui(chatbot=chatbot, history=history)
-    # 开始接收回复
+    # 開始接收回复
     try:
-        response = f"[Local Message] 等待{model_name}响应中 ..."
+        response = f"[Local Message] 待つ{model_name}テキストの翻訳 ..."
         for response in generate_from_baidu_qianfan(inputs, llm_kwargs, history, system_prompt):
             chatbot[-1] = (inputs, response)
             yield from update_ui(chatbot=chatbot, history=history)
@@ -155,14 +154,14 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         yield from update_ui(chatbot=chatbot, history=history)
     except ConnectionAbortedError as e:
         from .bridge_all import model_info
-        if len(history) >= 2: history[-1] = ""; history[-2] = "" # 清除当前溢出的输入：history[-2] 是本次输入, history[-1] 是本次输出
+        if len(history) >= 2: history[-1] = ""; history[-2] = "" # 現在のオーバーフロー入力をクリアする：history[-2] これは今回の入力です, history[-1] 今回の出力です
         history = clip_history(inputs=inputs, history=history, tokenizer=model_info[llm_kwargs['llm_model']]['tokenizer'],
-                    max_token_limit=(model_info[llm_kwargs['llm_model']]['max_token'])) # history至少释放二分之一
-        chatbot[-1] = (chatbot[-1][0], "[Local Message] Reduce the length. 本次输入过长, 或历史数据过长. 历史缓存数据已部分释放, 您可以请再次尝试. (若再次失败则更可能是因为输入过长.)")
-        yield from update_ui(chatbot=chatbot, history=history, msg="异常") # 刷新界面
+                    max_token_limit=(model_info[llm_kwargs['llm_model']]['max_token'])) # historyは少なくとも半分解放する必要があります
+        chatbot[-1] = (chatbot[-1][0], "[Local Message] 長さを短くしてください。入力が長すぎます, または履歴データが長すぎます。履歴キャッシュデータは一部解放されました, もう一度お試しください。 (再度失敗した場合、入力が長すぎる可能性が高いです。)")
+        yield from update_ui(chatbot=chatbot, history=history, msg="Exception") # 画面を更新する
         return
     except RuntimeError as e:
         tb_str = '```\n' + trimmed_format_exc() + '```'
         chatbot[-1] = (chatbot[-1][0], tb_str)
-        yield from update_ui(chatbot=chatbot, history=history, msg="异常") # 刷新界面
+        yield from update_ui(chatbot=chatbot, history=history, msg="Exception") # 画面を更新する
         return

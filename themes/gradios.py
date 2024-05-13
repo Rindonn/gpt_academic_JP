@@ -1,3 +1,4 @@
+import logging
 import os
 import gradio as gr
 from toolbox import get_conf, ProxyNetworkActivate
@@ -9,15 +10,12 @@ theme_dir = os.path.dirname(__file__)
 def dynamic_set_theme(THEME):
     set_theme = gr.themes.ThemeClass()
     with ProxyNetworkActivate("Download_Gradio_Theme"):
-        print("正在下载Gradio主题，请稍等。")
-        try:
-            if THEME.startswith("Huggingface-"):
-                THEME = THEME.lstrip("Huggingface-")
-            if THEME.startswith("huggingface-"):
-                THEME = THEME.lstrip("huggingface-")
-            set_theme = set_theme.from_hub(THEME.lower())
-        except:
-            print("下载Gradio主题时出现异常。")
+        logging.info("正在下载Gradio主题，お待ちください。")
+        if THEME.startswith("Huggingface-"):
+            THEME = THEME.lstrip("Huggingface-")
+        if THEME.startswith("huggingface-"):
+            THEME = THEME.lstrip("huggingface-")
+        set_theme = set_theme.from_hub(THEME.lower())
     return set_theme
 
 
@@ -25,16 +23,13 @@ def adjust_theme():
     try:
         set_theme = gr.themes.ThemeClass()
         with ProxyNetworkActivate("Download_Gradio_Theme"):
-            print("正在下载Gradio主题，请稍等。")
-            try:
-                THEME = get_conf("THEME")
-                if THEME.startswith("Huggingface-"):
-                    THEME = THEME.lstrip("Huggingface-")
-                if THEME.startswith("huggingface-"):
-                    THEME = THEME.lstrip("huggingface-")
-                set_theme = set_theme.from_hub(THEME.lower())
-            except:
-                print("下载Gradio主题时出现异常。")
+            logging.info("正在下载Gradio主题，お待ちください。")
+            THEME = get_conf("THEME")
+            if THEME.startswith("Huggingface-"):
+                THEME = THEME.lstrip("Huggingface-")
+            if THEME.startswith("huggingface-"):
+                THEME = THEME.lstrip("huggingface-")
+            set_theme = set_theme.from_hub(THEME.lower())
 
         from themes.common import get_common_html_javascript_code
         js = get_common_html_javascript_code()
@@ -54,7 +49,9 @@ def adjust_theme():
         )
     except Exception:
         set_theme = None
-        print("gradio版本较旧, 不能自定义字体和颜色。")
+        from toolbox import trimmed_format_exc
+
+        logging.error("Gradioのバージョンが古いです, フォントと色をカスタマイズできません:", trimmed_format_exc())
     return set_theme
 
 

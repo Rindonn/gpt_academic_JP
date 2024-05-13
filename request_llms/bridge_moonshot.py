@@ -8,7 +8,6 @@ import time
 import logging
 
 from toolbox import get_conf, update_ui, log_chat
-from toolbox import ChatBotWithCookies
 
 import requests
 
@@ -81,7 +80,7 @@ class MoonShotInit:
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
         messages.extend(self.__converter_file(inputs))
-        for i in history[0::2]:    # 历史文件继续上传
+        for i in history[0::2]:    # History文件继续上传
             messages.extend(self.__converter_file(i))
         messages.extend(self.__conversation_history(history))
         messages.append(self.__converter_user(inputs))
@@ -121,24 +120,24 @@ class MoonShotInit:
 def msg_handle_error(llm_kwargs, chunk_decoded):
     use_ket = llm_kwargs.get('use-key', '')
     api_key_encryption = use_ket[:8] + '****' + use_ket[-5:]
-    openai_website = f' 请登录OpenAI查看详情 https://platform.openai.com/signup  api-key: `{api_key_encryption}`'
+    openai_website = f' テキストの翻訳://platform.openai.com/signup  api-key: `{api_key_encryption}`'
     error_msg = ''
     if "does not exist" in chunk_decoded:
-        error_msg = f"[Local Message] Model {llm_kwargs['llm_model']} does not exist. 模型不存在, 或者您没有获得体验资格."
+        error_msg = f"[Local Message] Model {llm_kwargs['llm_model']} 存在しません。モデルが存在しません, またはあなたは体験資格を持っていない."
     elif "Incorrect API key" in chunk_decoded:
-        error_msg = f"[Local Message] Incorrect API key. OpenAI以提供了不正确的API_KEY为由, 拒绝服务." + openai_website
+        error_msg = f"[Local Message] Incorrect API key. OpenAI cites incorrect API_KEY as the reason, サービスを拒否する." + openai_website
     elif "exceeded your current quota" in chunk_decoded:
-        error_msg = "[Local Message] You exceeded your current quota. OpenAI以账户额度不足为由, 拒绝服务." + openai_website
+        error_msg = "[Local Message] 現在のクォータを超過しました。OpenAIはアカウントのクォータ不足を理由にしています, サービスを拒否する." + openai_website
     elif "account is not active" in chunk_decoded:
-        error_msg = "[Local Message] Your account is not active. OpenAI以账户失效为由, 拒绝服务." + openai_website
+        error_msg = "[Local Message] アカウントがアクティブではありません。OpenAIはアカウントの無効化を理由にしています, サービスを拒否する." + openai_website
     elif "associated with a deactivated account" in chunk_decoded:
-        error_msg = "[Local Message] You are associated with a deactivated account. OpenAI以账户失效为由, 拒绝服务." + openai_website
+        error_msg = "[Local Message] You are associated with a deactivated account. OpenAI以账户失效为由, サービスを拒否する." + openai_website
     elif "API key has been deactivated" in chunk_decoded:
-        error_msg = "[Local Message] API key has been deactivated. OpenAI以账户失效为由, 拒绝服务." + openai_website
+        error_msg = "[Local Message] API key has been deactivated. OpenAI以账户失效为由, サービスを拒否する." + openai_website
     elif "bad forward key" in chunk_decoded:
-        error_msg = "[Local Message] Bad forward key. API2D账户额度不足."
+        error_msg = "[Local Message] 不正なフォワードキー。API2Dアカウントの残高が不足しています."
     elif "Not enough point" in chunk_decoded:
-        error_msg = "[Local Message] Not enough point. API2D账户点数不足."
+        error_msg = "[Local Message] Not enough points. API2D account points are insufficient."
     elif 'error' in str(chunk_decoded).lower():
         try:
             error_msg = json.dumps(json.loads(chunk_decoded[:6]), indent=4, ensure_ascii=False)
@@ -147,32 +146,31 @@ def msg_handle_error(llm_kwargs, chunk_decoded):
     return error_msg
 
 
-def predict(inputs:str, llm_kwargs:dict, plugin_kwargs:dict, chatbot:ChatBotWithCookies,
-            history:list=[], system_prompt:str='', stream:bool=True, additional_fn:str=None):
+def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream=True, additional_fn=None):
     chatbot.append([inputs, ""])
 
     if additional_fn is not None:
         from core_functional import handle_core_functionality
         inputs, history = handle_core_functionality(additional_fn, inputs, history, chatbot)
-    yield from update_ui(chatbot=chatbot, history=history, msg="等待响应")  # 刷新界面
+    yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています")  # 画面を更新する
     gpt_bro_init = MoonShotInit()
     history.extend([inputs, ''])
     stream_response = gpt_bro_init.generate_messages(inputs, llm_kwargs, history, system_prompt, stream)
     for content, gpt_bro_result, error_bro_meg in stream_response:
         chatbot[-1] = [inputs, gpt_bro_result]
         history[-1] = gpt_bro_result
-        yield from update_ui(chatbot=chatbot, history=history)  # 刷新界面
+        yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
         if error_bro_meg:
             chatbot[-1] = [inputs, error_bro_meg]
             history = history[:-2]
-            yield from update_ui(chatbot=chatbot, history=history)  # 刷新界面
+            yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
             break
     log_chat(llm_model=llm_kwargs["llm_model"], input_str=inputs, output_str=gpt_bro_result)
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=None,
                                   console_slience=False):
     gpt_bro_init = MoonShotInit()
-    watch_dog_patience = 60  # 看门狗的耐心, 设置10秒即可
+    watch_dog_patience = 60  # 監視犬の忍耐力, 设置10秒即可
     stream_response = gpt_bro_init.generate_messages(inputs, llm_kwargs, history, sys_prompt, True)
     moonshot_bro_result = ''
     for content, moonshot_bro_result, error_bro_meg in stream_response:
@@ -181,13 +179,13 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
             if len(observe_window) >= 3:
                 observe_window[2] = error_bro_meg
             return f'{moonshot_bro_result} 对话错误'
-            # 观测窗
+            # Observation window
         if len(observe_window) >= 1:
             observe_window[0] = moonshot_bro_result
         if len(observe_window) >= 2:
             if (time.time() - observe_window[1]) > watch_dog_patience:
-                observe_window[2] = "请求超时，程序终止。"
-                raise RuntimeError(f"{moonshot_bro_result} 程序终止。")
+                observe_window[2] = "リクエストがタイムアウトしました，プログラムの終了。"
+                raise RuntimeError(f"{moonshot_bro_result} プログラムの終了。")
     return moonshot_bro_result
 
 if __name__ == '__main__':

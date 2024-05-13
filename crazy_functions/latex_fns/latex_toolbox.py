@@ -38,7 +38,7 @@ def convert_to_linklist(text, mask):
 
 
 def post_process(root):
-    # 修复括号
+    # 括弧の修復
     node = root
     while True:
         string = node.string
@@ -81,7 +81,7 @@ def post_process(root):
         if node is None:
             break
 
-    # 屏蔽空行和太短的句子
+    # 屏蔽空行and太短的句子
     node = root
     while True:
         if len(node.string.strip("\n").strip("")) == 0:
@@ -100,7 +100,7 @@ def post_process(root):
         if node is None:
             break
 
-    # 将前后断行符脱离
+    # 前後の改行文字を削除します
     node = root
     prev_node = None
     while True:
@@ -127,13 +127,13 @@ def post_process(root):
         if node is None:
             break
 
-    # 标注节点的行数范围
+    # ノードの行数範囲を注釈する
     node = root
     n_line = 0
     expansion = 2
     while True:
         n_l = node.string.count("\n")
-        node.range = [n_line - expansion, n_line + n_l + expansion]  # 失败时，扭转的范围
+        node.range = [n_line - expansion, n_line + n_l + expansion]  # テキストの翻訳，テキストの翻訳
         n_line = n_line + n_l
         node = node.next
         if node is None:
@@ -282,8 +282,8 @@ Latex Merge File
 
 def find_main_tex_file(file_manifest, mode):
     """
-    在多Tex文档中，寻找主文件，必须包含documentclass，返回找到的第一个。
-    P.S. 但愿没人把latex模板放在里面传进来 (6.25 加入判定latex模板的代码)
+    テキストの翻訳，メインファイルを検索中，テキストの翻訳，最初に見つかったものを返す。
+    P.S. 但愿没人把latex模板放在里面传进来 (6.25 テンプレートの判定コードを追加)
     """
     canidates = []
     for texf in file_manifest:
@@ -297,12 +297,12 @@ def find_main_tex_file(file_manifest, mode):
             continue
 
     if len(canidates) == 0:
-        raise RuntimeError("无法找到一个主Tex文件（包含documentclass关键字）")
+        raise RuntimeError("メインのTexファイルが見つかりません（documentclassキーワードを含む）")
     elif len(canidates) == 1:
         return canidates[0]
-    else:  # if len(canidates) >= 2 通过一些Latex模板中常见（但通常不会出现在正文）的单词，对不同latex源文件扣分，取评分最高者返回
+    else:  # if len(canidates) >テキストの翻訳（テキストの翻訳）の単語，異なるLaTeXソースファイルに罰則を課す，テキストの翻訳
         canidates_score = []
-        # 给出一些判定模板文档的词作为扣分项
+        # テンプレートドキュメントの単語を減点項目として提供する
         unexpected_words = [
             "\\LaTeX",
             "manuscript",
@@ -325,28 +325,28 @@ def find_main_tex_file(file_manifest, mode):
             for uw in expected_words:
                 if uw in file_content:
                     canidates_score[-1] += 1
-        select = np.argmax(canidates_score)  # 取评分最高者返回
+        select = np.argmax(canidates_score)  # テキストの翻訳
         return canidates[select]
 
 
 def rm_comments(main_file):
     new_file_remove_comment_lines = []
     for l in main_file.splitlines():
-        # 删除整行的空注释
+        # 空のコメントを含む行を削除する
         if l.lstrip().startswith("%"):
             pass
         else:
             new_file_remove_comment_lines.append(l)
     main_file = "\n".join(new_file_remove_comment_lines)
-    # main_file = re.sub(r"\\include{(.*?)}", r"\\input{\1}", main_file)  # 将 \include 命令转换为 \input 命令
-    main_file = re.sub(r"(?<!\\)%.*", "", main_file)  # 使用正则表达式查找半行注释, 并替换为空字符串
+    # main_file = re.sub(r"\\include{(.*?)}", r"\\input{\1}", main_file)  # \includeコマンドを\inputコマンドに変換する
+    main_file = re.sub(r"(?<!\\)%.*", "", main_file)  # 正規表現を使用するして半行コメントを検索する, 空の文字列に置き換える
     return main_file
 
 
 def find_tex_file_ignore_case(fp):
     dir_name = os.path.dirname(fp)
     base_name = os.path.basename(fp)
-    # 如果输入的文件路径是正确的
+    # 如果入力のファイル路径是正确的
     if os.path.isfile(pj(dir_name, base_name)):
         return pj(dir_name, base_name)
     # 如果不正确，试着加上.tex后缀试试
@@ -354,7 +354,7 @@ def find_tex_file_ignore_case(fp):
         base_name += ".tex"
     if os.path.isfile(pj(dir_name, base_name)):
         return pj(dir_name, base_name)
-    # 如果还找不到，解除大小写限制，再试一次
+    # 如果还見つかりません，解除大小写限制，再试一次
     import glob
 
     for f in glob.glob(dir_name + "/*.tex"):
@@ -386,7 +386,7 @@ def merge_tex_files_(project_foler, main_file, mode):
             except:
                 c = f"\n\nWarning from GPT-Academic: LaTex source file is missing!\n\n"
         else:
-            raise RuntimeError(f"找不到{fp}，Tex源文件缺失！")
+            raise RuntimeError(f"見つかりません{fp}，テキストの翻訳")
         c = merge_tex_files_(project_foler, c, mode)
         main_file = main_file[: s.span()[0]] + c + main_file[s.span()[1] :]
     return main_file
@@ -428,8 +428,8 @@ def find_title_and_abs(main_file):
 def merge_tex_files(project_foler, main_file, mode):
     """
     Merge Tex project recrusively
-    P.S. 顺便把CTEX塞进去以支持中文
-    P.S. 顺便把Latex的注释去除
+    テキストの翻訳
+    P.S. LaTeXのコメントを削除する
     """
     main_file = merge_tex_files_(project_foler, main_file, mode)
     main_file = rm_comments(main_file)
@@ -521,14 +521,14 @@ Post process
 
 def mod_inbraket(match):
     """
-    为啥chatgpt会把cite里面的逗号换成中文逗号呀
+    テキストの翻訳
     """
     # get the matched string
     cmd = match.group(1)
     str_to_modify = match.group(2)
     # modify the matched string
-    str_to_modify = str_to_modify.replace("：", ":")  # 前面是中文冒号，后面是英文冒号
-    str_to_modify = str_to_modify.replace("，", ",")  # 前面是中文逗号，后面是英文逗号
+    str_to_modify = str_to_modify.replace("：", ":")  # 前面は中国語のコロンです，テキストの翻訳
+    str_to_modify = str_to_modify.replace("，", ",")  # 前面是中文逗号，後ろに英語のカンマがあります
     # str_to_modify = 'BOOM'
     return "\\" + cmd + "{" + str_to_modify + "}"
 
@@ -543,9 +543,9 @@ def fix_content(final_tex, node_string):
     final_tex = re.sub(r"\\([a-z]{2,10})\{([^\}]*?)\}", mod_inbraket, string=final_tex)
 
     if "Traceback" in final_tex and "[Local Message]" in final_tex:
-        final_tex = node_string  # 出问题了，还原原文
+        final_tex = node_string  # 問題が発生しました，テキストの翻訳
     if node_string.count("\\begin") != final_tex.count("\\begin"):
-        final_tex = node_string  # 出问题了，还原原文
+        final_tex = node_string  # 問題が発生しました，テキストの翻訳
     if node_string.count("\_") > 0 and node_string.count("\_") > final_tex.count("\_"):
         # walk and replace any _ without \
         final_tex = re.sub(r"(?<!\\)_", "\\_", final_tex)
@@ -585,7 +585,7 @@ def fix_content(final_tex, node_string):
         return tex_t[:p_t] + tex_o[p_o:]
 
     if compute_brace_level(final_tex) != compute_brace_level(node_string):
-        # 出问题了，还原部分原文，保证括号正确
+        # 問題が発生しました，一部の元のテキストを復元する，保证括号正确
         final_tex = join_most(final_tex, node_string)
     return final_tex
 
@@ -642,7 +642,7 @@ def run_in_subprocess(func):
 
 
 def _merge_pdfs(pdf1_path, pdf2_path, output_path):
-    import PyPDF2  # PyPDF2这个库有严重的内存泄露问题，把它放到子进程中运行，从而方便内存的释放
+    import PyPDF2  # PyPDF2这pieces库有严重的内存泄露問題，把它放到子进程中运行，从而方便内存的释放
 
     Percent = 0.95
     # raise RuntimeError('PyPDF2 has a serious memory leak problem, please use other tools to merge PDF files.')
@@ -691,4 +691,4 @@ def _merge_pdfs(pdf1_path, pdf2_path, output_path):
                 output_writer.write(output_file)
 
 
-merge_pdfs = run_in_subprocess(_merge_pdfs)  # PyPDF2这个库有严重的内存泄露问题，把它放到子进程中运行，从而方便内存的释放
+merge_pdfs = run_in_subprocess(_merge_pdfs)  # PyPDF2这pieces库有严重的内存泄露問題，把它放到子进程中运行，从而方便内存的释放
