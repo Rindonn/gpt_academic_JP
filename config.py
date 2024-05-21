@@ -1,5 +1,5 @@
 """
-    以下のすべての設定は環境変数を使用するして上書きすることもサポートしています，原始文本。
+    以下のすべての設定は環境変数を使用するして上書きすることもサポートしています。
     優先度を読み取る：環境変数 > config_private.py > config.py
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     All the following configurations also support using environment variables to override,
@@ -66,7 +66,7 @@ API_URL_REDIRECT = {}
 
 # マルチスレッド関数プラグインで，デフォルトでOpenAIに同時にアクセスできるスレッド数はいくつですか。無料トライアルユーザーの制限は、1分あたり3回です，Pay-as-you-goユーザーの制限は1分間に3500回です
 # 一言で言えば：無料（5ドル）ユーザーが3を入力する，OpenAIにクレジットカードをバインドしているユーザーは、16以上を入力できます。制限を引き上げるには、クエリを確認してください：https://platform.openai.com/docs/guides/rate-limits/overview
-DEFAULT_WORKER_NUM = 3
+DEFAULT_WORKER_NUM = 8
 
 
 # 色彩主题, オプション ["Default", "Chuanhu-Small-and-Beautiful", "High-Contrast"]

@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, get_log_folder
 from toolbox import write_history_to_file, promote_file_to_downloadzone
 from toolbox import CatchException, report_exception, get_conf
@@ -7,7 +16,7 @@ def download_arxiv_(url_pdf):
     if 'arxiv.org' not in url_pdf:
         if ('.' in url_pdf) and ('/' not in url_pdf):
             new_url = 'https://arxiv.org/abs/'+url_pdf
-            print('ダウンロード番号：', url_pdf, '自動位置決め：', new_url)
+            print('ダウンロード番号：', url_pdf, '位置：', new_url)
             # download_arxiv_(new_url)
             return download_arxiv_(new_url)
         else:
@@ -47,7 +56,7 @@ def download_arxiv_(url_pdf):
     r = requests.get(requests_pdf_url, proxies=proxies)
     with open(file_path, 'wb+') as f:
         f.write(r.content)
-    print('ダウンロードが完了しました')
+    print('ダウンロードが完了した')
 
     # print('出力下载命令：','aria2c -o \"%s\" %s'%(title_str,url_pdf))
     # subprocess.call('aria2c --all-proxy=\"172.18.116.150:11084\" -o \"%s\" %s'%(download_dir+title_str,url_pdf), shell=True)
@@ -65,7 +74,7 @@ def download_arxiv_(url_pdf):
 def get_name(_url_):
     import os
     from bs4 import BeautifulSoup
-    print('文献名を取得しています！')
+    print('文献名を取得している')
     print(_url_)
 
     # arxiv_recall = {}
@@ -92,7 +101,7 @@ def get_name(_url_):
         other_details['abstract'] = abstract
     except:
         other_details['year'] = ''
-        print('年を取得できませんでした')
+        print('年を取得できなかった')
 
     # get author
     try:
@@ -101,7 +110,7 @@ def get_name(_url_):
         other_details['authors'] = authors
     except:
         other_details['authors'] = ''
-        print('著者の取得に失敗しました')
+        print('著者の取得に失敗した')
 
     # get comment
     try:
@@ -116,11 +125,11 @@ def get_name(_url_):
             other_details['comment'] = ''
     except:
         other_details['comment'] = ''
-        print('年を取得できませんでした')
+        print('年を取得できなかった')
 
     title_str = BeautifulSoup(
         res.text, 'html.parser').find('title').contents[0]
-    print('取得成功：', title_str)
+    print('取得した：', title_str)
     # arxiv_recall[_url_] = (title_str+'.pdf', other_details)
     # with open('./arxiv_recall.pkl', 'wb') as f:
     #     pickle.dump(arxiv_recall, f)
@@ -132,7 +141,7 @@ def get_name(_url_):
 @CatchException
 def DownloadArxivPaperAndTranslateAbstract(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_request):
 
-    CRAZY_FUNCTION_INFO = "DownloadArxivPaperAndTranslateAbstract，関数プラグインの著者[binary-husky]。要約を抽出し、PDFドキュメントをダウンロードしています..."
+    CRAZY_FUNCTION_INFO = "DownloadArxivPaperAndTranslateAbstract，関数プラグインの著者[binary-husky]。要約を抽出し、PDFドキュメントをダウンロードしている..."
     import glob
     import os
 
@@ -159,13 +168,13 @@ def DownloadArxivPaperAndTranslateAbstract(txt, llm_kwargs, plugin_kwargs, chatb
     except:
         report_exception(chatbot, history,
             a = f"プロジェクトを解析する: {txt}",
-            b = f"PDFファイルのダウンロードに失敗しました")
+            b = f"PDFファイルのダウンロードに失敗した")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
     # 要約などを翻訳する
-    i_say =            f"以下の学術論文に関連する資料を読んでください，要約を抽出する，日本語に翻訳する。資料：{str(info)}"
-    i_say_show_user =  f'以下の学術論文に関連する資料を読んでください，要約を抽出する，日本語に翻訳する。論文：{pdf_path}'
+    i_say =            f"以下の学術論文に関連する資料を読んでください，要約を抽出して，日本語に翻訳する。資料：{str(info)}"
+    i_say_show_user =  f'以下の学術論文に関連する資料を読んでください，要約を抽出して，日本語に翻訳する。論文：{pdf_path}'
     chatbot.append((i_say_show_user, "[Local Message] waiting gpt response."))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     msg = '正常'
@@ -186,6 +195,6 @@ def DownloadArxivPaperAndTranslateAbstract(txt, llm_kwargs, plugin_kwargs, chatb
     promote_file_to_downloadzone(res, chatbot=chatbot)
     promote_file_to_downloadzone(pdf_path, chatbot=chatbot)
 
-    chatbot.append(("完了しましたか？", res + "\n\nPDFファイルもダウンロードされました"))
+    chatbot.append(("完了したか？", res + "\n\nPDFファイルもダウンロードされた"))
     yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する
 

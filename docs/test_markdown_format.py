@@ -1,7 +1,7 @@
 sample = """
 [1]: https://baike.baidu.com/item/%E8%B4%A8%E8%83%BD%E6%96%B9%E7%A8%8B/1884527 "质能方程（質量エネルギー方程式）_百度百科"
-[2]: https://www.zhihu.com/question/348249281 "如何理解质能方程 E＝mc²？ - 知乎"
-[3]: https://zhuanlan.zhihu.com/p/32597385 "质能方程的推导与理解 - 知乎 - 知乎专栏"
+[2]: https://www.zhihu.com/question/348249281 "如何理解质能方程 E＝mc²？ - Zhihu"
+[3]: https://zhuanlan.zhihu.com/p/32597385 "质能方程的推导与理解 - Zhihu - Zhihu专栏"
 
 こんにちは，これはBingです。質量とエネルギーの間の等価関係を記述する質量エネルギー方程式[^1^][1]。TeX形式で，The mass-energy equation can be written as $$E=mc^2$$，ここで$E$はエネルギーです，質量を表します，$c$は光速です[^2^][2] [^3^][3]。
 """
@@ -13,7 +13,7 @@ def preprocess_newbing_out(s):
     pattern2 = r"\[(\d+)\]"  # ^数字^に一致する
 
     def sub(m):
-        return "\\[" + m.group(1) + "\\]"  # 一致した数字を置換値として使用するする
+        return "\\[" + m.group(1) + "\\]"  # 一致した数字を置換値として使用するするする
 
     result = re.sub(pattern, sub, s)  # 置換操作
     if "[1]" in result:

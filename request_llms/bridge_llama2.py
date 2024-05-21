@@ -15,12 +15,12 @@ from threading import Thread
 class GetLlamaHandle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         import os, glob
         import os
         import platform
@@ -39,7 +39,7 @@ class GetLlamaHandle(LocalLLMHandle):
             return self._model, self._tokenizer
 
     def llm_stream_generator(self, **kwargs):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         def adaptor(kwargs):
             query = kwargs['query']
             max_length = kwargs['max_length']

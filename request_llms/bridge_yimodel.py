@@ -4,7 +4,7 @@
     このファイルには主に3つの関数が含まれています
 
     マルチスレッド機能を持たない関数：
-    1. predict: 通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
+    1. predict: 通常の会話時に使用するするする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
 
     マルチスレッド呼び出し機能を備えた関数
     2. predict_no_ui_long_connection：支持マルチスレッド
@@ -53,7 +53,7 @@ def decode_chunk(chunk):
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=None, console_slience=False):
     """
-    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するしています。
+    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するするしています。
     inputs：
         この問い合わせの入力です
     sys_prompt:
@@ -80,7 +80,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試OK中 ({retry}/{MAX_RETRY}) ……')
 
     stream_response = response.iter_lines()
     result = ''
@@ -123,7 +123,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
     chatGPTに送信，ストリームで出力を取得する。
-    基本的な対話機能に使用するされます。
+    基本的な対話機能に使用するするされます。
     inputsは今回の問い合わせの入力です
     top_p, temperatureはchatGPTの内部調整パラメータです
     historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）
@@ -145,7 +145,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
 
     # check mis-behavior
     if is_the_upload_folder(user_input):
-        chatbot[-1] = (inputs, f"[Local Message] 検出された操作错误！当您上传文档之后，需点击“**関数プラグインエリア**”按钮进行处理，请勿点击“提出”按钮または“基本機能エリア”按钮。")
+        chatbot[-1] = (inputs, f"[Local Message] 検出された操作错误！当您上传文档之后，需点击“**関数プラグインエリア**”按钮进OK处理，请勿点击“提出”按钮または“基本機能エリア”按钮。")
         yield from update_ui(chatbot=chatbot, history=history, msg="正常") # 画面を更新する
         time.sleep(2)
 
@@ -165,7 +165,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         except:
             retry += 1
             chatbot[-1] = ((chatbot[-1][0], timeout_bot_msg))
-            retry_msg = f"，再試行中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
+            retry_msg = f"，再試OK中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
             yield from update_ui(chatbot=chatbot, history=history, msg="リクエストがタイムアウトしました"+retry_msg) # 画面を更新する
             if retry > MAX_RETRY: raise TimeoutError
 
@@ -219,7 +219,7 @@ def handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg)
     elif "authentication_error" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] Incorrect API key. 请确保API key有效。")
     elif "not_found" in error_msg:
-        chatbot[-1] = (chatbot[-1][0], f"[Local Message] {llm_kwargs['llm_model']} なし效，请确保使用する小写的模型名称。")
+        chatbot[-1] = (chatbot[-1][0], f"[Local Message] {llm_kwargs['llm_model']} なし效，请确保使用するする小写的模型名称。")
     elif "rate_limit" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] 遇到了控制请求速率限制，请一分钟后重试。")
     elif "system_busy" in error_msg:

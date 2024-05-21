@@ -44,7 +44,7 @@ class GetGLMFTHandle(Process):
             self.info = "Dependency check passed"
             self.success = True
         except:
-            self.info = "ChatGLMFTの依存関係が不足しています，ChatGLMFTを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_chatglm.txt`Install dependencies for ChatGLM。"
+            self.info = "ChatGLMFTの依存関係が不足しています，ChatGLMFTを使用するするする場合，基本的なpip依存関係以外，実OKする必要があります`pip install -r request_llms/requirements_chatglm.txt`Install dependencies for ChatGLM。"
             self.success = False
 
     def ready(self):
@@ -52,7 +52,7 @@ class GetGLMFTHandle(Process):
 
     def run(self):
         # Subprocess execution
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         retry = 0
         while True:
             try:

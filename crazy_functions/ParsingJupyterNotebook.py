@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:56:40
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui
 from toolbox import CatchException, report_exception
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -86,7 +95,7 @@ def IpynbExplanation(file_manifest, project_folder, llm_kwargs, plugin_kwargs, c
 
     inputs_array = [r"This is a Jupyter Notebook file, tell me about Each Block in Chinese. Focus Just On Code." +
                     r"If a block starts with `Markdown` which means it's a markdown block in ipynbipynb. " +
-                    r"Start a new line for a block and block num use Chinese." +
+                    r"Start a new line for a block and block num use japanese." +
                     f"\n\n{frag}" for frag in pfg.sp_file_contents]
     inputs_show_user_array = [f"{f}の分析は以下の通りです" for f in pfg.sp_file_tag]
     sys_prompt_array = ["You are a professional programmer."] * n_split
@@ -111,7 +120,7 @@ def IpynbExplanation(file_manifest, project_folder, llm_kwargs, plugin_kwargs, c
     #  <-------- Write to file，終了 ---------->
     res = write_history_to_file(history)
     promote_file_to_downloadzone(res, chatbot=chatbot)
-    chatbot.append(("完了しましたか？", res))
+    chatbot.append(("完了したか？", res))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
 @CatchException

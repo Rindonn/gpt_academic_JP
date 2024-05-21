@@ -12,7 +12,15 @@ Testing:
     - Convert the image to grayscale.
     - Convert the CSV file to an Excel spreadsheet.
 """
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 
 from toolbox import CatchException, update_ui, gen_time_str, trimmed_format_exc, is_the_upload_folder
 from toolbox import promote_file_to_downloadzone, get_log_folder, update_ui_lastest_msg
@@ -117,7 +125,7 @@ def gpt_interact_multi_step(txt, file_type, llm_kwargs, chatbot, history):
 def for_immediate_show_off_when_possible(file_type, fp, chatbot):
     if file_type in ['png', 'jpg']:
         image_path = os.path.abspath(fp)
-        chatbot.append(['这是一张图片, 展示如下:',
+        chatbot.append(['写真です, 情報は以下のよう:',
             f'ローカルファイルアドレス: <br/>`{image_path}`<br/>'+
             f'ローカルファイルのプレビュー: <br/><div align="center"><img src="file={image_path}"></div>'
         ])
@@ -154,7 +162,7 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
     history = []
 
     # 基本情報：機能、貢献者
-    chatbot.append(["正在启动: プラグイン动态生成プラグイン", "プラグイン动态生成, 执行開始, 著者Binary-Husky."])
+    chatbot.append(["起動している: プラグイン动态生成プラグイン", "プラグイン动态生成, 実行開始, 著者Binary-Husky."])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # ⭐ ファイルアップロードエリア是否有东西
@@ -164,18 +172,18 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
     if get_plugin_arg(plugin_kwargs, key="file_path_arg", default=False):
         file_path = get_plugin_arg(plugin_kwargs, key="file_path_arg", default=None)
         file_list.append(file_path)
-        yield from update_ui_lastest_msg(f"当前文件: {file_path}", chatbot, history, 1)
+        yield from update_ui_lastest_msg(f"今のファイル: {file_path}", chatbot, history, 1)
     elif have_any_recent_upload_files(chatbot):
         file_dir = get_recent_file_prompt_support(chatbot)
         file_list = glob.glob(os.path.join(file_dir, '**/*'), recursive=True)
         yield from update_ui_lastest_msg(f"当前文件处理リスト: {file_list}", chatbot, history, 1)
     else:
-        chatbot.append(["文件检索", "没有发现任何近期上传のファイル。"])
-        yield from update_ui_lastest_msg("没有发现任何近期上传のファイル。", chatbot, history, 1)
+        chatbot.append(["ファイル検索", "アップロードしたファイルが見つからない。"])
+        yield from update_ui_lastest_msg("アップロードしたファイルが見つからない。", chatbot, history, 1)
         return  # 2. 如果没有文件
     if len(file_list) == 0:
-        chatbot.append(["文件检索", "没有发现任何近期上传のファイル。"])
-        yield from update_ui_lastest_msg("没有发现任何近期上传のファイル。", chatbot, history, 1)
+        chatbot.append(["ファイル検索", "アップロードしたファイルが見つからない。"])
+        yield from update_ui_lastest_msg("アップロードしたファイルが見つからない。", chatbot, history, 1)
         return  # 2. 如果没有文件
 
     # ファイルを読み込んでいます
@@ -183,7 +191,7 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
 
     # 粗心检查
     if is_the_upload_folder(txt):
-        yield from update_ui_lastest_msg(f"请在入力框内填写需求, 然后再次点击该プラグイン! 至于您のファイル，不用担心, 文件路径 {txt} 已经被记忆. ", chatbot, history, 1)
+        yield from update_ui_lastest_msg(f"入力エリアに要求を入力して下さい。入力した後もう一回プラグインをクリック! ファイルを心配しないで，ファイルのパス {txt} を記録されました. ", chatbot, history, 1)
         return
 
     # 開始干正事
@@ -194,8 +202,8 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
             # ⭐ 開始啦 ！
             code, installation_advance, txt, file_type, llm_kwargs, chatbot, history = \
                 yield from gpt_interact_multi_step(txt, file_type, llm_kwargs, chatbot, history)
-            chatbot.append(["代码生成阶段終了する", ""])
-            yield from update_ui_lastest_msg(f"正在验证上述代码的有效性 ...", chatbot, history, 1)
+            chatbot.append(["コード生成ステップが終了した", ""])
+            yield from update_ui_lastest_msg(f"コードの有効性を検証しています...", chatbot, history, 1)
             # ⭐ 分离代码块
             code = get_code_block(code)
             # ⭐ 检查模块
@@ -206,18 +214,18 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
             if not traceback: traceback = trimmed_format_exc()
         # 处理Exception
         if not traceback: traceback = trimmed_format_exc()
-        yield from update_ui_lastest_msg(f"第 {j+1}/{MAX_TRY} 次代码生成Try, 失敗しました~ 别担心, 私たちは5秒后再试一次... \n\n此次私たちは的错误追踪是\n```\n{traceback}\n```\n", chatbot, history, 5)
+        yield from update_ui_lastest_msg(f"第 {j+1}/{MAX_TRY} 回コード生成を試しています, 失敗しました~ 5秒後再試行... \n\n今回のエラーログは\n```\n{traceback}\n```\n", chatbot, history, 5)
 
     # 代码生成終了する, 開始执行
     TIME_LIMIT = 15
-    yield from update_ui_lastest_msg(f"開始创建新进程并执行代码! 時间限制 {TIME_LIMIT} 秒. 请待つ任务完了... ", chatbot, history, 1)
+    yield from update_ui_lastest_msg(f"新しいスレッドを作成してコードを実行しています! 時間制限が {TIME_LIMIT} 秒. 完了までお待ちください... ", chatbot, history, 1)
     manager = multiprocessing.Manager()
     return_dict = manager.dict()
 
     # ⭐ 到最後に一步了，開始逐pieces文件进行处理
     for file_path in file_list:
         if os.path.exists(file_path):
-            chatbot.append([f"処理中文件: {file_path}", f"お待ちください..."])
+            chatbot.append([f"処理しているファイル: {file_path}", f"お待ちください..."])
             chatbot = for_immediate_show_off_when_possible(file_type, file_path, chatbot)
             yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # インターフェースの更新
         else:
@@ -234,7 +242,7 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
         traceback = return_dict['traceback']
         if not success:
             if not traceback: traceback = trimmed_format_exc()
-            chatbot.append(["执行失敗しました", f"错误追踪\n```\n{trimmed_format_exc()}\n```\n"])
+            chatbot.append(["実行失敗しました", f"エラーログ\n```\n{trimmed_format_exc()}\n```\n"])
             # chatbot.append(["如果是缺乏依赖，请参考以下提案する", installation_advance])
             yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
             return
@@ -242,11 +250,11 @@ def DynamicFunctionGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
         # 顺利完了，收尾
         res = str(res)
         if os.path.exists(res):
-            chatbot.append(["执行成功了，结果是一pieces有效文件", "结果：" + res])
+            chatbot.append(["実行完了，結果は作成したファイル", "結果：" + res])
             new_file_path = promote_file_to_downloadzone(res, chatbot=chatbot)
             chatbot = for_immediate_show_off_when_possible(file_type, new_file_path, chatbot)
             yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # インターフェースの更新
         else:
-            chatbot.append(["执行成功了，结果是一pieces文字列", "结果：" + res])
+            chatbot.append(["実行完了，結果は文字列です。", "結果：" + res])
             yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # インターフェースの更新
 

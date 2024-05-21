@@ -22,7 +22,7 @@ try:
     from slack_sdk.web.async_client import AsyncWebClient
 
     class SlackClient(AsyncWebClient):
-        """SlackClientクラスはSlack APIとのインタラクションに使用するされます，メッセージの送受信などの機能を実現する。
+        """SlackClientクラスはSlack APIとのインタラクションに使用するするされます，メッセージの送受信などの機能を実現する。
 
         原始文本：
         - CHANNEL_ID：strタイプ，チャネルIDを表示する。
@@ -52,7 +52,7 @@ try:
 
         async def get_slack_messages(self):
             try:
-                # TODO：一時的に歴史メッセージはサポートされていません，同じチャンネルで複数の人が使用するする場合、過去のメッセージが漏洩する問題があります
+                # TODO：一時的に歴史メッセージはサポートされていません，同じチャンネルで複数の人が使用するするする場合、過去のメッセージが漏洩する問題があります
                 resp = await self.conversations_history(
                     channel=self.CHANNEL_ID, oldest=self.LAST_TS, limit=1
                 )
@@ -107,10 +107,10 @@ class ClaudeHandle(Process):
             self.success = False
             import slack_sdk
 
-            self.info = "Dependency check passed，原始文本。現在、複数の人が同時にClaudeインターフェースを呼び出すことはできません（スレッドロックあり），さもないと、各人のClaudeの問い合わせ履歴が相互に侵入します。テキストの翻訳，事前に設定されたプロキシを自動的に使用するします。"
+            self.info = "Dependency check passed，原始文本。現在、複数の人が同時にClaudeインターフェースを呼び出すことはできません（スレッドロックあり），さもないと、各人のClaudeの問い合わせ履歴が相互に侵入します。テキストの翻訳，事前に設定されたプロキシを自動的に使用するするします。"
             self.success = True
         except:
-            self.info = "不足している依存関係，Claudeを使用するする場合は，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_slackclaude.txt`テキストの翻訳，それからプログラムを再起動してください。"
+            self.info = "不足している依存関係，Claudeを使用するするする場合は，基本的なpip依存関係以外，実OKする必要があります`pip install -r request_llms/requirements_slackclaude.txt`テキストの翻訳，それからプログラムを再起動してください。"
             self.success = False
 
     def ready(self):
@@ -134,7 +134,7 @@ class ClaudeHandle(Process):
             # 提出
             await self.claude_model.chat(prompt)
 
-            # 获取回复
+            # 応答内容を取得
             async for final, response in self.claude_model.get_reply():
                 if not final:
                     print(response)
@@ -154,9 +154,9 @@ class ClaudeHandle(Process):
 
     def run(self):
         """
-        この関数はサブプロセスで実行されます
+        この関数はサブプロセスで実OKされます
         """
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         self.success = False
         self.local_history = []
         if (self.claude_model is None) or (not self.success):
@@ -176,10 +176,10 @@ class ClaudeHandle(Process):
             except:
                 self.success = False
                 tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
-                self.child.send(f"[Local Message] 不能加载Claude组件。{tb_str}")
+                self.child.send(f"[Local Message] Claudeコンポーネントをロードできない。{tb_str}")
                 self.child.send("[Fail]")
                 self.child.send("[Finish]")
-                raise RuntimeError(f"不能加载Claude组件。")
+                raise RuntimeError(f"Claudeコンポーネントをロードできない。")
 
         self.success = True
         try:
@@ -193,7 +193,7 @@ class ClaudeHandle(Process):
 
     def stream_chat(self, **kwargs):
         """
-        この関数はメインプロセスで実行されます
+        この関数はメインプロセスで実OKされます
         """
         self.threadLock.acquire()
         self.parent.send(kwargs)  # 子プロセスにリクエストを送信する
@@ -311,7 +311,7 @@ def predict(
             chatbot=chatbot, history=history, msg="Claudeの応答が遅い，すべての応答が完了していません，Please submit a new question after completing it patiently。"
         )
     if response == "[Local Message] Claudeの応答を待っています ...":
-        response = "[Local Message] Claudeの応答が異常です，ページを更新して再試行してください ..."
+        response = "[Local Message] Claudeの応答が異常です，ページを更新して再試OKしてください ..."
     history.extend([inputs, response])
     logging.info(f"[raw_input] {inputs}")
     logging.info(f"[response] {response}")

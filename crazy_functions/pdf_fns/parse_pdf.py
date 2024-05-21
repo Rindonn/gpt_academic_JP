@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 16:01:08
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from functools import lru_cache
 from toolbox import gen_time_str
 from toolbox import promote_file_to_downloadzone
@@ -34,9 +43,9 @@ def parse_pdf(pdf_path, grobid_url):
         with ProxyNetworkActivate('Connect_Grobid'):
             article_dict = scipdf.parse_pdf_to_dict(pdf_path, grobid_url=grobid_url)
     except GROBID_OFFLINE_EXCEPTION:
-        raise GROBID_OFFLINE_EXCEPTION("GROBID服务不可用，请修改config中的GROBID_URL，可修改成本地GROBID服务。")
+        raise GROBID_OFFLINE_EXCEPTION("GROBIDサービス利用できない。configのGROBID_URLを変更し，ローカルGROBIDサービスに変更することができる。")
     except:
-        raise RuntimeError("ParsePDF失敗しました，请检查PDF是否损坏。")
+        raise RuntimeError("ParsePDF失敗しました，PDFファイルをチェックして下さい。")
     return article_dict
 
 
@@ -80,13 +89,13 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
 
     prompt = "以下是一篇学术論文的基本情報:\n"
     # title
-    title = article_dict.get('title', 'なし法获取 title'); prompt += f'title:{title}\n\n'
+    title = article_dict.get('title', 'title を取得できません'); prompt += f'title:{title}\n\n'
     # authors
-    authors = article_dict.get('authors', 'なし法获取 authors')[:100]; prompt += f'authors:{authors}\n\n'
+    authors = article_dict.get('authors', 'authors を取得できません')[:100]; prompt += f'authors:{authors}\n\n'
     # abstract
-    abstract = article_dict.get('abstract', 'なし法获取 abstract'); prompt += f'abstract:{abstract}\n\n'
+    abstract = article_dict.get('abstract', 'abstract を取得できません'); prompt += f'abstract:{abstract}\n\n'
     # command
-    prompt += f"请置き換える题目and摘要翻訳为{DST_LANG}。"
+    prompt += f"テーマと要旨を{DST_LANG}に翻訳して下さい。"
     meta = [f'# Title:\n\n', title, f'# Abstract:\n\n', abstract ]
 
     # Single line，記事のメタ情報を取得する
@@ -125,7 +134,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
             heading = section['heading']
             if len(section_frags) > 1: heading += f' Part-{i+1}'
             inputs_array.append(
-                f"你需要翻訳{heading}章节，内容如下: \n\n{fragment}"
+                f"{heading}を翻訳することが必要です。内容は以下のよう: \n\n{fragment}"
             )
             inputs_show_user_array.append(
                 f"# {heading}\n\n{fragment}"
@@ -138,7 +147,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
         chatbot=chatbot,
         history_array=[meta for _ in inputs_array],
         sys_prompt_array=[
-            "学術翻訳者としてお願いします，学術論文を正確に中国語に翻訳する責任があります。記事の各文は翻訳する必要があります。" for _ in inputs_array],
+            "学術翻訳者として翻訳をお願いします，学術論文を正確に日本語に翻訳する必要があります。記事の各文ごとに翻訳する必要があります。" for _ in inputs_array],
     )
     # -=-=-=-=-=-=-=-= 写出Markdown文件 -=-=-=-=-=-=-=-=
     produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chatbot, fp, generated_conclusion_files)
@@ -157,7 +166,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
             cur_value = cur_section_name + "\n" + gpt_response_collection_html[i]
             gpt_response_collection_html[i] = cur_value
 
-    final = ["", "", "1.論文概要",  "", "Abstract", paper_meta_info,  "2.論文翻訳",  ""]
+    final = ["", "", "1.論文の概要",  "", "Abstract", paper_meta_info,  "2.論文の翻訳",  ""]
     final.extend(gpt_response_collection_html)
     for i, k in enumerate(final):
         if i%2==0:

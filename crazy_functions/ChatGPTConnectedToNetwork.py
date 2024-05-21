@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, update_ui
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive, input_clipping
 import requests
@@ -67,7 +76,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
     """
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
     chatbot.append((f"以下の問題にインターネットからの情報を組み合わせて回答してください：{txt}",
-                    "[Local Message] 注意してください，あなたは呼び出しています[関数プラグイン]のテンプレート，このテンプレートは、ChatGPTネットワーク情報の総合を実現できます。この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions。If you want to share new functional modules，PRを遠慮なく提出してください！"))
+                    "[Local Message] 注意してください，呼び出している[関数プラグイン]のテンプレート，このテンプレートは、ChatGPTネットワーク情報の総合を実現できます。この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions。If you want to share new functional modules，PRを遠慮なく提出してください！"))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
     # ------------- < ステップ1：検索エンジンの結果をクロールする > -------------
@@ -76,7 +85,7 @@ def ConnectToNetworkToAnswerQuestions(txt, llm_kwargs, plugin_kwargs, chatbot, h
     urls = google(txt, proxies)
     history = []
     if len(urls) == 0:
-        chatbot.append((f"结论：{txt}",
+        chatbot.append((f"結論：{txt}",
                         "[Local Message] googleから制限されて，googleから情報取ることが出来ません！"))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
         return

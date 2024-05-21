@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 16:01:08
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, update_ui_lastest_msg, get_log_folder
 from toolbox import get_conf, objdump, objload, promote_file_to_downloadzone
 from .latex_toolbox import PRESERVE, TRANSFORM
@@ -87,10 +96,10 @@ class LatexPaperSplit():
     def __init__(self) -> None:
         self.nodes = None
         self.msg = "*{\\scriptsize\\textbf{Warning：このPDFはGPT-Academicオープンソースプロジェクトによって大規模言語モデル+Latex翻訳プラグインを使用するして一括生成されました，" + \
-            "原始文本。テキストの翻訳，注意深く確認し、元のテキストを参照してください。" + \
-            "项目GithubAddress \\url{https://github.com/binary-husky/gpt_academic/}。"
+            "著作権は原著作者に帰属し、翻訳された内容の信頼性は保証されませんので、原文を参照しながら利用してください。" + \
+            "项目Githubアドレス \\url{https://github.com/binary-husky/gpt_academic/}。"
         # テキストの翻訳，テキストの翻訳（テキストの翻訳，欢迎加REAME中的QQ联系开发者）
-        self.msg_declare = "大規模言語モデルの誤った結果が広がるのを防ぐために，禁止移除或修改此Warning。}}\\\\"
+        self.msg_declare = "大規模言語モデルの誤った結果が広がるのを防ぐために，この警告の削除や修正を禁止します。}}\\\\"
         self.title = "unknown"
         self.abstract = "unknown"
 
@@ -219,7 +228,7 @@ def DecomposeAndConvertLatex(file_manifest, project_folder, llm_kwargs, plugin_k
 
     #  <-------- メインのtexファイルを検索する ---------->
     maintex = find_main_tex_file(file_manifest, mode)
-    chatbot.append((f"メインのLatexファイルを特定する", f'[Local Message] 結果を分析する：このプロジェクトのLaTeXメインファイルは{maintex}, もし解析エラーがある場合, プログラムを即座に終了してください, 曖昧なファイルを削除または修正する, その後、再試行してください。メインプログラムがすぐに開始されます, お待ちください。'))
+    chatbot.append((f"メインのLatexファイルを検索している", f'[Local Message] 結果を分析している：このプロジェクトのLaTeXメインファイルは{maintex}, もし解析エラーがある場合, プログラムを即座に終了してください, 曖昧なファイルを削除または修正し, その後、再試行してください。メインプログラムがすぐに開始されます, お待ちください。'))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     time.sleep(3)
 
@@ -297,7 +306,7 @@ def DecomposeAndConvertLatex(file_manifest, project_folder, llm_kwargs, plugin_k
     write_html(pfg.sp_file_contents, pfg.sp_file_result, chatbot=chatbot, project_folder=project_folder)
 
     #  <-------- ファイルに書き出す ---------->
-    msg = f"テキストの翻訳: {llm_kwargs['llm_model']}，現在の言語モデルの温度設定: {llm_kwargs['temperature']}。"
+    msg = f"現在使っているLLM: {llm_kwargs['llm_model']}，現在LLMの温度設定: {llm_kwargs['temperature']}。"
     final_tex = lps.merge_result(pfg.file_result, mode, msg)
     objdump((lps, pfg.file_result, mode, msg), file=pj(project_folder,'merge_result.pkl'))
 
@@ -306,7 +315,7 @@ def DecomposeAndConvertLatex(file_manifest, project_folder, llm_kwargs, plugin_k
 
 
     #  <-------- Organized results, 終了 ---------->
-    chatbot.append((f"完了しましたか？", 'GPTの結果が出力されました, PDFをコンパイルする予定です'))
+    chatbot.append((f"完了したか？", 'GPTの結果が出力した, PDFをコンパイルしている'))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     #  <-------- 戻る ---------->
@@ -345,8 +354,8 @@ def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_
     n_fix = 1
     fixed_line = []
     max_try = 32
-    chatbot.append([f"原始文本", f'コンパイルが開始されました。現在の作業パスは{work_folder}，原始文本，直接そのパスに移動して翻訳結果を取得してください，または再起動後に再試行してください ...']); yield from update_ui(chatbot=chatbot, history=history)
-    chatbot.append([f"原始文本", '...']); yield from update_ui(chatbot=chatbot, history=history); time.sleep(1); chatbot[-1] = list(chatbot[-1]) # 画面を更新する
+    chatbot.append([f"コンパイル中", f'コンパイルが開始されました。現在の作業パスは{work_folder}，プログラムが5分以上応答しない場合，直接そのパスにアクセスして翻訳結果を取得してください，または再起動後に再試行してください ...']); yield from update_ui(chatbot=chatbot, history=history)
+    chatbot.append([f"コンパイル中", '...']); yield from update_ui(chatbot=chatbot, history=history); time.sleep(1); chatbot[-1] = list(chatbot[-1]) # 画面を更新する
     yield from update_ui_lastest_msg('コンパイルが開始されました...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
 
     while True:
@@ -357,32 +366,32 @@ def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_
             shutil.copyfile(may_exist_bbl, target_bbl)
 
         # https://stackoverflow.com/questions/738755/dont-make-me-manually-abort-a-latex-compile-when-theres-an-error
-        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 元のPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
+        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, 元のPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
         ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
 
-        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 変換されたPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
+        yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, 変換されたPDFをコンパイルする ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
         ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
 
         if ok and os.path.exists(pj(work_folder_modified, f'{main_file_modified}.pdf')):
             # テキストの翻訳，次の手順に進むために
-            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, BibTexのコンパイル ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
+            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, BibTexをコンパイルしている ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
             if not os.path.exists(pj(work_folder_original, f'{main_file_original}.bbl')):
                 ok = compile_latex_with_timeout(f'bibtex  {main_file_original}.aux', work_folder_original)
             if not os.path.exists(pj(work_folder_modified, f'{main_file_modified}.bbl')):
                 ok = compile_latex_with_timeout(f'bibtex  {main_file_modified}.aux', work_folder_modified)
 
-            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, 文献の相互参照をコンパイルする ...', chatbot, history)  # Gradioフロントエンドインターフェースをリフレッシュする
+            yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, 文献の相互参照をコンパイルしている ...', chatbot, history)  # Gradioフロントエンドインターフェースをリフレッシュする
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_original}.tex', work_folder_original)
             ok = compile_latex_with_timeout(f'pdflatex -interaction=batchmode -file-line-error {main_file_modified}.tex', work_folder_modified)
 
             if mode!='translate_zh':
-                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, テキストの翻訳 ...', chatbot, history) # Gradioフロントエンドインターフェースをリフレッシュする
+                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, latexdiffで論文を生成している ...', chatbot, history) # Gradioフロントエンドインターフェースをリフレッシュする
                 print(    f'latexdiff --encoding=utf8 --append-safecmd=subfile {work_folder_original}/{main_file_original}.tex  {work_folder_modified}/{main_file_modified}.tex --flatten > {work_folder}/merge_diff.tex')
                 ok = compile_latex_with_timeout(f'latexdiff --encoding=utf8 --append-safecmd=subfile {work_folder_original}/{main_file_original}.tex  {work_folder_modified}/{main_file_modified}.tex --flatten > {work_folder}/merge_diff.tex', os.getcwd())
 
-                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 次编译, テキストの翻訳 ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
+                yield from update_ui_lastest_msg(f'第# {n_fix}/{max_try} 回コンパイル中, 論文を生成している ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
                 ok = compile_latex_with_timeout(f'pdflatex  -interaction=batchmode -file-line-error merge_diff.tex', work_folder)
                 ok = compile_latex_with_timeout(f'bibtex    merge_diff.aux', work_folder)
                 ok = compile_latex_with_timeout(f'pdflatex  -interaction=batchmode -file-line-error merge_diff.tex', work_folder)
@@ -393,7 +402,7 @@ def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_
         original_pdf_success = os.path.exists(pj(work_folder_original, f'{main_file_original}.pdf'))
         modified_pdf_success = os.path.exists(pj(work_folder_modified, f'{main_file_modified}.pdf'))
         diff_pdf_success     = os.path.exists(pj(work_folder, f'merge_diff.pdf'))
-        results_ += f"元のPDFのコンパイルは成功しましたか: {original_pdf_success};"
+        results_ += f"元のPDFのコンパイルは成功したか: {original_pdf_success};"
         results_ += f"PDFのコンパイルが成功したかどうかを変換する: {modified_pdf_success};"
         results_ += f"PDFのコンパイルが成功したかどうかを比較する: {diff_pdf_success};"
         yield from update_ui_lastest_msg(f'第{n_fix}コンパイル終了:<br/>{results_}...', chatbot, history) # Gradioフロントエンドインターフェースをリフレッシュする
@@ -402,7 +411,7 @@ def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_
             result_pdf = pj(work_folder_modified, f'merge_diff.pdf')    # get pdf path
             promote_file_to_downloadzone(result_pdf, rename_file=None, chatbot=chatbot)  # promote file to web UI
         if modified_pdf_success:
-            yield from update_ui_lastest_msg(f'PDF変換コンパイルが成功しました, 正在Try生成对比PDF, お待ちください ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
+            yield from update_ui_lastest_msg(f'PDF変換コンパイルが成功した,PDFを生成してみます, お待ちください ...', chatbot, history)    # Gradioフロントエンドインターフェースをリフレッシュする
             result_pdf = pj(work_folder_modified, f'{main_file_modified}.pdf') # get pdf path
             origin_pdf = pj(work_folder_original, f'{main_file_original}.pdf') # get pdf path
             if os.path.exists(pj(work_folder, '..', 'translation')):
@@ -433,7 +442,7 @@ def CompileLatex(chatbot, history, main_file_original, main_file_modified, work_
                 work_folder_modified=work_folder_modified,
                 fixed_line=fixed_line
             )
-            yield from update_ui_lastest_msg(f'最も重要なPDF変換コンパイルが失敗したため, 原始文本, 現在のエラーのあるLaTeXコードは第{buggy_lines}行 ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
+            yield from update_ui_lastest_msg(f'最も重要なPDF変換コンパイルが失敗したため, Texソースファイルに基づいて修正しています。 エラーがあるLaTeXコードは第{buggy_lines}行目 ...', chatbot, history)   # Gradioフロントエンドインターフェースをリフレッシュする
             if not can_retry: break
 
     return False # 失敗しました

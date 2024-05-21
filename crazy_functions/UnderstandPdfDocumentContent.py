@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 15:14:34
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui
 from toolbox import CatchException, report_exception
 from .crazy_utils import read_and_clean_pdf_text

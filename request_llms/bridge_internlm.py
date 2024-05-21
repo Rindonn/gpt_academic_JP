@@ -37,7 +37,7 @@ def combine_history(prompt, hist):
 class GetInternlmHandle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
@@ -48,7 +48,7 @@ class GetInternlmHandle(LocalLLMHandle):
         import sentencepiece
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
         device = get_conf('LOCAL_MODEL_DEVICE')
@@ -71,7 +71,7 @@ class GetInternlmHandle(LocalLLMHandle):
         import torch.nn as nn
         from transformers.generation.utils import LogitsProcessorList, StoppingCriteriaList, GenerationConfig
 
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         def adaptor():
             model = self._model
             tokenizer = self._tokenizer
@@ -89,7 +89,7 @@ class GetInternlmHandle(LocalLLMHandle):
         stopping_criteria = None
         additional_eos_token_id = 103028
         generation_config = None
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         # 🏃‍♂️🏃‍♂️🏃‍♂️ https://github.com/InternLM/InternLM/blob/efbf5335709a8c8faeac6eaf07193973ff1d56a1/web_demo.py#L25
 
         inputs = tokenizer([prompt], padding=True, return_tensors="pt")

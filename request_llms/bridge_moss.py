@@ -27,7 +27,7 @@ class GetGLMHandle(Process):
             self.success = True
         except:
             self.info = """
-            MOSSの依存関係が不足しています，MOSSを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_moss.txt`and`git clone https://github.com/OpenLMLab/MOSS.git request_llms/moss`MOSSの依存関係をインストールする。
+            MOSSの依存関係が不足しています，MOSSを使用するするする場合，基本的なpip依存関係以外，実OKする必要があります`pip install -r request_llms/requirements_moss.txt`and`git clone https://github.com/OpenLMLab/MOSS.git request_llms/moss`MOSSの依存関係をインストールする。
             """
             self.success = False
         return self.success
@@ -104,7 +104,7 @@ class GetGLMHandle(Process):
 
     def run(self): # Subprocess execution
         # Subprocess execution
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         def validate_path():
             import os, sys
             root_dir_assume = os.path.abspath(os.path.dirname(__file__) +  '/..')

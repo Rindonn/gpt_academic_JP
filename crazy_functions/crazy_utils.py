@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, get_conf, trimmed_format_exc, get_max_token, Singleton
 import threading
 import os
@@ -78,7 +87,7 @@ def request_gpt_model_in_new_thread_with_ui_alive(
         while True:
             # watchdog error
             if len(mutable) >= 2 and (time.time()-mutable[1]) > watch_dog_patience:
-                raise RuntimeError("プログラムの終了が検出されました。")
+                raise RuntimeError("プログラムの終了が検出された。")
             try:
                 # 【1つ目の場合】：顺利完了
                 result = predict_no_ui_long_connection(
@@ -222,14 +231,14 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
         detect_timeout = lambda: len(mutable[index]) >= 2 and (time.time()-mutable[index][1]) > watch_dog_patience
         while True:
             # watchdog error
-            if detect_timeout(): raise RuntimeError("プログラムの終了が検出されました。")
+            if detect_timeout(): raise RuntimeError("プログラムの終了が検出された。")
             try:
                 # 【1つ目の場合】：顺利完了
                 gpt_say = predict_no_ui_long_connection(
                     inputs=inputs, llm_kwargs=llm_kwargs, history=history,
                     sys_prompt=sys_prompt, observe_window=mutable[index], console_slience=True
                 )
-                mutable[index][2] = "成功しました"
+                mutable[index][2] = "成功した"
                 return gpt_say
             except ConnectionAbortedError as token_exceeded_error:
                 # 【2番目の場合】：トークンオーバーフロー
@@ -274,7 +283,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                     mutable[index][2] = f"再試行中 {retry_times_at_unknown_error-retry_op}/{retry_times_at_unknown_error}"
                     continue # 戻って再試行する
                 else:
-                    mutable[index][2] = "失敗しました"
+                    mutable[index][2] = "失敗した"
                     wait = 5
                     time.sleep(5)
                     return gpt_say # 放棄する
@@ -303,7 +312,7 @@ def request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
                             if not done else f'`{mutable[thread_index][2]}`\n\n'
                             for thread_index, done, obs in zip(range(len(worker_done)), worker_done, observe_win)])
         # フロントエンドで面白いものを印刷する
-        chatbot[-1] = [chatbot[-1][0], f'マルチスレッド操作が開始されました，完了状況: \n\n{stat_str}' + ''.join(['.']*(cnt % 10+1))]
+        chatbot[-1] = [chatbot[-1][0], f'マルチスレッド操作が開始された，完了状況: \n\n{stat_str}' + ''.join(['.']*(cnt % 10+1))]
         yield from update_ui(chatbot=chatbot, history=[]) # 画面を更新する
         if all(worker_done):
             executor.shutdown()

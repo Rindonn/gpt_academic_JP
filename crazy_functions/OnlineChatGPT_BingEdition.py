@@ -67,7 +67,7 @@ def ConnectBingSearchAnswerQuestion(txt, llm_kwargs, plugin_kwargs, chatbot, his
     """
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
     chatbot.append((f"以下の問題にインターネット情報を組み合わせて回答してください：{txt}",
-                    "[Local Message] 注意してください，あなたは呼び出しています[関数プラグイン]のテンプレート，このテンプレートは、ChatGPTネットワーク情報の総合を実現できます。この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions。If you want to share new functional modules，PRを遠慮なく提出してください！"))
+                    "[Local Message] 注意してください，呼び出している[関数プラグイン]のテンプレート，このテンプレートは、ChatGPTネットワーク情報の総合を実現できます。この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions。If you want to share new functional modules，PRを遠慮なく提出してください！"))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
 
     # ------------- < ステップ1：検索エンジンの結果をクロールする > -------------
@@ -76,7 +76,7 @@ def ConnectBingSearchAnswerQuestion(txt, llm_kwargs, plugin_kwargs, chatbot, his
     urls = bing_search(txt, proxies)
     history = []
     if len(urls) == 0:
-        chatbot.append((f"结论：{txt}",
+        chatbot.append((f"結論：{txt}",
                         "[Local Message] bingから制限されて，情報を取ることが出来ません！"))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
         return

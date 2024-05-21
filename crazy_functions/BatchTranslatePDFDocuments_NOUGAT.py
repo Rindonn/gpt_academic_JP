@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, report_exception, get_log_folder, gen_time_str
 from toolbox import update_ui, promote_file_to_downloadzone, update_ui_lastest_msg, disable_auto_promotion
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -107,7 +116,7 @@ def ParsePDF_NOUGAT(file_manifest, project_folder, llm_kwargs, plugin_kwargs, ch
     nougat_handle = nougat_interface()
     for index, fp in enumerate(file_manifest):
         if fp.endswith('pdf'):
-            chatbot.append(["当前进度：", f"論文を解析しています，お待ちください。（最初に実行する際，NOUGATパラメータをダウンロードするが必要ので、時間がかかる場合があります。）"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
+            chatbot.append(["進度：", f"論文を解析しています，お待ちください。（最初に実行する際，NOUGATパラメータをダウンロードするが必要ので、時間がかかる場合があります。）"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
             fpp = yield from nougat_handle.NOUGAT_parse_pdf(fp, chatbot, history)
             promote_file_to_downloadzone(fpp, rename_file=os.path.basename(fpp)+'.nougat.mmd', chatbot=chatbot)
         else:

@@ -62,7 +62,7 @@ class ZhipuChatInit:
         self.model = llm_kwargs['llm_model']
         messages.extend(self.__conversation_history(history, llm_kwargs))  # 处理 history
         if inputs.strip() == "": # 处理空入力导致报错的問題 https://github.com/binary-husky/gpt_academic/issues/1640 ヒント {"error":{"code":"1214","message":"messages[1]:contentandtool_calls 字段不能同時为空"}
-            inputs = "."    # 空格、换行、空文字列都会报错，所以用最没有意义的一pieces点代替
+            inputs = "."    # 空格、换OK、空文字列都会报错，所以用最没有意义的一pieces点代替
         messages.append(self.__conversation_user(inputs, llm_kwargs))  # 处理用户对话
         response = self.zhipu_bro.chat.completions.create(
             model=self.model, messages=messages, stream=True,

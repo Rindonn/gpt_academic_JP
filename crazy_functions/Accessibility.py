@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 # encoding: utf-8
 # @Time   : 2023/4/19
 # @Author : Spike
@@ -14,7 +23,7 @@ import os
 def 猜你想问(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_request):
     if txt:
         show_say = txt
-        prompt = txt+'\n原始文本，ユーザーが提出する可能性のある3つの問題を再リスト化する。'
+        prompt = txt+'\n元のテキスト，ユーザーが提出する可能性のある3つの問題を再リスト化する。'
     else:
         prompt = history[-1]+"\n上記の回答を分析する，ユーザーが提出する可能性のある3つの問題を再リスト化する。"
         show_say = '上記の回答を分析する，ユーザーが提出する可能性のある3つの問題を再リスト化する。'
@@ -33,7 +42,7 @@ def 猜你想问(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt
 
 @CatchException
 def ClearCache(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, user_request):
-    chatbot.append(['クリア本地缓存数据', '実行中. 删除数据'])
+    chatbot.append(['ローカルキャッシュデータをクリアする', '実行中'])
     yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
 
     def _get_log_folder(user=default_user_name):
@@ -50,5 +59,5 @@ def ClearCache(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, 
     shutil.rmtree(_get_log_folder(get_user(chatbot)), ignore_errors=True)
     shutil.rmtree(_get_upload_folder(get_user(chatbot)), ignore_errors=True)
 
-    chatbot.append(['クリア本地缓存数据', '执行完了'])
+    chatbot.append(['ローカルキャッシュデータをクリアする', '実行完了'])
     yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する

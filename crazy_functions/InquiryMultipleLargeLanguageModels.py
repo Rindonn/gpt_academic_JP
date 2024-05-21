@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:31:24
+@ Description: まだ翻訳していない
+'''
 from toolbox import CatchException, update_ui, get_conf
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 import datetime

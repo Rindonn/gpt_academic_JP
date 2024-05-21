@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 16:14:48
+@ Description: prompt、インターフェースを日本語に変更
+'''
 # From project chatglm-langchain
 
 import threading
@@ -27,10 +36,10 @@ EMBEDDING_MODEL = "text2vec"
 EMBEDDING_DEVICE = "cpu"
 
 # 基于文脈的prompt模版，请务必保留"{question}"and"{context}"
-PROMPT_TEMPLATE = """已知信息：
+PROMPT_TEMPLATE = """既に知っている情報：
 {context}
 
-根据上述已知信息，简洁and专业的来回答用户的問題。如果なし法从中得到答案，请言う “根据已知信息なし法回答该問題” 或 “没有提供足够的相关信息”，不允许在答案中添加编造成分，答案请使用する中文。 問題是：{question}"""
+上記の既知の情報に基づき、簡潔かつ専門的にユーザーの質問に答えてください。 それで回答が得られない場合は、「既知の情報に基づき回答できません」または「関連する情報が十分に提供されていません」と言い、回答に捏造は許されず、回答は日本語で行ってください。質問は：{question}"""
 
 # 文本分句长度
 SENTENCE_SIZE = 100
@@ -150,17 +159,17 @@ class LocalDocQA:
         failed_files = []
         if isinstance(filepath, str):
             if not os.path.exists(filepath):
-                print("路径不存在")
+                print("パスが存在していない")
                 return None
             elif os.path.isfile(filepath):
                 file = os.path.split(filepath)[-1]
                 try:
                     docs = load_file(filepath, SENTENCE_SIZE)
-                    print(f"{file} 成功しました加载")
+                    print(f"{file} ロードが成功しました")
                     loaded_files.append(filepath)
                 except Exception as e:
                     print(e)
-                    print(f"{file} 未能成功加载")
+                    print(f"{file} ロードできませんでした")
                     return None
             elif os.path.isdir(filepath):
                 docs = []
@@ -174,7 +183,7 @@ class LocalDocQA:
                         failed_files.append(file)
 
                 if len(failed_files) > 0:
-                    print("以下文件未能成功加载：")
+                    print("ロードできないファイル：")
                     for file in failed_files:
                         print(f"{file}\n")
 
@@ -182,11 +191,11 @@ class LocalDocQA:
             docs = []
             for file in filepath:
                 docs += load_file(file, SENTENCE_SIZE)
-                print(f"{file} 成功しました加载")
+                print(f"{file} ロードが成功しました")
                 loaded_files.append(file)
 
         if len(docs) > 0:
-            print("文件加载完毕，正在生成向量库")
+            print("ファイルがロードしました。ベクトルデータベースを作成しています。")
             if vs_path and os.path.isdir(vs_path):
                 try:
                     self.vector_store = FAISS.load_local(vs_path, text2vec)
@@ -199,7 +208,7 @@ class LocalDocQA:
             self.vector_store.save_local(vs_path)
             return vs_path, loaded_files
         else:
-            raise RuntimeError("文件加载失敗しました，请检查文件フォーマット是否正确")
+            raise RuntimeError("ファイルロードが失敗しました，ファイルのフォーマットが正しいかどうかをチェックして下さい。")
 
     def get_loaded_file(self, vs_path):
         ds = self.vector_store.docstore
@@ -229,7 +238,7 @@ class LocalDocQA:
                         "source_documents": []}
             return response, ""
         # prompt = f"{query}. You should answer this question using information from following documents: \n\n"
-        prompt = f"{query}. 你必须利用以下文档中包含的信息回答这pieces問題: \n\n---\n\n"
+        prompt = f"{query}. ドキュメントの情報に基づいて質問を答えて下さい： \n\n---\n\n"
         prompt += "\n\n".join([f"({k}): " + doc.page_content for k, doc in enumerate(related_docs_with_score)])
         prompt += "\n\n---\n\n"
         prompt = prompt.encode('utf-8', 'ignore').decode()   # avoid reading non-utf8 chars
@@ -242,7 +251,7 @@ class LocalDocQA:
 
 def construct_vector_store(vs_id, vs_path, files, sentence_size, history, one_conent, one_content_segmentation, text2vec):
     for file in files:
-        assert os.path.exists(file), "入力文件不存在：" + file
+        assert os.path.exists(file), "ファイルが存在していない：" + file
     import nltk
     if NLTK_DATA_PATH not in nltk.data.path: nltk.data.path = [NLTK_DATA_PATH] + nltk.data.path
     local_doc_qa = LocalDocQA()
@@ -258,7 +267,7 @@ def construct_vector_store(vs_id, vs_path, files, sentence_size, history, one_co
     vs_path, loaded_files = local_doc_qa.init_knowledge_vector_store(filelist, os.path.join(vs_path, vs_id), sentence_size, text2vec)
 
     if len(loaded_files):
-        file_status = f"已添加 {'、'.join([os.path.split(i)[-1] for i in loaded_files if i])} 内容至知识库，并已加载知识库，请開始提问"
+        file_status = f"{'、'.join([os.path.split(i)[-1] for i in loaded_files if i])} ファイルをナレッジベースに加えました。ロードもできました。質問して下さい。"
     else:
         pass
         # file_status = "文件未成功加载，请重新上传文件"

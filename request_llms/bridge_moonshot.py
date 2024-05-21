@@ -131,7 +131,7 @@ def msg_handle_error(llm_kwargs, chunk_decoded):
     elif "account is not active" in chunk_decoded:
         error_msg = "[Local Message] アカウントがアクティブではありません。OpenAIはアカウントの無効化を理由にしています, サービスを拒否する." + openai_website
     elif "associated with a deactivated account" in chunk_decoded:
-        error_msg = "[Local Message] You are associated with a deactivated account. OpenAI以账户失效为由, サービスを拒否する." + openai_website
+        error_msg = "[Local Message] You are associated with a deactivated account. OpenAIはアカウントが失効したのため, サービスを拒否する." + openai_website
     elif "API key has been deactivated" in chunk_decoded:
         error_msg = "[Local Message] API key has been deactivated. OpenAI以账户失效为由, サービスを拒否する." + openai_website
     elif "bad forward key" in chunk_decoded:

@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 15:30:55
+@ Description: prompt、インターフェースを日本語に変更
+'''
 import glob, time, os, re, logging
 from toolbox import update_ui, trimmed_format_exc, gen_time_str, disable_auto_promotion
 from toolbox import CatchException, report_exception, get_log_folder
@@ -108,7 +117,7 @@ def TranslateMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
     res = write_history_to_file(gpt_response_collection, file_basename=create_report_file_name)
     promote_file_to_downloadzone(res, chatbot=chatbot)
     history = gpt_response_collection
-    chatbot.append((f"{fp}完了しましたか？", res))
+    chatbot.append((f"{fp}完了したか？", res))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
 
@@ -157,7 +166,7 @@ def TranslateMarkdownFromEnglishToChinese(txt, llm_kwargs, plugin_kwargs, chatbo
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "Markdownプロジェクト全体を翻訳する。関数プラグインの貢献者: Binary-Husky"])
+        "Markdownプロジェクトを翻訳する。関数プラグインの貢献者: Binary-Husky"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     disable_auto_promotion(chatbot)
 
@@ -197,7 +206,7 @@ def MarkdownChineseToEnglish(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "Markdownプロジェクト全体を翻訳する。関数プラグインの貢献者: Binary-Husky"])
+        "Markdownプロジェクトを翻訳する。関数プラグインの貢献者: Binary-Husky"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     disable_auto_promotion(chatbot)
 
@@ -230,7 +239,7 @@ def TranslateMarkdownToSpecifiedLanguage(txt, llm_kwargs, plugin_kwargs, chatbot
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "Markdownプロジェクト全体を翻訳する。関数プラグインの貢献者: Binary-Husky"])
+        "Markdownプロジェクトを翻訳する。関数プラグインの貢献者: Binary-Husky"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
     disable_auto_promotion(chatbot)
 

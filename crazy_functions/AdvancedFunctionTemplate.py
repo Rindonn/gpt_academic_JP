@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, update_ui
 from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 import datetime
@@ -41,7 +50,7 @@ def HighOrderFunctionTemplateFunctions(txt, llm_kwargs, plugin_kwargs, chatbot, 
     history = []    # 履歴をクリアする，オーバーフローを防ぐために
     chatbot.append((
         "プラグインを利用しています：Today in history",
-        "[Local Message] 注意してください，あなたは呼び出しています[関数プラグイン]のテンプレート，この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions（その関数には20行以上のコードしかありません）。また、大量のファイルを同期的に処理するためのマルチスレッドデモも提供しています。If you want to share new functional modules，PRを遠慮なく提出してください！" + HighOrderFunctionTemplateDiagram))
+        "[Local Message] 注意してください，呼び出している[関数プラグイン]のテンプレート，この関数は、より多くの面白い機能を実装したい開発者を対象としています，It can serve as a template for creating new feature functions（その関数には20行以上のコードしかありません）。また、大量のファイルを同期的に処理するためのマルチスレッドデモも提供しています。If you want to share new functional modules，PRを遠慮なく提出してください！" + HighOrderFunctionTemplateDiagram))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する # GPTのリクエストには時間がかかるため，まず、タイムリーに画面を更新します
     for i in range(5):
         currentMonth = (datetime.date.today() + datetime.timedelta(days=i)).month
@@ -63,11 +72,11 @@ PROMPT = """
 “{subject}”に関するロジック関係を示して下さい，mermaid言語を利用してください，mermaid言語の例を挙げる：
 ```mermaid
 graph TD
-    P(编程) --> L1(Python)
-    P(编程) --> L2(C)
-    P(编程) --> L3(C++)
-    P(编程) --> L4(Javascipt)
-    P(编程) --> L5(PHP)
+    P(プログラミング) --> L1(Python)
+    P(プログラミング) --> L2(C)
+    P(プログラミング) --> L3(C++)
+    P(プログラミング) --> L4(Javascipt)
+    P(プログラミング) --> L5(PHP)
 ```
 """
 @CatchException

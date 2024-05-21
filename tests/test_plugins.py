@@ -1,5 +1,5 @@
 """
-对项目中的各piecesプラグイン进行测试。运行テキストの翻訳：直接运行 python tests/test_plugins.py
+对项目中的各piecesプラグイン进OK测试。运OKテキストの翻訳：直接运OK python tests/test_plugins.py
 """
 
 
@@ -31,9 +31,9 @@ if __name__ == "__main__":
 
     # plugin_test(plugin='crazy_functions.BatchTranslatePDFDocuments_NOUGAT->BatchTranslatePDFDocuments', main_input='crazy_functions/test_project/pdf_and_word/aaai.pdf')
 
-    # plugin_test(plugin='crazy_functions.VoidTerminal->VoidTerminal', main_input='调用プラグイン，对C:/Users/fuqingxu/Desktop/旧文件/gpt/chatgpt_academic/crazy_functions/latex_fns中的python文件进行解析')
+    # plugin_test(plugin='crazy_functions.VoidTerminal->VoidTerminal', main_input='呼び出すプラグイン，对C:/Users/fuqingxu/Desktop/旧文件/gpt/chatgpt_academic/crazy_functions/latex_fns中的python文件进OK解析')
 
-    # plugin_test(plugin='crazy_functions.命令行助手->命令行助手', main_input='查看当前的docker容器リスト')
+    # plugin_test(plugin='crazy_functions.命令OK助手->命令OK助手', main_input='查看当前的docker容器リスト')
 
     # plugin_test(plugin='crazy_functions.ParseProjectSourceCode->ParsePythonProject', main_input="crazy_functions/test_project/python/dqn")
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     # plugin_test(plugin='crazy_functions.OutputPDFFromLatex->TranslateChineseToEnglishInLatexAndRecompilePDF', main_input="2210.03629")
 
-    # advanced_arg = {"advanced_arg":"--llm_to_learn=gpt-3.5-turbo --prompt_prefix='根据下面的服装类型ヒント，着用者を想像してください，この人の外見、環境、内面世界、キャラクターを描写する。要求：100文字以内，第二人称を使用するする。' --system_prompt=''" }
+    # advanced_arg = {"advanced_arg":"--llm_to_learn=gpt-3.5-turbo --prompt_prefix='根据下面的服装类型ヒント，着用者を想像してください，この人の外見、環境、内面世界、キャラクターを描写する。要求：100文字以内，第二人称を使用するするする。' --system_prompt=''" }
     # plugin_test(plugin='crazy_functions.ChatGLMFineTuningTool->FineTuneDatasetGeneration', main_input='build/dev.json', advanced_arg=advanced_arg)
 
     # advanced_arg = {"advanced_arg":"--pre_seq_len=128 --learning_rate=2e-2 --num_gpus=1 --json_dataset='t_code.json' --ptuning_directory='/home/hmp/ChatGLM2-6B/ptuning'     " }

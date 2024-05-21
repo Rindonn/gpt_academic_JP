@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, update_ui, promote_file_to_downloadzone
 from .crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 import datetime, json
@@ -47,7 +56,7 @@ def FineTuneDatasetGeneration(txt, llm_kwargs, plugin_kwargs, chatbot, history, 
     if ("advanced_arg" in plugin_kwargs) and (plugin_kwargs["advanced_arg"] == ""): plugin_kwargs.pop("advanced_arg")
     args = plugin_kwargs.get("advanced_arg", None)
     if args is None:
-        chatbot.append(("テキストの翻訳", "終了"))
+        chatbot.append(("指令なし", "終了"))
         yield from update_ui(chatbot=chatbot, history=history); return
     else:
         arguments = string_to_options(arguments=args)
@@ -96,7 +105,7 @@ def StartFineTuning(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_pro
     if ("advanced_arg" in plugin_kwargs) and (plugin_kwargs["advanced_arg"] == ""): plugin_kwargs.pop("advanced_arg")
     args = plugin_kwargs.get("advanced_arg", None)
     if args is None:
-        chatbot.append(("テキストの翻訳", "終了"))
+        chatbot.append(("指令なし", "終了"))
         yield from update_ui(chatbot=chatbot, history=history); return
     else:
         arguments = string_to_options(arguments=args)

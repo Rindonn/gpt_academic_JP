@@ -37,11 +37,11 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     chatbot.append((inputs, ""))
     yield from update_ui(chatbot=chatbot, history=history)
 
-    # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
+    # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案をOKいます
     try:
         check_packages(["zhipuai"])
     except:
-        yield from update_ui_lastest_msg(f"ソフトウェアの依存関係のインポートに失敗しました。使用する该模型需要额外依赖，インストールテキストの翻訳```pip install --upgrade zhipuai```。",
+        yield from update_ui_lastest_msg(f"ソフトウェアの依存関係のインポートに失敗しました。使用するする该模型需要额外依赖，インストールテキストの翻訳```pip install --upgrade zhipuai```。",
                                          chatbot=chatbot, history=history, delay=0)
         return
 

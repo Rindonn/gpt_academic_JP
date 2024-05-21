@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 15:13:53
+@ Description: まだ翻訳していない
+'''
 from toolbox import update_ui
 from toolbox import CatchException, get_conf, markdown_convertion
 from crazy_functions.crazy_utils import input_clipping

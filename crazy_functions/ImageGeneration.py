@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:31:07
+@ Description: まだ翻訳していない
+'''
 from toolbox import CatchException, update_ui, get_conf, select_api_key, get_log_folder
 from crazy_functions.multi_stage.multi_stage_utils import GptAcademicState
 

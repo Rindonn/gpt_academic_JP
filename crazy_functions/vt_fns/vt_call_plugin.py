@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 16:18:28
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from pydantic import BaseModel, Field
 from typing import List
 from toolbox import update_ui_lastest_msg, disable_auto_promotion
@@ -55,7 +64,7 @@ def execute_plugin(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prom
         plugin_selection: str = Field(description="The most related plugin from one of the PluginEnum.", default="F_0000")
         reason_of_selection: str = Field(description="The reason why you should select this plugin.", default="This plugin satisfy user requirement most")
     # ⭐ ⭐ ⭐ 选择プラグイン
-    yield from update_ui_lastest_msg(lastmsg=f"正在执行任务: {txt}\n\n查找可用プラグイン中...", chatbot=chatbot, history=history, delay=0)
+    yield from update_ui_lastest_msg(lastmsg=f"タスク実行中: {txt}\n\n利用できるプラグインを探す中...", chatbot=chatbot, history=history, delay=0)
     gpt_json_io = GptJsonIO(Plugin)
     gpt_json_io.format_instructions = "The format of your output should be a json that can be parsed by json.loads.\n"
     gpt_json_io.format_instructions += """Output example: {"plugin_selection":"F_1234", "reason_of_selection":"F_1234 plugin satisfy user requirement most"}\n"""
@@ -70,16 +79,16 @@ def execute_plugin(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prom
         gpt_reply = run_gpt_fn(inputs, "")
         plugin_sel = gpt_json_io.generate_output_auto_repair(gpt_reply, run_gpt_fn)
     except JsonStringError:
-        msg = f"抱歉, {llm_kwargs['llm_model']}なし法理解您的需求。"
-        msg += "请求的Prompt为：\n" + wrap_code(get_inputs_show_user(inputs, plugin_arr_enum_prompt))
-        msg += "语言模型回复为：\n" + wrap_code(gpt_reply)
-        msg += "\n但您可以Try再试一次\n"
+        msg = f"すみません, {llm_kwargs['llm_model']}ニーズを理解できません。。"
+        msg += "請求したPromptが：\n" + wrap_code(get_inputs_show_user(inputs, plugin_arr_enum_prompt))
+        msg += "LLMの応答は：\n" + wrap_code(gpt_reply)
+        msg += "\n但し再試行ができます。\n"
         yield from update_ui_lastest_msg(lastmsg=msg, chatbot=chatbot, history=history, delay=2)
         return
     if plugin_sel.plugin_selection not in plugin_arr_dict_parse:
-        msg = f"抱歉, 見つかりません合适プラグイン执行该任务, または{llm_kwargs['llm_model']}なし法理解您的需求。"
-        msg += f"语言模型{llm_kwargs['llm_model']}选择了不存在的プラグイン：\n" + wrap_code(gpt_reply)
-        msg += "\n但您可以Try再试一次\n"
+        msg = f"抱歉, 見つかりません合适プラグイン执行该任务, または{llm_kwargs['llm_model']}ニーズを理解できません。。"
+        msg += f"LLMは{llm_kwargs['llm_model']}存在していないプラグインを選択しました：\n" + wrap_code(gpt_reply)
+        msg += "\n但し再試行ができます。\n"
         yield from update_ui_lastest_msg(lastmsg=msg, chatbot=chatbot, history=history, delay=2)
         return
 
@@ -90,7 +99,7 @@ def execute_plugin(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prom
         appendix_info = get_recent_file_prompt_support(chatbot)
 
     plugin = plugin_arr_dict_parse[plugin_sel.plugin_selection]
-    yield from update_ui_lastest_msg(lastmsg=f"正在执行任务: {txt}\n\n提取プラグインパラメータ...", chatbot=chatbot, history=history, delay=0)
+    yield from update_ui_lastest_msg(lastmsg=f"タスク実行中: {txt}\n\nプラグインパラメータを抽出中...", chatbot=chatbot, history=history, delay=0)
     class PluginExplicit(BaseModel):
         plugin_selection: str = plugin_sel.plugin_selection
         plugin_arg: str = Field(description="The argument of the plugin.", default="")
@@ -108,7 +117,7 @@ def execute_plugin(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prom
     # ⭐ ⭐ ⭐ 执行プラグイン
     fn = plugin['Function']
     fn_name = fn.__name__
-    msg = f'{llm_kwargs["llm_model"]}为您选择了プラグイン: `{fn_name}`\n\nプラグイン言う明：{plugin["Info"]}\n\nプラグインパラメータ：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。'
+    msg = f'{llm_kwargs["llm_model"]}が選択したプラグイン: `{fn_name}`\n\nプラグインの説明：{plugin["Info"]}\n\nプラグインのパラメータ：{plugin_sel.plugin_arg}\n\n假如偏离了您的要求，按停止键终止。'
     yield from update_ui_lastest_msg(lastmsg=msg, chatbot=chatbot, history=history, delay=2)
     yield from fn(plugin_sel.plugin_arg, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, -1)
     return

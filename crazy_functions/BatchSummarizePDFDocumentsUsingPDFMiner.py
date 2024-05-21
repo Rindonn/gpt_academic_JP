@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui
 from toolbox import CatchException, report_exception
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
@@ -76,7 +85,7 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
             file_content = BeautifulSoup(''.join(file_content), features="lxml").body.text.encode('gbk', 'ignore').decode('gbk')
 
         prefix = "次に、論文ファイルを1つずつ分析してください，同時に内容を要約します" if index==0 else ""
-        i_say = prefix + f'Please summarize the following article fragment in japanese，ファイル名は{os.path.relpath(fp, project_folder)}，The content of the article is ```{file_content}```'
+        i_say = prefix + f'Please summarize the following article fragment in japanese,file names are:{os.path.relpath(fp, project_folder)}，The content of the article is ```{file_content}```'
         i_say_show_user = prefix + f'[{index}/{len(file_manifest)}] Please summarize the following article fragment: {os.path.abspath(fp)}'
         chatbot.append((i_say_show_user, "[Local Message] waiting gpt response."))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
@@ -90,7 +99,7 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
                 llm_kwargs=llm_kwargs,
                 chatbot=chatbot,
                 history=[],
-                sys_prompt="記事をまとめる。"
+                sys_prompt="文章をまとめる。"
             )  # タイムアウトカウントダウン付き
             chatbot[-1] = (i_say_show_user, gpt_say)
             history.append(i_say_show_user); history.append(gpt_say)
@@ -98,7 +107,7 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
             if not fast_debug: time.sleep(2)
 
     all_file = ', '.join([os.path.relpath(fp, project_folder) for index, fp in enumerate(file_manifest)])
-    i_say = f'上記の分析に基づいて自分自身を分析する，全文を要約する，学術的な言葉で日本語の要約を書く，そして、もう一つの英文要約を書く（含む{all_file}）。'
+    i_say = f'上記の分析に基づいて自分自身を分析する，全文を要約する，学術的な言葉で日本語の要約を書く，そして、もう一つの英文要約を書く（{all_file}を含む）。'
     chatbot.append((i_say, "[Local Message] waiting gpt response."))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
@@ -111,14 +120,14 @@ def ParsePaper(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot
             llm_kwargs=llm_kwargs,
             chatbot=chatbot,
             history=history,
-            sys_prompt="記事をまとめる。"
+            sys_prompt="文章をまとめる。"
         )  # タイムアウトカウントダウン付き
         chatbot[-1] = (i_say, gpt_say)
         history.append(i_say); history.append(gpt_say)
         yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する
         res = write_history_to_file(history)
         promote_file_to_downloadzone(res, chatbot=chatbot)
-        chatbot.append(("完了しましたか？", res))
+        chatbot.append(("完了したか？", res))
         yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する
 
 
@@ -131,7 +140,7 @@ def BatchSummarizePDFDocumentspdfminer(txt, llm_kwargs, plugin_kwargs, chatbot, 
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "BatchSummarizePDFDocuments，このバージョンではpdfminerプラグインが使用するされています，トークン約束機能を備えた。関数プラグインの貢献者: Euclid-Jie。"])
+        "BatchSummarizePDFDocuments，このバージョンではpdfminerプラグインが使用するされています，トークン約束機能がある。関数プラグインの貢献者: Euclid-Jie。"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います

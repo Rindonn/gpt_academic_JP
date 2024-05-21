@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:28:18
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 from toolbox import CatchException, report_exception, promote_file_to_downloadzone
 from toolbox import update_ui, update_ui_lastest_msg, disable_auto_promotion, write_history_to_file
@@ -30,7 +39,7 @@ def get_meta_information(url, chatbot, history):
         session.proxies.update(proxies)
     except:
         report_exception(chatbot, history,
-                    a=f"代理失敗しました It is very likely that you cannot access the OpenAI family of models without a proxy 提案：USE_PROXYオプションが設定しているかどうかを確認してください。",
+                    a=f"プロキシが失敗した It is very likely that you cannot access the OpenAI family of models without a proxy 提案：USE_PROXYオプションが設定しているかどうかを確認してください。",
                     b=f"Try direct connect")
         yield from update_ui(chatbot=chatbot, history=history)  # 画面を更新する
     session.headers.update(headers)
@@ -127,7 +136,7 @@ def get_meta_information(url, chatbot, history):
             'is_paper_in_arxiv': is_paper_in_arxiv,
         })
 
-        chatbot[-1] = [chatbot[-1][0], title + f'\n\narxivがあるかどうか（arxivがないと要約を取得できません）:{is_paper_in_arxiv}\n\n' + abstract]
+        chatbot[-1] = [chatbot[-1][0], title + f'\n\narxivがあるか（arxivがないと要旨を取得できません）:{is_paper_in_arxiv}\n\n' + abstract]
         yield from update_ui(chatbot=chatbot, history=[]) # 画面を更新する
     return profile
 
@@ -137,7 +146,7 @@ def GoogleSearchAssistant(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "ユーザーが提供したGoogle Scholarの分析（google scholar）ページ内を検索する，表示されるすべての記事: binary-husky，プラグインの初期化中..."])
+        "ユーザーが提供したGoogle Scholarの分析（google scholar）ページの内で検索する。関数プラグインの貢献者: binary-husky，プラグインの初期化中..."])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
@@ -148,7 +157,7 @@ def GoogleSearchAssistant(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
     except:
         report_exception(chatbot, history,
             a = f"プロジェクトを解析する: {txt}",
-            b = f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳```pip install --upgrade beautifulsoup4 arxiv```。")
+            b = f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールには：```pip install --upgrade beautifulsoup4 arxiv```。")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
@@ -156,13 +165,13 @@ def GoogleSearchAssistant(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
     history = []
     meta_paper_info_list = yield from get_meta_information(txt, chatbot, history)
     if len(meta_paper_info_list) == 0:
-        yield from update_ui_lastest_msg(lastmsg='文献取るが失敗しました，googleスパイダー制限されたかもしれない。',chatbot=chatbot, history=history, delay=0)
+        yield from update_ui_lastest_msg(lastmsg='論文ダウンロード失敗した，googleはスパイダーが制限した可能性がある。',chatbot=chatbot, history=history, delay=0)
         return
     batchsize = 5
     for batch in range(math.ceil(len(meta_paper_info_list)/batchsize)):
         if len(meta_paper_info_list[:batchsize]) > 0:
             i_say = "Below are some data on academic literature，以下の内容を抽出する：" + \
-            "1.英語のタイトル；2.日本語のタイトルの翻訳；3.著者；4.arxiv公開（is_paper_in_arxiv）；4、引用数（cite）；5、日本語要約翻訳。" + \
+            "1.英語のタイトル；2.日本語のタイトルの翻訳；3.著者；4.arxiv公開（is_paper_in_arxiv）；4、引用数（cite）；5、日本語に要旨を翻訳。" + \
             f"以下は情報源です：{str(meta_paper_info_list[:batchsize])}"
 
             inputs_show_user = f"このページに表示されるすべての記事を分析してください：{txt}，これは第{batch+1}バッチ"
@@ -176,10 +185,10 @@ def GoogleSearchAssistant(txt, llm_kwargs, plugin_kwargs, chatbot, history, syst
             meta_paper_info_list = meta_paper_info_list[batchsize:]
 
     chatbot.append(["ステータス？",
-        "すべて完了しました，AIにRelated Worksを書かせてみることができます，例えば您可以继续入力Write a \"Related Works\" section about \"你搜索的研究领域\" for me."])
+        "すべて完了しました，AIにRelated Worksを書かせてみることができます，例えばWrite a \"Related Works\" section about \"検索している研究分野\" for me.などpromptを続いて入力することができます"])
     msg = '正常'
     yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する
     path = write_history_to_file(history)
     promote_file_to_downloadzone(path, chatbot=chatbot)
-    chatbot.append(("完了しましたか？", path));
+    chatbot.append(("完了したか？", path));
     yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する

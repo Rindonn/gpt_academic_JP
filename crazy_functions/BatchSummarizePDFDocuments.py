@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, promote_file_to_downloadzone, gen_time_str
 from toolbox import CatchException, report_exception
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -31,7 +40,7 @@ def ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, 
         final_results.append(paper_meta)
 
         ############################## <ステップ2，記事全体を反復処理する，情報の抽出と精製> ##################################
-        i_say_show_user = f'まず、中国語の文脈で論文全体を読んでください。'; gpt_say = "[Local Message] 受信。"           # ユーザーヒント
+        i_say_show_user = f'まず、論文全体を読んでください。'; gpt_say = "[Local Message] 受信。"           # ユーザーヒント
         chatbot.append([i_say_show_user, gpt_say]); yield from update_ui(chatbot=chatbot, history=[])    # UIを更新する
 
         iteration_results = []
@@ -53,7 +62,7 @@ def ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, 
 
         ############################## <ステップ3，履歴の整理，テキストの翻訳> ##################################
         final_results.extend(iteration_results)
-        final_results.append(f'Please conclude this paper discussed above。')
+        final_results.append(f'Please conclude this paper discussed above.')
         # This prompt is from https://github.com/kaixindelele/ChatPaper/blob/main/chat_paper.py
         NUM_OF_WORD = 1000
         i_say = """
@@ -116,7 +125,7 @@ def BatchSummarizePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     except:
         report_exception(chatbot, history,
             a = f"プロジェクトを解析する: {txt}",
-            b = f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳```pip install --upgrade pymupdf```。")
+            b = f"ソフトウェアの依存関係のインポートに失敗した。このモジュールを使用するするには、追加の依存関係が必要，インストール：```pip install --upgrade pymupdf```。")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
@@ -128,7 +137,7 @@ def BatchSummarizePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
         project_folder = txt
     else:
         if txt == "": txt = '空の入力欄'
-        report_exception(chatbot, history, a = f"プロジェクトを解析する: {txt}", b = f"ローカルプロジェクトが見つからないか、アクセス権がありません: {txt}")
+        report_exception(chatbot, history, a = f"プロジェクトを解析する: {txt}", b = f"ローカルプロジェクトが見つからないか、アクセス権がない: {txt}")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
@@ -137,7 +146,7 @@ def BatchSummarizePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
 
     # ファイルが見つからなかった場合
     if len(file_manifest) == 0:
-        report_exception(chatbot, history, a = f"プロジェクトを解析する: {txt}", b = f".texまたは.pdfファイルが見つかりません: {txt}")
+        report_exception(chatbot, history, a = f"プロジェクトを解析する: {txt}", b = f".texまたは.pdfファイルが見つからない: {txt}")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 

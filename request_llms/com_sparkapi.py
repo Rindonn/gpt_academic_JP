@@ -36,7 +36,7 @@ class Ws_Param(object):
         signature_origin += "date: " + date + "\n"
         signature_origin += "GET " + self.path + " HTTP/1.1"
 
-        # 进行hmac-sha256进行加密
+        # 进OKhmac-sha256进OK加密
         signature_sha = hmac.new(self.APISecret.encode('utf-8'), signature_origin.encode('utf-8'), digestmod=hashlib.sha256).digest()
         signature_sha_base64 = base64.b64encode(signature_sha).decode(encoding='utf-8')
         authorization_origin = f'api_key="{self.APIKey}", algorithm="hmac-sha256", headers="host date request-line", signature="{signature_sha_base64}"'
@@ -101,7 +101,7 @@ class SparkRequestInstance():
             if llm_kwargs['most_recent_uploaded'].get('path'):
                 file_manifest = get_pictures_list(llm_kwargs['most_recent_uploaded']['path'])
                 if len(file_manifest) > 0:
-                    print('正在使用する讯飞图片理解API')
+                    print('正在使用するする讯飞图片理解API')
                     gpt_url = self.gpt_url_img
         wsParam = Ws_Param(self.appid, self.api_key, self.api_secret, gpt_url)
         websocket.enableTrace(False)

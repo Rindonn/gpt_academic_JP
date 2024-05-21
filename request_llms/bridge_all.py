@@ -2,7 +2,7 @@
 """
     このファイルには主に2つの関数が含まれています，これはすべてのLLMの共通インターフェースです，それらはより低レベルのLLMモデルを呼び出し続けます，複数のモデルの並列処理などの詳細を処理する
 
-    マルチスレッド機能を持たない関数：通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
+    マルチスレッド機能を持たない関数：通常の会話時に使用するするする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
     1. predict(...)
 
     マルチスレッド呼び出し機能を備えた関数：関数プラグインで呼び出されます，柔軟で簡潔
@@ -43,7 +43,7 @@ class LazyloadTiktoken(object):
     @staticmethod
     @lru_cache(maxsize=128)
     def get_encoder(model):
-        print('トークナイザーをロードしています，初めて実行する場合，パラメータのダウンロードに少し時間がかかる場合があります')
+        print('トークナイザーをロードしています，初めて実OKする場合，パラメータのダウンロードに少し時間がかかる場合があります')
         tmp = tiktoken.encoding_for_model(model)
         print('tokenizerの読み込みが完了しました')
         return tmp
@@ -801,7 +801,7 @@ def LLM_CATCH_EXCEPTION(f):
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history, sys_prompt, observe_window=[], console_slience=False):
     """
-    LLMに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するしています。
+    LLMに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するするしています。
     inputs：
         この問い合わせの入力です
     sys_prompt:
@@ -883,7 +883,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history, sys_prompt, obser
 def predict(inputs, llm_kwargs, *args, **kwargs):
     """
     LLMに送信，ストリームで出力を取得する。
-    基本的な対話機能に使用するされます。
+    基本的な対話機能に使用するするされます。
     inputsは今回の問い合わせの入力です
     top_p, temperatureはLLMの内部調整パラメータです
     historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）

@@ -23,12 +23,12 @@ def download_huggingface_model(model_name, max_retry, local_dir):
 class GetCoderLMHandle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         with ProxyNetworkActivate('Download_LLM'):
             from transformers import AutoTokenizer, AutoModelForCausalLM, TextIteratorStreamer
             model_name = "deepseek-ai/deepseek-coder-6.7b-instruct"
@@ -54,12 +54,12 @@ class GetCoderLMHandle(LocalLLMHandle):
             if get_conf('LOCAL_MODEL_DEVICE') != 'cpu':
                 if quantization_type == "INT8":
                     from transformers import BitsAndBytesConfig
-                    # 使用する INT8 量化
+                    # 使用するする INT8 量化
                     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, load_in_8bit=True,
                                                                  device_map=device_map)
                 elif quantization_type == "INT4":
                     from transformers import BitsAndBytesConfig
-                    # 使用する INT4 量化
+                    # 使用するする INT4 量化
                     bnb_config = BitsAndBytesConfig(
                         load_in_4bit=True,
                         bnb_4bit_use_double_quant=True,
@@ -69,7 +69,7 @@ class GetCoderLMHandle(LocalLLMHandle):
                     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True,
                                                                  quantization_config=bnb_config, device_map=device_map)
                 else:
-                    # 使用する#的 FP16
+                    # 使用するする#的 FP16
                     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True,
                                                                  torch_dtype=torch.bfloat16, device_map=device_map)
             else:
@@ -80,7 +80,7 @@ class GetCoderLMHandle(LocalLLMHandle):
         return model, tokenizer
 
     def llm_stream_generator(self, **kwargs):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         def adaptor(kwargs):
             query = kwargs['query']
             max_length = kwargs['max_length']

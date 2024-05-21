@@ -118,7 +118,7 @@ def extract_archive(file_path, dest_dir):
                 print("Successfully extracted rar archive to {}".format(dest_dir))
         except:
             print("Rar format requires additional dependencies to install")
-            return "\n\n解凍に失敗しました！rarファイルを解凍するにはpip install rarfileをインストールする必要があります。提案する：使用するzip压缩フォーマット。"
+            return "\n\n解凍に失敗しました！rarファイルを解凍するにはpip install rarfileをインストールする必要があります。提案する：使用するするzip压缩フォーマット。"
 
     # サードパーティのライブラリ，事前にpip install py7zrが必要です
     elif file_extension == ".7z":

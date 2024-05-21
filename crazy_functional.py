@@ -211,7 +211,7 @@ def get_crazy_functions():
             "Info": "精確にPDF論文を翻訳 | 入力パラメータはパスです。",
             "Function": HotReload(BatchTranslatePDFDocuments),
         },
-        "複数のGPTモデルについて問い合わせる": {
+        "複数のGPTモデルについて問い合わせる（まだ翻訳していない）": {
             "Group": "对话",
             "Color": "stop",
             "AsButton": False,
@@ -379,7 +379,7 @@ def get_crazy_functions():
 
         function_plugins.update(
             {
-                "ImageGeneration_DALLE2 （まずgpt-*へ切り替え）": {
+                "ImageGeneration_DALLE2 （翻訳していない）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
@@ -392,7 +392,7 @@ def get_crazy_functions():
         )
         function_plugins.update(
             {
-                "ImageGeneration_DALLE3 （まずgpt-*へ切り替え）": {
+                "ImageGeneration_DALLE3 （翻訳していない）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,
@@ -405,7 +405,7 @@ def get_crazy_functions():
         )
         function_plugins.update(
             {
-                "ImageModification_DALLE2 （まずgpt-*へ切り替え）": {
+                "ImageModification_DALLE2 （翻訳していない）": {
                     "Group": "对话",
                     "Color": "stop",
                     "AsButton": False,

@@ -28,8 +28,8 @@ class GetGLMHandle(Process):
             self.success = True
         except:
             from toolbox import trimmed_format_exc
-            self.info = r"jittorllmsの依存関係が不足しています，jittorllmsを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_jittorllms.txt -i https://pypi.jittor.org/simple -I`"+\
-                        r"and`git clone https://gitlink.org.cn/jittor/JittorLLMs.git --depth 1 request_llms/jittorllms`jittorllmsの依存関係をインストールするための2つの命令（プロジェクトのルートディレクトリでこれら2つのコマンドを実行する）。" +\
+            self.info = r"jittorllmsの依存関係が不足しています，jittorllmsを使用するするする場合，基本的なpip依存関係以外，実OKする必要があります`pip install -r request_llms/requirements_jittorllms.txt -i https://pypi.jittor.org/simple -I`"+\
+                        r"and`git clone https://gitlink.org.cn/jittor/JittorLLMs.git --depth 1 request_llms/jittorllms`jittorllmsの依存関係をインストールするための2つの命令（プロジェクトのルートディレクトリでこれら2つのコマンドを実OKする）。" +\
                         r"Warning：jittorllmsの依存関係をインストールすると、既存のpytorch環境が完全に破壊されます，It is recommended to use a docker environment!" + trimmed_format_exc()
             self.success = False
 
@@ -38,7 +38,7 @@ class GetGLMHandle(Process):
 
     def run(self):
         # Subprocess execution
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         def validate_path():
             import os, sys
             dir_name = os.path.dirname(__file__)

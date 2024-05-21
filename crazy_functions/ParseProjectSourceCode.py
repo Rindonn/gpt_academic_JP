@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:55:36
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, promote_file_to_downloadzone, disable_auto_promotion
 from toolbox import CatchException, report_exception, write_history_to_file
 from .crazy_utils import input_clipping
@@ -15,7 +24,7 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
     sys_prompt_array = []
     report_part_1 = []
 
-    assert len(file_manifest) <= 512, "ソースファイルが多すぎます（512を超える）, 入力ファイルの数を減らしてください。または，You can also choose to delete this warning line，コードを変更して、file_manifestリストを分割する，バッチ処理を実現するため。"
+    assert len(file_manifest) <= 512, "ソースファイルの数が多すぎます（512を超える）, 入力ファイルの数を減らしてください。"
     ############################## <ステップ1，ファイルを1つずつ分析する，マルチスレッド> ##################################
     for index, fp in enumerate(file_manifest):
         # ファイルを読み込んでいます
@@ -28,7 +37,7 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
         inputs_array.append(i_say)
         inputs_show_user_array.append(i_say_show_user)
         history_array.append([])
-        sys_prompt_array.append("あなたはプログラムアーキテクチャアナリストです，Analyzing a source code project。回答は簡潔で明確でなければなりません。")
+        sys_prompt_array.append("あなたはプログラムアーキテクチャアナリストです，ソースコードプロジェクトを分析しています。あなたの回答は簡潔で明確のが必要です。")
 
     # ファイルの読み込みが完了しました，各ソースコードファイルに対して，リクエストスレッドを生成する，chatgptに送信して分析する
     gpt_response_collection = yield from request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency(
@@ -46,7 +55,7 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
     history_to_return = report_part_1
     res = write_history_to_file(report_part_1)
     promote_file_to_downloadzone(res, chatbot=chatbot)
-    chatbot.append(("完了？", "1つずつファイルを分析しました。" + res + "\n\n集計を開始しています。"))
+    chatbot.append(("完了したか？", "1つずつファイルを分析した。" + res + "\n\n集計を開始しています。"))
     yield from update_ui(chatbot=chatbot, history=history_to_return) # 画面を更新する
 
     ############################## <2番目のステップ，総合，シングルスレッド，グループ化+反復処理> ##################################
@@ -68,9 +77,9 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
         current_iteration_focus = ', '.join(this_iteration_files)
         if summary_batch_isolation: focus = current_iteration_focus
         else:                       focus = previous_iteration_files_string
-        i_say = f'以下のファイルの機能を簡単にMarkdownテーブルで説明してください：{focus}。上記の分析に基づいて，プログラムの全体的な機能を一言で表す。'
+        i_say = f'以下のファイルの機能を簡単にMarkdownテーブルで説明してください：{focus}。上記の分析に基づいて，プログラムの全体的な機能を一言で示す。'
         if last_iteration_result != "":
-            sys_prompt_additional = "テキストの翻訳:" + last_iteration_result + "\nプロジェクトの全体的な機能をより理解するために、ほかのコードを分析して下さい。"
+            sys_prompt_additional = "あるコードが局所的に作用することが知られている：" + last_iteration_result + "\nプロジェクトの全体的な機能をより理解するために、ほかのコードを分析して下さい。"
         else:
             sys_prompt_additional = ""
         inputs_show_user = f'上記の分析に基づいて，プログラムの全体的な機能と構造をもう一度概要化して下さい，入力長の制限のため，グループ化処理が必要な場合があります，このグループのファイルは {current_iteration_focus} すでにまとめられたファイルグループ。'
@@ -102,7 +111,7 @@ def ParsingSourceCodeNew(file_manifest, project_folder, llm_kwargs, plugin_kwarg
     history_to_return.extend(report_part_2)
     res = write_history_to_file(history_to_return)
     promote_file_to_downloadzone(res, chatbot=chatbot)
-    chatbot.append(("完了しましたか？", res))
+    chatbot.append(("完了したか？", res))
     yield from update_ui(chatbot=chatbot, history=history_to_return) # 画面を更新する
 
 def make_diagram(this_iteration_files, result, this_iteration_history_feed):

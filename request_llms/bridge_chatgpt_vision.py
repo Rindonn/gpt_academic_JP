@@ -2,7 +2,7 @@
     このファイルには主に3つの関数が含まれています
 
     マルチスレッド機能を持たない関数：
-    1. predict: 通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
+    1. predict: 通常の会話時に使用するするする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
 
     マルチスレッド呼び出し機能を備えた関数
     2. predict_no_ui_long_connection：支持マルチスレッド
@@ -28,7 +28,7 @@ timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check 
 
 def report_invalid_key(key):
     if get_conf("BLOCK_INVALID_APIKEY"):
-        # 实验性功能，自动检测并屏蔽失效的KEY，请勿使用する
+        # 实验性功能，自动检测并屏蔽失效的KEY，请勿使用するする
         from request_llms.key_manager import ApiKeyManager
         api_key = ApiKeyManager().add_key_to_blacklist(key)
 
@@ -112,14 +112,14 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
 
     # check mis-behavior
     if is_the_upload_folder(user_input):
-        chatbot[-1] = (inputs, f"[Local Message] 検出された操作错误！当您上传文档之后，需点击“**関数プラグインエリア**”按钮进行处理，请勿点击“提出”按钮または“基本機能エリア”按钮。")
+        chatbot[-1] = (inputs, f"[Local Message] 検出された操作错误！当您上传文档之后，需点击“**関数プラグインエリア**”按钮进OK处理，请勿点击“提出”按钮または“基本機能エリア”按钮。")
         yield from update_ui(chatbot=chatbot, history=history, msg="正常") # 画面を更新する
         time.sleep(2)
 
     try:
         headers, payload, api_key = generate_payload(inputs, llm_kwargs, history, system_prompt, image_paths)
     except RuntimeError as e:
-        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
+        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するするできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
         yield from update_ui(chatbot=chatbot, history=history, msg="api-keyが要件を満たしていない") # 画面を更新する
         return
 
@@ -145,7 +145,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         except:
             retry += 1
             chatbot[-1] = ((chatbot[-1][0], timeout_bot_msg))
-            retry_msg = f"，再試行中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
+            retry_msg = f"，再試OK中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
             yield from update_ui(chatbot=chatbot, history=history, msg="リクエストがタイムアウトしました"+retry_msg) # 画面を更新する
             if retry > MAX_RETRY: raise TimeoutError
 
@@ -182,10 +182,10 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
                     if has_choices and not choice_valid:
                         # 一些垃圾第三方接口的出现这样的错误
                         continue
-                    # 前者はAPI2Dの終了条項件です，テキストの翻訳
+                    # 前者はAPI2Dの終了条項項件です，テキストの翻訳
                     if ('data: [DONE]' in chunk_decoded) or (len(chunkjson['choices'][0]["delta"]) == 0):
                         # データフローの終了と判断されます，gpt_replying_bufferも書き終わりました
-                        lastmsg = chatbot[-1][-1] + f"\n\n\n\n「{llm_kwargs['llm_model']}调用終了する，该模型不具备文脈对话能力，如需追问，请及時切换模型。」"
+                        lastmsg = chatbot[-1][-1] + f"\n\n\n\n「{llm_kwargs['llm_model']}呼び出す終了する，该模型不具备文脈对话能力，如需追问，请及時切换模型。」"
                         yield from update_ui_lastest_msg(lastmsg, chatbot, history, delay=1)
                         logging.info(f'[response] {gpt_replying_buffer}')
                         break
@@ -232,7 +232,7 @@ def handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg,
     elif "account is not active" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] アカウントがアクティブではありません。OpenAIはアカウントの無効化を理由にしています, サービスを拒否する." + openai_website); report_invalid_key(api_key)
     elif "associated with a deactivated account" in error_msg:
-        chatbot[-1] = (chatbot[-1][0], "[Local Message] You are associated with a deactivated account. OpenAI以账户失效为由, サービスを拒否する." + openai_website); report_invalid_key(api_key)
+        chatbot[-1] = (chatbot[-1][0], "[Local Message] You are associated with a deactivated account. OpenAIはアカウントが失効したのため, サービスを拒否する." + openai_website); report_invalid_key(api_key)
     elif "API key has been deactivated" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] API key has been deactivated. OpenAI以账户失效为由, サービスを拒否する." + openai_website); report_invalid_key(api_key)
     elif "bad forward key" in error_msg:

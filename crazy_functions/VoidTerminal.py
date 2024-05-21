@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 15:13:53
+@ Description: prompt、インターフェースを日本語に変更
+'''
 """
 Explanation of the Void Terminal Plugin:
 
@@ -21,27 +30,27 @@ Please describe in natural language what you want to do.
 5. If you don't need to upload a file, you can simply repeat your command again.
 """
 explain_msg = """
-## VoidTerminalプラグイン言う明:
+## Void Terminal プラグインの説明
 
-1. 请用**自然语言**描述您需要做什么。例えば：
-    - 「请调用プラグイン，为我翻訳PDF論文，論文我刚刚放到上传区了」
-    - 「请调用プラグイン翻訳PDF論文，Address为https://openreview.net/pdf?id=rJl0r3R9KX」
-    - 「把Arxiv論文翻訳成中文PDF，arxiv論文的ID是1812.10695，记得用プラグイン！」
-    - 「生成一张图片，图中鲜花怒放，绿草如茵，用プラグイン实现」
-    - 「用プラグイン翻訳README，Github网址是https://github.com/facebookresearch/co-tracker」
-    - 「我不喜欢当前的界面颜色，修改配置，把主题THEME更换为THEME="High-Contrast"」
-    - 「请调用プラグイン，解析python源代码项目，代码我刚刚打包拖到上传区了」
-    - 「请问Transformer网络的结构是怎样的？」
+1.必要なことを**自然な言葉**で記述してください。 例えば
+    - "アップロードエリアに入れたばかりのPDF論文を翻訳してくれるプラグインを呼んでください。"
+    - "Please call the plugin to translate the PDF paper at https://openreview.net/pdf?id=rJl0r3R9KX".
+    - "Arxivの論文をPDFに翻訳してください、Arxivの論文のIDは1812.10695です、プラグインを使うのを忘れないでください！
+    - 花と緑の草が咲いている画像を生成し、プラグインを使用してそれを実現する".
+    - プラグインを使ってREADMEを翻訳してください、GithubのURLはhttps://github.com/facebookresearch/co-tracker」。
+    - "現在のインターフェイスの色が気に入らない、設定を変更して、テーマTHEMEをTHEME="High-Contrast "に変更してください。"
+    - "Pythonソースコード・プロジェクトを解析するプラグインを呼び出してください。" "私はコードをアップロード領域にパックしてドラッグしただけです。"
+    - Transformerネットワークの構造は何ですか？" 
 
-2. 您可以打开プラグイン下拉菜单以了解本项目的各种能力。
+2. プラグインのドロップダウンメニューを開くと、このプロジェクトの機能について詳しく知ることができます 
 
-3. 如果您使用する「调用プラグインxxx」、「修改配置xxx」、「请问」等关键词，您的意图可以被识别的更准确。
+3. "プラグインxxxを呼び出す"、"コンフィギュレーションxxxを修正する"、"質問してください "などのキーワードを使用すると、あなたの意図をより正確に特定することができます
 
-4. 提案する使用する GPT3.5 或更强的模型，弱模型可能なし法理解您的想法。该プラグイン诞生時间不长，欢迎您前往Github反馈問題。
+4.GPT3.5以上の機種を推奨します。弱い機種ではあなたの考えを理解できない可能性があります。 このプラグインが開発されてからまだ日が浅いので、Githubを訪れてフィードバックを得ることを歓迎します。
 
-5. 今，如果需要处理文件，请您上传文件（置き換える文件拖动到ファイルアップロードエリア），または描述文件所在的路径。
+5.ファイルを処理する必要がある場合は、ファイルをアップロード（ファイルアップロードエリアにファイルをドラッグ）するか、ファイルがあるパスを記述してください。
 
-6. 如果不需要上传文件，今您只需要再次重复一次您的指令即可。
+6.ファイルをアップロードする必要がない場合は、もう一度指示を繰り返すだけです。
 """
 
 from pydantic import BaseModel, Field
@@ -114,7 +123,7 @@ def VoidTerminal(txt, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt
     is_certain, _ = analyze_intention_with_simple_rules(txt)
     if is_the_upload_folder(txt):
         state.set_state(chatbot=chatbot, key='has_provided_explaination', value=False)
-        appendix_msg = "\n\n**很好，您已经上传了文件**，今请您描述您的需求。"
+        appendix_msg = "\n\n**ファイルをアップロードした**，ニーズを入力してください。"
 
     if is_certain or (state.has_provided_explaination):
         # 如果意图明确，跳过ヒント环节

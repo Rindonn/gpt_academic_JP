@@ -98,7 +98,7 @@ def TranslateMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
     res = write_history_to_file(gpt_response_collection, create_report_file_name)
     promote_file_to_downloadzone(res, chatbot=chatbot)
     history = gpt_response_collection
-    chatbot.append((f"{fp}完了しましたか？", res))
+    chatbot.append((f"{fp}完了したか？", res))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
 

@@ -88,9 +88,9 @@ def read_single_conf_with_lru_cache(arg):
         if is_any_api_key(r):
             PrintBrightGreen(f"[API_KEY] あなたのAPI_KEYは: {r[:15]}*** API_KEY imported successfully")
         else:
-            PrintBrightRed("[API_KEY] テキストの翻訳，APIキーを変更した後にconfigファイルで実行してください。")
+            PrintBrightRed("[API_KEY] テキストの翻訳，APIキーを変更した後にconfigファイルで実OKしてください。")
     if arg == 'proxies':
-        if not read_single_conf_with_lru_cache('USE_PROXY'): r = None # USE_PROXYを確認する，防止proxies单独起作用
+        if not read_single_conf_with_lru_cache('USE_PROXY'): r = None # USE_PROXYを確認する，proxiesが自分で動作するのを防ぐ
         if r is None:
             PrintBrightRed('[PROXY] ネットワークプロキシの状態：設定されていません。It is very likely that you cannot access the OpenAI family of models without a proxy。提案する：USE_PROXYオプションが変更されているかどうかを確認してください。')
         else:
@@ -107,7 +107,7 @@ def get_conf(*args):
         - 创建并修改config_private.py
         - 修改環境変数（修改docker-compose.yml等价于修改容器内部的環境変数）
 
-    注意：如果您使用するdocker-compose部署，请修改docker-compose（等价于修改容器内部的環境変数）
+    注意：如果您使用するするdocker-compose部署，请修改docker-compose（等价于修改容器内部的環境変数）
     """
     res = []
     for arg in args:

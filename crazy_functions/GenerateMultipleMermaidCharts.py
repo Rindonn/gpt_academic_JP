@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 14:24:03
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, update_ui, report_exception
 from .crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
 import datetime
@@ -6,46 +15,46 @@ import datetime
 SELECT_PROMPT = """
 “{subject}”
 =============
-以上是从文章中提取的摘要,置き換える会使用する这些摘要绘制图表。请你选择一pieces合适的图表类型:
-1 流程图
-2 序列图
-3 类图
-4 饼图
-5 甘特图
-6 ステータス图
-7 实体关系图
-8 象限ヒント图
-不需要解释原因，仅需要出力单pieces不带任何标点符号的数字。
+以上は文章から抽出した要旨です。この内容を利用してグラフを作成してください。まず適当なクラフの種類を選択してください:
+1 フローチャート
+2 シーケンス図
+3 クラス図
+4 円グラフ
+5 ガントチャート
+6 ステータス図
+7 実体関係図
+8 象限ヒント図
+その理由を説明する必要はなく、句読点を入れずにただ1つの数字を出力してください。
 """
-#没有思维导图!!!测试发现模型始终会優先选择思维导图
+#マインドマップはなし。テストによると、モデルは常にマインドマップを優先します。
 #流程图
 PROMPT_1 = """
-请你给出围绕“{subject}”的逻辑关系图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心としたフローチャートを作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 graph TD
-    P(编程) --> L1(Python)
-    P(编程) --> L2(C)
-    P(编程) --> L3(C++)
-    P(编程) --> L4(Javascipt)
-    P(编程) --> L5(PHP)
+    P(プログラミング) --> L1(Python)
+    P(プログラミング) --> L2(C)
+    P(プログラミング) --> L3(C++)
+    P(プログラミング) --> L4(Javascipt)
+    P(プログラミング) --> L5(PHP)
 ```
 """
 #序列图
 PROMPT_2 = """
-请你给出围绕“{subject}”的序列图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心としたシーケンス図を作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 sequenceDiagram
-    participant A as 用户
-    participant B as 系统
-    A->>B: 登录请求
-    B->>A: 登录成功
-    A->>B: 获取数据
-    B->>A: 戻る数据
+    participant A as ユーザー
+    participant B as システム
+    A->>B: 請求を登録
+    B->>A: 登録完了
+    A->>B: データを取得する
+    B->>A: データを渡す
 ```
 """
 #类图
 PROMPT_3 = """
-请你给出围绕“{subject}”的类图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心としたクラス図を作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 classDiagram
     Class01 <|-- AveryLongClass : Cool
@@ -65,33 +74,33 @@ classDiagram
 """
 #饼图
 PROMPT_4 = """
-请你给出围绕“{subject}”的饼图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心とした円グラフを作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 pie title Pets adopted by volunteers
-    "狗" : 386
+    "犬" : 386
     "猫" : 85
-    "兔子" : 15
+    "ラビット" : 15
 ```
 """
 #甘特图
 PROMPT_5 = """
-请你给出围绕“{subject}”的甘特图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心としたガントチャートを作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 gantt
-    title 项目开发流程
+    title プロジェクト開発の流れ
     dateFormat  YYYY-MM-DD
-    section 设计
-    需求分析 :done, des1, 2024-01-06,2024-01-08
-    原型设计 :active, des2, 2024-01-09, 3d
-    UI设计 : des3, after des2, 5d
-    section 开发
-    前端开发 :2024-01-20, 10d
-    后端开发 :2024-01-20, 10d
+    section 設計
+    ニーズ分析 :done, des1, 2024-01-06,2024-01-08
+    プロトタイピング :active, des2, 2024-01-09, 3d
+    UI設計 : des3, after des2, 5d
+    section 開発
+    フロントエンド開発 :2024-01-20, 10d
+    バックエンド開発 :2024-01-20, 10d
 ```
 """
 #ステータス图
 PROMPT_6 = """
-请你给出围绕“{subject}”的ステータス图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心としたステータス图を作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 stateDiagram-v2
    [*] --> Still
@@ -104,7 +113,7 @@ stateDiagram-v2
 """
 #实体关系图
 PROMPT_7 = """
-请你给出围绕“{subject}”的实体关系图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心とした実体関係図を作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 erDiagram
     CUSTOMER ||--o{ ORDER : places
@@ -126,7 +135,7 @@ erDiagram
 """
 #象限ヒント图
 PROMPT_8 = """
-请你给出围绕“{subject}”的象限图，使用するmermaid语法，mermaid语法例を挙げる：
+“{subject}”を中心とした象限ヒント図を作成してください，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 graph LR
     A[Hard skill] --> B(Programming)
@@ -139,7 +148,7 @@ graph LR
 PROMPT_9 = """
 {subject}
 ==========
-请给出上方内容的思维导图，充分考虑其之间的逻辑，使用するmermaid语法，mermaid语法例を挙げる：
+上記のロジックをマインドマップにし，mermaid言語を使用してください。mermaid言語の例を挙げる：
 ```mermaid
 mindmap
   root((mindmap))
@@ -172,16 +181,16 @@ def ParseHistoricalInput(history,llm_kwargs,file_manifest,chatbot,plugin_kwargs)
     results = []
     MAX_WORD_TOTAL = 4096
     n_txt = len(txt)
-    last_iteration_result = "从以下文本中要約を抽出する。"
-    if n_txt >= 20: print('記事が非常に長い，期待される効果が得られない')
+    last_iteration_result = "以下の文章を要約してください。"
+    if n_txt >= 20: print('記事が非常に長いので，期待される効果が得られない可能性がある')
     for i in range(n_txt):
         NUM_OF_WORD = MAX_WORD_TOTAL // n_txt
-        i_say = f"Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} words in Chinese: {txt[i]}"
+        i_say = f"Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} words in Japanese: {txt[i]}"
         i_say_show_user = f"[{i+1}/{n_txt}] Read this section, recapitulate the content of this section with less than {NUM_OF_WORD} words: {txt[i][:200]} ...."
         gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(i_say, i_say_show_user,  # i_say=ChatGPTに本当の質問をする， ユーザーに表示される質問
                                                                            llm_kwargs, chatbot,
                                                                            history=["The main content of the previous section is?", last_iteration_result], # 前回の結果を反復処理する
-                                                                           sys_prompt="Extracts the main content from the text section where it is located for graphing purposes, answer me with Chinese."  # ヒント
+                                                                           sys_prompt="Extracts the main content from the text section where it is located for graphing purposes, answer me with Japanese."  # ヒント
                                                                         )
         results.append(gpt_say)
         last_iteration_result = gpt_say
@@ -190,10 +199,10 @@ def ParseHistoricalInput(history,llm_kwargs,file_manifest,chatbot,plugin_kwargs)
     gpt_say = plugin_kwargs.get("advanced_arg", "")     #置き換える图表类型パラメータ赋值为プラグインパラメータ
     results_txt = '\n'.join(results)    #合并摘要
     if gpt_say not in ['1','2','3','4','5','6','7','8','9']:    #如プラグインパラメータ不正确则使用する对话模型判断
-        i_say_show_user = f'次に置き換える判断适合的图表类型,如连续3次判断失敗しました置き換える会使用する流程图进行绘制'; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
+        i_say_show_user = f'次のステップは適切なチャートの種類を決めることで、判定が3回連続で失敗した場合はフローチャートを描く'; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
         chatbot.append([i_say_show_user, gpt_say]); yield from update_ui(chatbot=chatbot, history=[])    # UIを更新する
         i_say = SELECT_PROMPT.format(subject=results_txt)
-        i_say_show_user = f'请判断适合使用する的流程图类型,其中数字对应关系为:1-流程图,2-序列图,3-类图,4-饼图,5-甘特图,6-ステータス图,7-实体关系图,8-象限ヒント图。由于不管提供文本是什么,模型大概率认为"思维导图"最合适,因此思维导图仅能通过パラメータ调用。'
+        i_say_show_user = f'適切なチャートの種類を決めてください。番号は1-フローチャート、2-シーケンス図、3-クラス図、4-円グラフ、5-ガントチャート、6-ステートチャート、7-エンティティ関係図、8-象限キューチャートに対応しています。其中数字对应关系为:1-流程图,2-序列图,3-类图,4-饼图,5-甘特图,6-ステータス图,7-实体关系图,8-象限ヒント图。モデルは、提供されたテキストに関係なく、「マインドマップ」を最も適切であるとみなす可能性が高いので、マインドマップはパラメータのみを通じてのみ呼び出すことができます。'
         for i in range(3):
             gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
                 inputs=i_say,
@@ -224,7 +233,7 @@ def ParseHistoricalInput(history,llm_kwargs,file_manifest,chatbot,plugin_kwargs)
         i_say = PROMPT_8.format(subject=results_txt)
     elif gpt_say == '9':
         i_say = PROMPT_9.format(subject=results_txt)
-    i_say_show_user = f'请根据判断结果绘制相应的图表。如需绘制思维导图请使用するパラメータ调用,同時过大的图表可能需要复制到在线编辑器中进行渲染。'
+    i_say_show_user = f'判定結果に従ってチャートを描画してください。 マインドマップを描画する場合は、パラメータコールをご利用ください。大きなチャートはオンラインエディタにコピーして描画する必要がある場合があります。'
     gpt_say = yield from request_gpt_model_in_new_thread_with_ui_alive(
         inputs=i_say,
         inputs_show_user=i_say_show_user,
@@ -250,8 +259,8 @@ def GenerateMultipleMermaidCharts(txt, llm_kwargs, plugin_kwargs, chatbot, histo
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "根据当前チャット履歴或指定的路径文件(文件内容優先)绘制多种mermaid图表，置き換える会由对话模型首先判断适合的图表类型，随后绘制图表。\
-        \n您也可以使用するプラグインパラメータ指定绘制的图表类型,関数プラグインの貢献者: Menghuan1918"])
+        "現在のチャット履歴または指定されたパスファイル（ファイルの内容が先）に基づいて複数のマーメイドチャートを描画する場合、まず対話モデルによって適切なチャートの種類が決定され、その後チャートが描画されます。。\
+        \nまた、プラグインのパラメータを使ってグラフの種類を指定することもできます。関数プラグインの貢献者: Menghuan1918"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     if os.path.exists(txt):     #如入力エリアなし内容则直接解析History记录
@@ -266,30 +275,30 @@ def GenerateMultipleMermaidCharts(txt, llm_kwargs, plugin_kwargs, chatbot, histo
         if excption == "word":
             report_exception(chatbot, history,
                 a = f"プロジェクトを解析する: {txt}",
-                b = f"找到了.doc文件，但是该文件フォーマット不被支持，まず.docx形式に変換してください。")
+                b = f".docファイルが見つかったが，このようなフォーマットはサポートされていません，まず.docxに変換してください。")
 
         elif excption == "pdf":
             report_exception(chatbot, history,
                 a = f"プロジェクトを解析する: {txt}",
-                b = f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳```pip install --upgrade pymupdf```。")
+                b = f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールは：```pip install --upgrade pymupdf```。")
 
         elif excption == "word_pip":
                 report_exception(chatbot, history,
                     a=f"プロジェクトを解析する: {txt}",
-                    b=f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳```pip install --upgrade python-docx pywin32```。")
+                    b=f"ソフトウェアの依存関係のインポートに失敗しました。このモジュールを使用するするには、追加の依存関係が必要です，インストールは：```pip install --upgrade python-docx pywin32```。")
 
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     else:
         if not file_exist:
             history.append(txt)     #如入力エリア不是文件则置き換える入力エリア内容加入History记录
-            i_say_show_user = f'首先你从History记录中要約を抽出する。'; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
+            i_say_show_user = f'まず、履歴から要旨を取得する。'; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
             chatbot.append([i_say_show_user, gpt_say]); yield from update_ui(chatbot=chatbot, history=history)    # UIを更新する
             yield from ParseHistoricalInput(history,llm_kwargs,file_manifest,chatbot,plugin_kwargs)
         else:
             file_num = len(file_manifest)
             for i in range(file_num):     #依次处理文件
-                i_say_show_user = f"[{i+1}/{file_num}]处理文件{file_manifest[i]}"; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
+                i_say_show_user = f"[{i+1}/{file_num}]処理{file_manifest[i]}"; gpt_say = "[Local Message] 受信。"   # ユーザーヒント
                 chatbot.append([i_say_show_user, gpt_say]); yield from update_ui(chatbot=chatbot, history=history)    # UIを更新する
                 history = []    #如入力エリア内容为文件则履歴をクリアする记录
                 history.append(final_result[i])

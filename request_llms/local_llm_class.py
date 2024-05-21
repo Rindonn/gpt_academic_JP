@@ -127,12 +127,12 @@ class LocalLLMHandle(Process):
             self.set_state("`Dependency check passed`")
             self.running = True
         except:
-            self.set_state(f"不足しています{self.model_name}的依赖，使用するする場合{self.model_name}，基本的なpip依存関係以外，実行する必要があります{self.cmd_to_install}テキストの翻訳{self.model_name}的依赖。")
+            self.set_state(f"不足しています{self.model_name}の依存関係，使用するするする場合{self.model_name}，基本的なpip依存関係以外，実OKする必要があります{self.cmd_to_install}テキストの翻訳{self.model_name}の依存関係。")
             self.running = False
 
     def run(self):
         # 🏃‍♂️🏃‍♂️🏃‍♂️ run in child process
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         self.child.flush = lambda *args: None
         self.child.write = lambda x: self.child.send(self.std_tag + x)
         reset_tqdm_output()
@@ -163,7 +163,7 @@ class LocalLLMHandle(Process):
             except:
                 from toolbox import trimmed_format_exc
                 self.child.send(
-                    f'[Local Message] 调用{self.model_name}失敗しました.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
+                    f'[Local Message] 呼び出す{self.model_name}失敗しました.' + '\n```\n' + trimmed_format_exc() + '\n```\n')
                 self.child.send('[Finish]')
 
     def clear_pending_messages(self):

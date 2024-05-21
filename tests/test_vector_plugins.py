@@ -1,5 +1,5 @@
 """
-对项目中的各piecesプラグイン进行测试。运行テキストの翻訳：直接运行 python tests/test_plugins.py
+对项目中的各piecesプラグイン进OK测试。运OKテキストの翻訳：直接运OK python tests/test_plugins.py
 """
 
 

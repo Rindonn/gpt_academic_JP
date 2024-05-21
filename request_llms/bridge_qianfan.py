@@ -30,7 +30,7 @@ def cache_decorator(timeout):
 @cache_decorator(timeout=3600)
 def get_access_token():
     """
-    使用する AK，SK 生成鉴权签名（Access Token）
+    使用するする AK，SK 生成鉴权签名（Access Token）
     :return: access_token，或是None(如果错误)
     """
     # if (access_token_cache is None) or (time.time() - last_access_token_obtain_time > 3600):

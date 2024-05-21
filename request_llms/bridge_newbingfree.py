@@ -26,7 +26,7 @@ from multiprocessing import Process, Pipe
 
 def preprocess_newbing_out(s):
     pattern = r"\^(\d+)\^"  # ^数字^に一致する
-    sub = lambda m: "(" + m.group(1) + ")"  # 一致した数字を置換値として使用するする
+    sub = lambda m: "(" + m.group(1) + ")"  # 一致した数字を置換値として使用するするする
     result = re.sub(pattern, sub, s)  # 置換操作
     if "[1]" in result:
         result += (
@@ -64,10 +64,10 @@ class NewBingHandle(Process):
             self.success = False
             import certifi, httpx, rich
 
-            self.info = "Dependency check passed，NewBingの応答を待っています。現時点では、複数のユーザーが同時にNewBing APIを呼び出すことはできません（スレッドロックあり），さもないと、各人のNewBingクエリ履歴が相互に浸透する可能性があります。NewBingを呼び出すとき，事前に設定されたプロキシを自動的に使用するします。"
+            self.info = "Dependency check passed，NewBingの応答を待っています。現時点では、複数のユーザーが同時にNewBing APIを呼び出すことはできません（スレッドロックあり），さもないと、各人のNewBingクエリ履歴が相互に浸透する可能性があります。NewBingを呼び出すとき，事前に設定されたプロキシを自動的に使用するするします。"
             self.success = True
         except:
-            self.info = "不足している依存関係，Newbingを使用するする場合，基本的なpip依存関係以外，実行する必要があります`pip install -r request_llms/requirements_newbing.txt`Newbingの依存関係のインストール。"
+            self.info = "不足している依存関係，Newbingを使用するするする場合，基本的なpip依存関係以外，実OKする必要があります`pip install -r request_llms/requirements_newbing.txt`Newbingの依存関係のインストール。"
             self.success = False
 
     def ready(self):
@@ -124,9 +124,9 @@ class NewBingHandle(Process):
 
     def run(self):
         """
-        この関数はサブプロセスで実行されます
+        この関数はサブプロセスで実OKされます
         """
-        # 最初の実行，パラメータをロードする
+        # 最初の実OK，パラメータをロードする
         self.success = False
         self.local_history = []
         if (self.newbing_model is None) or (not self.success):
@@ -171,14 +171,14 @@ class NewBingHandle(Process):
         except Exception:
             tb_str = "\n```\n" + trimmed_format_exc() + "\n```\n"
             self.child.send(
-                f"[Local Message] Newbing 请求失敗しました，エラーメッセージは次のとおりです。ネットワークに関連する問題の場合，プロキシプロトコルの変更をお勧めします（httpをおすすめします）或代理节点 {tb_str}."
+                f"[Local Message] Newbing 请求失敗しました，エラーメッセージは次のとおりです。ネットワークに関連する問題の場合，プロキシプロトコルの変更をお勧めします（httpをおすすめします）またはプロキシ {tb_str}."
             )
             self.child.send("[Fail]")
             self.child.send("[Finish]")
 
     def stream_chat(self, **kwargs):
         """
-        この関数はメインプロセスで実行されます
+        この関数はメインプロセスで実OKされます
         """
         self.threadLock.acquire()  # テキストの翻訳
         self.parent.send(kwargs)  # サブプロセスを要求する
@@ -304,7 +304,7 @@ def predict(
             chatbot=chatbot, history=history, msg="NewBing responds slowly，すべての応答が完了していません，Please submit a new question after completing it patiently。"
         )
     if response == "[Local Message] NewBingの応答を待っています ...":
-        response = "[Local Message] NewBingの応答が異常です，ページを更新して再試行してください ..."
+        response = "[Local Message] NewBingの応答が異常です，ページを更新して再試OKしてください ..."
     history.extend([inputs, response])
     logging.info(f"[raw_input] {inputs}")
     logging.info(f"[response] {response}")

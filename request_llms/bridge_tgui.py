@@ -88,7 +88,7 @@ async def run(context, max_token, temperature, top_p, addr, port):
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
         chatGPTに送信，ストリームで出力を取得する。
-        基本的な対話機能に使用するされます。
+        基本的な対話機能に使用するするされます。
         inputsは今回の問い合わせの入力です
         top_p, temperatureはchatGPTの内部調整パラメータです
         historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）

@@ -75,7 +75,7 @@ def select_api_key(keys, llm_model):
             if is_azure_api_key(k): avail_key_list.append(k)
 
     if len(avail_key_list) == 0:
-        raise RuntimeError(f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_model}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります（右下のモデルメニューでopenaiを切り替えることができます,azure,claude,api2dなどのリクエストソース）。")
+        raise RuntimeError(f"提供されたAPIキーが要件を満たしていません，使用するするできるものは含まれていません{llm_model}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります（右下のモデルメニューでopenaiを切り替えることができます,azure,claude,api2dなどのリクエストソース）。")
 
     api_key = random.choice(avail_key_list) # ランダムな負荷分散
     return api_key

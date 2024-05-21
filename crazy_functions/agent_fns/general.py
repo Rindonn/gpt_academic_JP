@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import trimmed_format_exc, get_conf, ProxyNetworkActivate
 from crazy_functions.agent_fns.pipe import PluginMultiprocessManager, PipeCom
 from request_llms.bridge_all import predict_no_ui_long_connection
@@ -20,7 +29,7 @@ def gpt_academic_generate_oai_reply(
     for message in messages[:-1]:
         history.append(message['content'])
     context=messages[-1].pop("context", None)
-    assert context is None, "预留パラメータ context 未实现"
+    assert context is None, "预留パラメータ context まだ実現していない"
 
     reply = predict_no_ui_long_connection(
         inputs=inputs,
@@ -58,7 +67,7 @@ class AutoGenGeneral(PluginMultiprocessManager):
         if wait_success:
             return self.child_conn.recv().content
         else:
-            raise TimeoutError("待つ用户入力超時")
+            raise TimeoutError("入力がタイムアウト")
 
     def define_agents(self):
         raise NotImplementedError
@@ -92,7 +101,7 @@ class AutoGenGeneral(PluginMultiprocessManager):
                 user_proxy.initiate_chat(assistant, message=input)
         except Exception as e:
             tb_str = '```\n' + trimmed_format_exc() + '```'
-            self.child_conn.send(PipeCom("done", "AutoGen 执行失敗しました: \n\n" + tb_str))
+            self.child_conn.send(PipeCom("done", "AutoGen 実行失敗した: \n\n" + tb_str))
 
     def subprocess_worker(self, child_conn):
         # ⭐⭐ run in subprocess

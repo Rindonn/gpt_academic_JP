@@ -9,7 +9,7 @@ def inspect_dependency(chatbot, history):
         import manim
         return True
     except:
-        chatbot.append(["テキストの翻訳", "このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳:```pip install manim manimgl```"])
+        chatbot.append(["AnimationGeneration", "このモジュールを使用するするには、追加の依存関係が必要です，インストールテキストの翻訳:```pip install manim manimgl```"])
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return False
 

@@ -90,7 +90,7 @@ def markdown_bug_hunt(content):
 
 def is_equation(txt):
     """
-    判定是否为公式 | 测试1 写出洛伦兹定律，使TeX形式で公式 测试2 给出柯西不等式，使用するlatexフォーマット 测试3 写出麦克斯韦方程组
+    判定是否为公式 | 测试1 写出洛伦兹定律，使TeX形式で公式 测试2 给出柯西不等式，使用するするlatexフォーマット 测试3 写出麦克斯韦方程组
     """
     if "```" in txt and "```reference" not in txt:
         return False
@@ -207,7 +207,7 @@ def fix_code_segment_indent(txt):
         return txt
 
 
-@lru_cache(maxsize=128)  # 変換速度を高速化するためにlruキャッシュを使用するする
+@lru_cache(maxsize=128)  # 変換速度を高速化するためにlruキャッシュを使用するするする
 def markdown_convertion(txt):
     """
     Markdown形式のテキストをHTML形式に変換する。数式が含まれている場合，公式をHTML形式に変換してください。
@@ -306,7 +306,7 @@ def special_render_issues_for_mermaid(text):
 
 def compat_non_markdown_input(text):
     """
-    改善非markdown入力的显示效果，例えば置き換える空格转换为&nbsp;，置き換える换行符转换为</br>等。
+    改善非markdown入力的显示效果，例えば置き換える空格转换为&nbsp;，置き換える换OK符转换为</br>等。
     """
     if "```" in text:
         # careful input：markdown入力
@@ -320,11 +320,11 @@ def compat_non_markdown_input(text):
         lines = text.split("\n")
         for i, line in enumerate(lines):
             lines[i] = lines[i].replace(" ", "&nbsp;")  # 空格转换为&nbsp;
-        text = "</br>".join(lines)  # 换行符转换为</br>
+        text = "</br>".join(lines)  # 换OK符转换为</br>
         return text
 
 
-@lru_cache(maxsize=128)  # 使用するlru缓存
+@lru_cache(maxsize=128)  # 使用するするlru缓存
 def simple_markdown_convertion(text):
     pre = '<div class="markdown-body">'
     suf = "</div>"

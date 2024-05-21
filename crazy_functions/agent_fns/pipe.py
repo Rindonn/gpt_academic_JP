@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 15:43:22
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import get_log_folder, update_ui, gen_time_str, get_conf, promote_file_to_downloadzone
 from crazy_functions.agent_fns.watchdog import WatchDog
 import time, os
@@ -72,7 +81,7 @@ class PluginMultiprocessManager:
         if file_type.lower() in ['png', 'jpg']:
             image_path = os.path.abspath(fp)
             self.chatbot.append([
-                '検出された新生图像:',
+                '検出された新しい写真:',
                 f'ローカルファイルのプレビュー: <br/><div align="center"><img src="file={image_path}"></div>'
             ])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
@@ -103,7 +112,7 @@ class PluginMultiprocessManager:
                 file_links += f'<br/><a href="file={res}" target="_blank">{res}</a>'
                 yield from self.immediate_showoff_when_possible(f)
 
-            self.chatbot.append(['検出された新生文档.', f'文档清单如下: {file_links}'])
+            self.chatbot.append(['検出された新しいドキュメント.', f'ドキュメントのリスト: {file_links}'])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
         return change_list
 
@@ -115,7 +124,7 @@ class PluginMultiprocessManager:
             self.parent_conn = self.launch_subprocess_with_pipe() # ⭐⭐⭐
         repeated, cmd_to_autogen = self.send_command(txt)
         if txt == 'exit':
-            self.chatbot.append([f"終了する", "終了する信号已明确，终止AutoGen程序。"])
+            self.chatbot.append([f"終了する", "終了する信号が受信した，AutoGenを終了。"])
             yield from update_ui(chatbot=self.chatbot, history=self.history)
             self.terminate()
             return "terminate"
@@ -132,7 +141,7 @@ class PluginMultiprocessManager:
                 self.feed_heartbeat_watchdog()
                 if "[GPT-Academic] 待機中" in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)  # remove the last line
-                if "待つ您的进一步指令" in self.chatbot[-1][-1]:
+                if "指令を待っています" in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)  # remove the last line
                 if '[GPT-Academic] 待機中' in self.chatbot[-1][-1]:
                     self.chatbot.pop(-1)    # remove the last line
@@ -146,17 +155,17 @@ class PluginMultiprocessManager:
                 if msg.cmd == "show":
                     yield from self.overwatch_workdir_file_change()
                     notice = ""
-                    if repeated: notice = "（自动忽略重复的入力）"
-                    self.chatbot.append([f"运行阶段-{self.cnt}（上次ユーザーフィードバック入力为: 「{cmd_to_autogen}」{notice}", msg.content])
+                    if repeated: notice = "（重複入力を自動的に無視する）"
+                    self.chatbot.append([f"実行している-{self.cnt}（前回ユーザー側の入力は: 「{cmd_to_autogen}」{notice}", msg.content])
                     self.cnt += 1
                     yield from update_ui(chatbot=self.chatbot, history=self.history)
                 if msg.cmd == "interact":
                     yield from self.overwatch_workdir_file_change()
-                    self.chatbot.append([f"程序抵达ユーザーフィードバック节点.", msg.content +
-                                         "\n\n待つ您的进一步指令." +
-                                         "\n\n(1) 一般情况下您不需要言う什么, 清空入力エリア, 然后直接点击“提出”以继续. " +
-                                         "\n\n(2) 如果您需要补充些什么, 入力要反馈的内容, 直接点击“提出”以继续. " +
-                                         "\n\n(3) 如果您想终止程序, 入力exit, 直接点击“提出”以终止AutoGen并解锁. "
+                    self.chatbot.append([f"いまユーザーフィードバックノードになっています.", msg.content +
+                                         "\n\n指令を待っています." +
+                                         "\n\n(1) 普通は入力必要なし, 直接入力エリアをクリアし,提出ボタンをクリックしてください. " +
+                                         "\n\n(2) 何か追加することがあれば、内容を入力し、提出ボタンをクリックして下さい. " +
+                                         "\n\n(3) 終了したい場合、exitを入力し、提出ボタンをクリックして、プログラムを終了することができます "
                     ])
                     yield from update_ui(chatbot=self.chatbot, history=self.history)
                     # do not terminate here, leave the subprocess_worker instance alive
@@ -165,7 +174,7 @@ class PluginMultiprocessManager:
                 self.feed_heartbeat_watchdog()
                 if '[GPT-Academic] 待機中' not in self.chatbot[-1][-1]:
                     # begin_waiting_time = time.time()
-                    self.chatbot.append(["[GPT-Academic] 待つAutoGen执行结果 ...", "[GPT-Academic] 待機中"])
+                    self.chatbot.append(["[GPT-Academic] AutoGenの結果を待っています ...", "[GPT-Academic] 待機中"])
                 self.chatbot[-1] = [self.chatbot[-1][0], self.chatbot[-1][1].replace("[GPT-Academic] 待機中", "[GPT-Academic] 待機中.")]
                 yield from update_ui(chatbot=self.chatbot, history=self.history)
                 # if time.time() - begin_waiting_time > patience:

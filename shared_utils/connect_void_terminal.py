@@ -3,8 +3,8 @@ import os
 """
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 接驳void-terminal:
-    - set_conf:                     在运行过程中动态地修改配置
-    - set_multi_conf:               在运行过程中动态地修改多pieces配置
+    - set_conf:                     在运OK过程中动态地修改配置
+    - set_multi_conf:               在运OK过程中动态地修改多pieces配置
     - get_plugin_handle:            获取プラグイン的句柄
     - get_plugin_default_kwargs:    获取プラグイン的#パラメータ
     - get_chat_handle:              获取简单聊天的句柄

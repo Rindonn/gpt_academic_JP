@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 13:52:34
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui
 from toolbox import CatchException, report_exception
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -11,9 +20,9 @@ def GenerateFunctionComments(file_manifest, project_folder, llm_kwargs, plugin_k
         with open(fp, 'r', encoding='utf-8', errors='replace') as f:
             file_content = f.read()
 
-        i_say = f'以下のプログラムファイルについて概要を説明してください，すべての関数にコメントを生成する，markdownテーブルを使用するして結果を出力する，ファイル名は{os.path.relpath(fp, project_folder)}，ファイルの内容は ```{file_content}```'
-        i_say_show_user = f'[{index}/{len(file_manifest)}] 以下のプログラムファイルについて概要を説明してください，すべての関数にコメントを生成する: {os.path.abspath(fp)}'
-        chatbot.append((i_say_show_user, "[Local Message] waiting gpt response."))
+        i_say = f'以下のプログラムの概要についてを説明して，すべての関数にコメントを生成して，markdownテーブルを使用して結果を出力してください，ファイル名は{os.path.relpath(fp, project_folder)}，ファイルの内容は ```{file_content}```'
+        i_say_show_user = f'[{index}/{len(file_manifest)}] 以下のプログラムの概要についてを説明してください，すべての関数にコメントを生成してください: {os.path.abspath(fp)}'
+        chatbot.append((i_say_show_user, "[Local Message] GPTの応答を待つ."))
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
         if not fast_debug:
@@ -30,7 +39,7 @@ def GenerateFunctionComments(file_manifest, project_folder, llm_kwargs, plugin_k
     if not fast_debug:
         res = write_history_to_file(history)
         promote_file_to_downloadzone(res, chatbot=chatbot)
-        chatbot.append(("完了しましたか？", res))
+        chatbot.append(("完了したか？", res))
         yield from update_ui(chatbot=chatbot, history=history, msg=msg) # 画面を更新する
 
 

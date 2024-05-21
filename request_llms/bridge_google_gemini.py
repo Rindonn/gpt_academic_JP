@@ -94,7 +94,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
                 paraphrase = json.loads('{"text": "%s"}' % match.group(1))
             except:
                 raise ValueError(f"解析GEMINI消息出错。")
-            gpt_replying_buffer += paraphrase['text']    # 使用する json 解析库进行处理
+            gpt_replying_buffer += paraphrase['text']    # 使用するする json 解析库进OK处理
             chatbot[-1] = (inputs, gpt_replying_buffer)
             history[-1] = gpt_replying_buffer
             yield from update_ui(chatbot=chatbot, history=history)

@@ -37,7 +37,7 @@ class YUNQUERequestInstance():
             "min_new_tokens": 1,  # 出力文本的最小tokens限制
             "temperature": llm_kwargs['temperature'],  # 用于控制生成文本的随机性and创造性，Temperature值越大随机性越大，取值范围0~1
             "top_p": llm_kwargs['top_p'],  # 用于控制出力tokens的多样性，TopP值越大出力的tokens类型越丰富，取值范围0~1
-            "top_k": 0,  # 选择预测值最大的kpiecestoken进行采样，取值范围0-1000，0表示不生效
+            "top_k": 0,  # 选择预测值最大的kpiecestoken进OK采样，取值范围0-1000，0表示不生效
             "max_prompt_tokens": 4000,  # 最大入力 token 数，如果给出的 prompt 的 token 长度超过此限制，取最後に max_prompt_tokens pieces token 入力模型。
         },
             "messages": self.generate_message_payload(inputs, llm_kwargs, history, system_prompt)

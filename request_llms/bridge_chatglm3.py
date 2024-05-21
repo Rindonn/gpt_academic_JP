@@ -13,12 +13,12 @@ from .local_llm_class import LocalLLMHandle, get_local_llm_predict_fns
 class GetGLM3Handle(LocalLLMHandle):
 
     def load_model_info(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         self.model_name = model_name
         self.cmd_to_install = cmd_to_install
 
     def load_model_and_tokenizer(self):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         from transformers import AutoModel, AutoTokenizer
         import os, glob
         import os
@@ -44,7 +44,7 @@ class GetGLM3Handle(LocalLLMHandle):
         return self._model, self._tokenizer
 
     def llm_stream_generator(self, **kwargs):
-        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実行
+        # 🏃‍♂️🏃‍♂️🏃‍♂️ サブプロセスの実OK
         def adaptor(kwargs):
             query = kwargs['query']
             max_length = kwargs['max_length']

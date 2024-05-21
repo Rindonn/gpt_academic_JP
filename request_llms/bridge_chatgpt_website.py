@@ -4,7 +4,7 @@
     このファイルには主に3つの関数が含まれています
 
     マルチスレッド機能を持たない関数：
-    1. predict: 通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
+    1. predict: 通常の会話時に使用するするする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
 
     マルチスレッド呼び出し機能を備えた関数
     2. predict_no_ui_long_connection：支持マルチスレッド
@@ -41,7 +41,7 @@ def get_full_error(chunk, stream_response):
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=None, console_slience=False):
     """
-    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するしています。
+    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するするしています。
     inputs：
         この問い合わせの入力です
     sys_prompt:
@@ -67,7 +67,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試OK中 ({retry}/{MAX_RETRY}) ……')
 
     stream_response =  response.iter_lines()
     result = ''
@@ -110,7 +110,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
     chatGPTに送信，ストリームで出力を取得する。
-    基本的な対話機能に使用するされます。
+    基本的な対話機能に使用するするされます。
     inputsは今回の問い合わせの入力です
     top_p, temperatureはchatGPTの内部調整パラメータです
     historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）
@@ -129,7 +129,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     try:
         headers, payload = generate_payload(inputs, llm_kwargs, history, system_prompt, stream)
     except RuntimeError as e:
-        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
+        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するするできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
         yield from update_ui(chatbot=chatbot, history=history, msg="api-keyが要件を満たしていない") # 画面を更新する
         return
 
@@ -146,7 +146,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
         except:
             retry += 1
             chatbot[-1] = ((chatbot[-1][0], timeout_bot_msg))
-            retry_msg = f"，再試行中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
+            retry_msg = f"，再試OK中 ({retry}/{MAX_RETRY}) ……" if MAX_RETRY > 0 else ""
             yield from update_ui(chatbot=chatbot, history=history, msg="リクエストがタイムアウトしました"+retry_msg) # 画面を更新する
             if retry > MAX_RETRY: raise TimeoutError
 
@@ -174,7 +174,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
             if chunk:
                 try:
                     chunk_decoded = chunk.decode()
-                    # 前者はAPI2Dの終了条項件です，テキストの翻訳
+                    # 前者はAPI2Dの終了条項項件です，テキストの翻訳
                     if 'data: [DONE]' in chunk_decoded:
                         # データフローの終了と判断されます，gpt_replying_bufferも書き終わりました
                         logging.info(f'[response] {gpt_replying_buffer}')
@@ -216,7 +216,7 @@ def handle_error(inputs, llm_kwargs, chatbot, history, chunk_decoded, error_msg)
     elif "account is not active" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] アカウントがアクティブではありません。OpenAIはアカウントの無効化を理由にしています, サービスを拒否する." + openai_website)
     elif "associated with a deactivated account" in error_msg:
-        chatbot[-1] = (chatbot[-1][0], "[Local Message] You are associated with a deactivated account. OpenAI以账户失效为由, サービスを拒否する." + openai_website)
+        chatbot[-1] = (chatbot[-1][0], "[Local Message] You are associated with a deactivated account. OpenAIはアカウントが失効したのため, サービスを拒否する." + openai_website)
     elif "bad forward key" in error_msg:
         chatbot[-1] = (chatbot[-1][0], "[Local Message] 不正なフォワードキー。API2Dアカウントの残高が不足しています.")
     elif "Not enough point" in error_msg:

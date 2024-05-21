@@ -4,7 +4,7 @@
     このファイルには主に2つの関数が含まれています
 
     マルチスレッド機能を持たない関数：
-    1. predict: 通常の会話時に使用するする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
+    1. predict: 通常の会話時に使用するするする，完全なインタラクティブ機能を備えています，マルチスレッドはできません
 
     マルチスレッド呼び出し機能を備えた関数
     2. predict_no_ui_long_connection：支持マルチスレッド
@@ -16,7 +16,7 @@ import traceback
 from toolbox import get_conf, update_ui, trimmed_format_exc, encode_image, every_image_file_in_path
 import json
 import requests
-picture_system_prompt = "\n当回复图像時,必须言う明正在回复哪张图像。所有图像仅在最後に一pieces問題中提供,即使它们在History记录中被提及。请使用する'これは第X张图像:'的フォーマット来指明您正在描述的是哪张图像。"
+picture_system_prompt = "\n当回复图像時,必须言う明正在回复哪张图像。所有图像仅在最後に一pieces問題中提供,即使它们在History记录中被提及。请使用するする'これは第X张图像:'的フォーマット来指明您正在描述的是哪张图像。"
 Claude_3_Models = ["claude-3-sonnet-20240229", "claude-3-opus-20240229"]
 
 # config_private.pyに自分のAPIやプロキシアドレスなどの秘密を入力する
@@ -70,7 +70,7 @@ def decode_chunk(chunk):
 
 def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="", observe_window=None, console_slience=False):
     """
-    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するしています。
+    chatGPTに送信，返信を待つ，一度に完了する，Do not display intermediate processes。ただし、途中でネットワーク接続が切断されることを避けるために、内部ではストリームを使用するするしています。
     inputs：
         この問い合わせの入力です
     sys_prompt:
@@ -101,7 +101,7 @@ def predict_no_ui_long_connection(inputs, llm_kwargs, history=[], sys_prompt="",
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試OK中 ({retry}/{MAX_RETRY}) ……')
     stream_response = response.iter_lines()
     result = ''
     while True:
@@ -147,7 +147,7 @@ def make_media_input(history,inputs,image_paths):
 def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_prompt='', stream = True, additional_fn=None):
     """
     chatGPTに送信，ストリームで出力を取得する。
-    基本的な対話機能に使用するされます。
+    基本的な対話機能に使用するするされます。
     inputsは今回の問い合わせの入力です
     top_p, temperatureはchatGPTの内部調整パラメータです
     historyは以前の対話リストです（inputsまたはhistoryである場合でも注意してください，コンテンツが長すぎると、トークン数がオーバーフローするエラーが発生する可能性があります）
@@ -172,7 +172,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
 
     if any([llm_kwargs['llm_model'] == model for model in Claude_3_Models]) and have_recent_file:
         if inputs == "" or inputs == "空の入力欄":     inputs = "请描述给出的图片"
-        system_prompt += picture_system_prompt  # 由于没有单独テキストの翻訳保存包含图片的History，所以只能通过ヒント词对第几张图片进行定位
+        system_prompt += picture_system_prompt  # 由于没有单独テキストの翻訳保存包含图片的History，所以只能通过ヒント词对第几张图片进OK定位
         chatbot.append((make_media_input(history,inputs, image_paths), ""))
         yield from update_ui(chatbot=chatbot, history=history, msg="レスポンスを待っています") # 画面を更新する
     else:
@@ -182,7 +182,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
     try:
         headers, message = generate_payload(inputs, llm_kwargs, history, system_prompt, image_paths)
     except RuntimeError as e:
-        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
+        chatbot[-1] = (inputs, f"提供されたAPIキーが要件を満たしていません，使用するするできるものは含まれていません{llm_kwargs['llm_model']}のAPIキー。間違ったモデルまたはリクエストソースを選択した可能性があります。")
         yield from update_ui(chatbot=chatbot, history=history, msg="api-keyが要件を満たしていない") # 画面を更新する
         return
 
@@ -200,7 +200,7 @@ def predict(inputs, llm_kwargs, plugin_kwargs, chatbot, history=[], system_promp
             retry += 1
             traceback.print_exc()
             if retry > MAX_RETRY: raise TimeoutError
-            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試行中 ({retry}/{MAX_RETRY}) ……')
+            if MAX_RETRY!=0: print(f'リクエストがタイムアウトしました，再試OK中 ({retry}/{MAX_RETRY}) ……')
     stream_response = response.iter_lines()
     gpt_replying_buffer = ""
 

@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 10:07:41
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import CatchException, report_exception, get_log_folder, gen_time_str, check_packages
 from toolbox import update_ui, promote_file_to_downloadzone, update_ui_lastest_msg, disable_auto_promotion
 from toolbox import write_history_to_file, promote_file_to_downloadzone
@@ -41,7 +50,7 @@ def BatchTranslatePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     # ファイルが見つからなかった場合
     if len(file_manifest) == 0:
         report_exception(chatbot, history,
-                         a=f"プロジェクトを解析する: {txt}", b=f"見つかりません任何.pdf拓展名のファイル: {txt}")
+                         a=f"プロジェクトを解析する: {txt}", b=f".pdfのファイルが見つからない: {txt}")
         yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         return
 
@@ -50,7 +59,7 @@ def BatchTranslatePDFDocuments(txt, llm_kwargs, plugin_kwargs, chatbot, history,
     if grobid_url is not None:
         yield from ParsePDF_BasedOnGROBID(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt, grobid_url)
     else:
-        yield from update_ui_lastest_msg("GROBID利用出来ない，configのGROBID_URLをチェックして下さい。代わりに，ちょっと効が悪いコードを実行します。", chatbot, history, delay=3)
+        yield from update_ui_lastest_msg("GROBID利用出来ない，configのGROBID_URLをチェックして下さい。代わりに，ちょっと効が悪いコードを実行しています。", chatbot, history, delay=3)
         yield from ParsePDF(file_manifest, project_folder, llm_kwargs, plugin_kwargs, chatbot, history, system_prompt)
 
 
@@ -62,14 +71,14 @@ def ParsePDF_BasedOnGROBID(file_manifest, project_folder, llm_kwargs, plugin_kwa
     DST_LANG = "中文"
     from crazy_functions.pdf_fns.report_gen_html import construct_html
     for index, fp in enumerate(file_manifest):
-        chatbot.append(["当前进度：", f"正在连接GROBID服务，お待ちください: {grobid_url}\n如果待つ時间过长，请修改config中的GROBID_URL，可修改成本地GROBID服务。"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
+        chatbot.append(["進度：", f"GROBIDサービスに接続しています，お待ちください: {grobid_url}\nもし接続できないなら，configのGROBID_URLを変更してください，ローカルGROBIDに変更することができます。"]); yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
         article_dict = parse_pdf(fp, grobid_url)
         grobid_json_res = os.path.join(get_log_folder(), gen_time_str() + "grobid.json")
         with open(grobid_json_res, 'w+', encoding='utf8') as f:
             f.write(json.dumps(article_dict, indent=4, ensure_ascii=False))
         promote_file_to_downloadzone(grobid_json_res, chatbot=chatbot)
 
-        if article_dict is None: raise RuntimeError("ParsePDF失敗しました，请检查PDF是否损坏。")
+        if article_dict is None: raise RuntimeError("PDFへの変換が失敗した，PDFファイルをチェックしてください。")
         yield from translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_files, TOKEN_LIMIT_PER_FRAGMENT, DST_LANG)
     chatbot.append(("出力ファイルリストを提供する", str(generated_conclusion_files + generated_html_files)))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する

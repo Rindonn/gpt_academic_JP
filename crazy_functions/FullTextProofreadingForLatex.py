@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+'''
+@ Author: Rindon
+@ Date: 2024-05-13 09:42:46
+@ LastEditors: Rindon
+@ LastEditTime: 2024-05-21 13:50:40
+@ Description: prompt、インターフェースを日本語に変更
+'''
 from toolbox import update_ui, trimmed_format_exc, promote_file_to_downloadzone, get_log_folder
 from toolbox import CatchException, report_exception, write_history_to_file, zip_folder
 
@@ -93,10 +102,10 @@ def ProofreadMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
         sys_prompt_array = ["You are a professional academic paper writer." for _ in range(n_split)]
     elif language == 'zh':
         if mode == 'polish':
-            inputs_array = [r"以下は学術論文の一部です，この部分を学術基準に合わせて磨き上げてください，文法、明確さ、全体的な読みやすさを向上させて，LaTeXコマンドを変更しないでください，\セクションのように，\citeと方程式：" +
+            inputs_array = [r"以下は学術論文の一部です，この部分を学術基準に合わせてタッチアップしてください，文法、明確さ、全体的な読みやすさを向上させて，LaTeXコマンドを変更しないでください，\section, \citeとequationsのように：" +
                             f"\n\n{frag}" for frag in pfg.sp_file_contents]
         else:
-            inputs_array = [r"以下は学術論文の一部です，この部分の内容に文法修正を行ってください。LaTeXコマンドを変更しないでください，\セクションのように，\citeと方程式：" +
+            inputs_array = [r"以下は学術論文の一部です，この部分の内容に文法修正を行ってください。LaTeXコマンドを変更しないでください，\section, \citeとequationsのように：" +
                             f"\n\n{frag}" for frag in pfg.sp_file_contents]
         inputs_show_user_array = [f"校正中 {f}" for f in pfg.sp_file_tag]
         sys_prompt_array=["あなたは専門の日本語学術論文作家です。" for _ in range(n_split)]
@@ -130,7 +139,7 @@ def ProofreadMultipleFiles(file_manifest, project_folder, llm_kwargs, plugin_kwa
     promote_file_to_downloadzone(res, chatbot=chatbot)
 
     history = gpt_response_collection
-    chatbot.append((f"{fp}完了しましたか？", res))
+    chatbot.append((f"{fp}完了したか？", res))
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
 
@@ -139,7 +148,7 @@ def EnglishProofreadingForLatex(txt, llm_kwargs, plugin_kwargs, chatbot, history
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "全体のLatexプロジェクトを磨き上げる。関数プラグインの貢献者: Binary-Husky。（注意，此プラグイン不调用Latex，ある場合Latex环境，请使用する「LatexEnglishCorrection+高亮修正位置(LaTeXが必要です)プラグイン」"])
+        "Latexプロジェクトをタッチアップする。関数プラグインの貢献者: Binary-Husky。（Latexを利用する場合：「LatexEnglishCorrection+ハイライト修正(LaTeXが必要)プラグイン」を利用してください"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
@@ -177,7 +186,7 @@ def LatexChineseProofreading(txt, llm_kwargs, plugin_kwargs, chatbot, history, s
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "全体のLatexプロジェクトを磨き上げる。関数プラグインの貢献者: Binary-Husky"])
+        "Latexプロジェクトをタッチアップする。関数プラグインの貢献者: Binary-Husky"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
@@ -213,7 +222,7 @@ def LatexEnglishCorrection(txt, llm_kwargs, plugin_kwargs, chatbot, history, sys
     # 基本情報：機能、貢献者
     chatbot.append([
         "関数プラグイン機能？",
-        "全体のLatexプロジェクトを修正する。関数プラグインの貢献者: Binary-Husky"])
+        "Latexプロジェクトを修正する。関数プラグインの貢献者: Binary-Husky"])
     yield from update_ui(chatbot=chatbot, history=history) # 画面を更新する
 
     # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
