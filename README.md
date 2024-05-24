@@ -1,12 +1,12 @@
 Based on gpt_academic 3.7.3
 
 Done:
-arxiv translate to japanese
-できるだけpromptを変更
-説明文を変更
-ボタンを変更
+arxiv translate to japanese  
+できるだけpromptを変更  
+説明文を変更  
+ボタンを変更  
 
-BUGテストはまだ
+BUGテストはまだ  
 
 
 
