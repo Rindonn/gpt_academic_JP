@@ -3,13 +3,13 @@ import os
 import re
 def extract_text_from_files(txt, chatbot, history):
     """
-    查找pdf/md/word并获取文本内容并戻るステータス以及文本
+    查找pdf/md/word并获取文本内容并返回状态以及文本
 
-    入力パラメータArgs:
-        chatbot: chatbot inputs and outputs （ユーザーインターフェースの対話ウィンドウハンドル，データフローの可視化に使用するされる）
-        history (list): List of chat history （History，会話履歴リスト）
+    输入参数 Args:
+        chatbot: chatbot inputs and outputs （用户界面对话窗口句柄，用于数据流可视化）
+        history (list): List of chat history （历史，对话历史列表）
 
-    Returnsを出力する:
+    输出 Returns:
         文件是否存在(bool)
         final_result(list):文本内容
         page_one(list):第一页内容/摘要
@@ -24,9 +24,9 @@ def extract_text_from_files(txt, chatbot, history):
 
     if txt == "":
         final_result.append(txt)
-        return False, final_result, page_one, file_manifest, excption   #如入力エリア内容不是文件则直接戻る入力エリア内容
+        return False, final_result, page_one, file_manifest, excption   #如输入区内容不是文件则直接返回输入区内容
 
-    #查找入力エリア内容中のファイル
+    #查找输入区内容中的文件
     file_pdf,pdf_manifest,folder_pdf = get_files_from_everything(txt, '.pdf')
     file_md,md_manifest,folder_md = get_files_from_everything(txt, '.md')
     file_word,word_manifest,folder_word = get_files_from_everything(txt, '.docx')
@@ -39,16 +39,16 @@ def extract_text_from_files(txt, chatbot, history):
     file_num = len(pdf_manifest) + len(md_manifest) + len(word_manifest)
     if file_num == 0:
         final_result.append(txt)
-        return False, final_result, page_one, file_manifest, excption   #如入力エリア内容不是文件则直接戻る入力エリア内容
+        return False, final_result, page_one, file_manifest, excption   #如输入区内容不是文件则直接返回输入区内容
 
     if file_pdf:
-        try:    # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
+        try:    # 尝试导入依赖，如果缺少依赖，则给出安装建议
             import fitz
         except:
             excption = "pdf"
             return False, final_result, page_one, file_manifest, excption
         for index, fp in enumerate(pdf_manifest):
-            file_content, pdf_one = read_and_clean_pdf_text(fp) # （Try）章ごとにPDFを切り分ける
+            file_content, pdf_one = read_and_clean_pdf_text(fp) # （尝试）按照章节切割PDF
             file_content = file_content.encode('utf-8', 'ignore').decode()   # avoid reading non-utf8 chars
             pdf_one = str(pdf_one).encode('utf-8', 'ignore').decode()  # avoid reading non-utf8 chars
             final_result.append(file_content)
@@ -60,7 +60,7 @@ def extract_text_from_files(txt, chatbot, history):
             with open(fp, 'r', encoding='utf-8', errors='replace') as f:
                 file_content = f.read()
             file_content = file_content.encode('utf-8', 'ignore').decode()
-            headers = re.findall(r'^#\s(.*)$', file_content, re.MULTILINE)  #次に提取md中的一级/二级标题作为摘要
+            headers = re.findall(r'^#\s(.*)$', file_content, re.MULTILINE)  #接下来提取md中的一级/二级标题作为摘要
             if len(headers) > 0:
                 page_one.append("\n".join(headers)) #合并所有的标题,以换行符分割
             else:
@@ -69,7 +69,7 @@ def extract_text_from_files(txt, chatbot, history):
             file_manifest.append(os.path.relpath(fp, folder_md))
 
     if file_word:
-        try:    # 依存関係のインポートを試みる，依存関係が不足している場合，インストールの提案を行います
+        try:    # 尝试导入依赖，如果缺少依赖，则给出安装建议
             from docx import Document
         except:
             excption = "word_pip"

@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-'''
-@ Author: Rindon
-@ Date: 2024-05-13 09:42:46
-@ LastEditors: Rindon
-@ LastEditTime: 2024-05-21 16:01:08
-@ Description: prompt、インターフェースを日本語に変更
-'''
 from functools import lru_cache
 from toolbox import gen_time_str
 from toolbox import promote_file_to_downloadzone
@@ -26,7 +17,7 @@ def get_avail_grobid_url():
     GROBID_URLS = get_conf('GROBID_URLS')
     if len(GROBID_URLS) == 0: return None
     try:
-        _grobid_url = random.choice(GROBID_URLS) # ランダムな負荷分散
+        _grobid_url = random.choice(GROBID_URLS) # 随机负载均衡
         if _grobid_url.endswith('/'): _grobid_url = _grobid_url.rstrip('/')
         with ProxyNetworkActivate('Connect_Grobid'):
             res = requests.get(_grobid_url+'/api/isalive')
@@ -50,12 +41,12 @@ def parse_pdf(pdf_path, grobid_url):
 
 
 def produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chatbot, fp, generated_conclusion_files):
-    # -=-=-=-=-=-=-=-= 写出第1pieces文件：翻訳前后混合 -=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-= 写出第1个文件：翻译前后混合 -=-=-=-=-=-=-=-=
     res_path = write_history_to_file(meta +  ["# Meta Translation" , paper_meta_info] + gpt_response_collection, file_basename=f"{gen_time_str()}translated_and_original.md", file_fullname=None)
     promote_file_to_downloadzone(res_path, rename_file=os.path.basename(res_path)+'.md', chatbot=chatbot)
     generated_conclusion_files.append(res_path)
 
-    # -=-=-=-=-=-=-=-= 写出第2pieces文件：仅翻訳后的文本 -=-=-=-=-=-=-=-=
+    # -=-=-=-=-=-=-=-= 写出第2个文件：仅翻译后的文本 -=-=-=-=-=-=-=-=
     translated_res_array = []
     # 记录当前的大章节标题：
     last_section_name = ""
@@ -64,13 +55,13 @@ def produce_report_markdown(gpt_response_collection, meta, paper_meta_info, chat
         if index % 2 != 0:
             # 先提取当前英文标题：
             cur_section_name = gpt_response_collection[index-1].split('\n')[0].split(" Part")[0]
-            # 如果index是1的话，则直接使用するfirst section name：
+            # 如果index是1的话，则直接使用first section name：
             if cur_section_name != last_section_name:
                 cur_value = cur_section_name + '\n'
                 last_section_name = copy.deepcopy(cur_section_name)
             else:
                 cur_value = ""
-            # 再做一pieces小修改：重新修改当前part的标题，#用英文的
+            # 再做一个小修改：重新修改当前part的标题，默认用英文的
             cur_value += value
             translated_res_array.append(cur_value)
     res_path = write_history_to_file(meta +  ["# Meta Translation" , paper_meta_info] + translated_res_array,
@@ -87,18 +78,18 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
     from crazy_functions.crazy_utils import request_gpt_model_in_new_thread_with_ui_alive
     from crazy_functions.crazy_utils import request_gpt_model_multi_threads_with_very_awesome_ui_and_high_efficiency
 
-    prompt = "以下是一篇学术論文的基本情報:\n"
+    prompt = "以下は論文の基本情報です:\n"
     # title
-    title = article_dict.get('title', 'title を取得できません'); prompt += f'title:{title}\n\n'
+    title = article_dict.get('title', 'titleを取得できません'); prompt += f'title:{title}\n\n'
     # authors
-    authors = article_dict.get('authors', 'authors を取得できません')[:100]; prompt += f'authors:{authors}\n\n'
+    authors = article_dict.get('authors', 'authorsを取得できません')[:100]; prompt += f'authors:{authors}\n\n'
     # abstract
-    abstract = article_dict.get('abstract', 'abstract を取得できません'); prompt += f'abstract:{abstract}\n\n'
+    abstract = article_dict.get('abstract', 'abstractを取得できません'); prompt += f'abstract:{abstract}\n\n'
     # command
     prompt += f"テーマと要旨を{DST_LANG}に翻訳して下さい。"
     meta = [f'# Title:\n\n', title, f'# Abstract:\n\n', abstract ]
 
-    # Single line，記事のメタ情報を取得する
+    # 单线，获取文章meta信息
     paper_meta_info = yield from request_gpt_model_in_new_thread_with_ui_alive(
         inputs=prompt,
         inputs_show_user=prompt,
@@ -107,7 +98,7 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
         sys_prompt="You are an academic paper reader。",
     )
 
-    # Multi-threaded，翻訳
+    # 多线，翻译
     inputs_array = []
     inputs_show_user_array = []
 
@@ -165,7 +156,6 @@ def translate_pdf(article_dict, llm_kwargs, chatbot, fp, generated_conclusion_fi
             cur_section_name = gpt_response_collection[i-1].split('\n')[0].split(" Part")[0]
             cur_value = cur_section_name + "\n" + gpt_response_collection_html[i]
             gpt_response_collection_html[i] = cur_value
-
     final = ["", "", "1.論文の概要",  "", "Abstract", paper_meta_info,  "2.論文の翻訳",  ""]
     final.extend(gpt_response_collection_html)
     for i, k in enumerate(final):
