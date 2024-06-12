@@ -9,7 +9,7 @@ arxiv translate to japanese
 BUGテストはまだ  
 configファイルの翻訳はまだ
 
-ローカルでデプロイする方法：
+##ローカルでデプロイする方法：
 1. プロジェクトをダウンロード
 ```sh
 git clone --depth=1 https://github.com/Rindonn/gpt_academic_JP.git
