@@ -7,8 +7,38 @@ arxiv translate to japanese
 ボタンを変更  
 
 BUGテストはまだ  
+configファイルの翻訳はまだ
+
+ローカルでデプロイする方法：
+1. プロジェクトをダウンロード
+```sh
+git clone --depth=1 https://github.com/Rindonn/gpt_academic_JP.git
+cd gpt_academic_JP
+```
+2. APIキーを設定する
+
+`config.py`でAPIキーやその他の設定を設定します。
+<div align="center">
+<img src="docs/API_KEY.jpg" width="700" >
+</div>
+
+chatGPT api 参照：https://platform.openai.com/
+<div align="center">
+<img src="docs/chatgpt_api.jpg" width="700" >
+</div>
 
 
+3. 依存関係をインストールする
+```sh
+python -m pip install -r requirements.txt
+```
+
+4. 実行する
+```sh
+python main.py
+```
+
+以下は元のReadmeファイル。
 
 > **注意**
 >
