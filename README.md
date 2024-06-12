@@ -12,12 +12,11 @@ configファイルの翻訳はまだ
 <h1>
 ローカルでデプロイする方法：
 </h1>
-1. プロジェクトをダウンロード
-```sh
-git clone --depth=1 https://github.com/Rindonn/gpt_academic_JP.git
 
-cd gpt_academic_JP
-```
+1. プロジェクトをダウンロード<br>
+git clone --depth=1 https://github.com/Rindonn/gpt_academic_JP.git <br>
+cd gpt_academic_JP <br>
+
 2. APIキーを設定する
 
 `config.py`でAPIキーやその他の設定を設定します。
